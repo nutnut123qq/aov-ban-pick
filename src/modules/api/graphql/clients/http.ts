@@ -8,12 +8,15 @@ import { publicEnv } from "@/resources/env"
  * @param headers - Extra static headers merged into each request.
  */
 export const createHttpLink = (
-    withCredentials = false, 
+    withCredentials = false,
     headers: Record<string, string> = {}
 ) => {
     return new HttpLink({
         uri: `${publicEnv().api.graphql}`,
         credentials: withCredentials ? "include" : "same-origin",
-        headers,
+        headers: {
+            "X-Tenant-ID": publicEnv().tenant.id,
+            ...headers,
+        },
     })
 }

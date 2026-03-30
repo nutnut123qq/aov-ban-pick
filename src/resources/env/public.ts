@@ -50,5 +50,9 @@ export const publicEnv = () => {
             /** The redirect URI of the Keycloak server. */
             redirectUri: process.env.NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI || "http://localhost:3001/api/v1/keycloak/google/callback",
         },
+        tenant: {
+            /** The tenant ID for multi-tenancy support. */
+            id: process.env.NEXT_PUBLIC_TENANT_ID || "",
+        },
     }
 }
