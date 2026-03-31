@@ -9,9 +9,7 @@ export type TedoButtonProps = ButtonProps;
 export const TedoButton = (props: TedoButtonProps) => {
   return (
     <Button
-      color="primary"
-      radius="full"
-      className="px-4 py-2 font-medium"
+      className="px-4 py-2 font-medium rounded-full"
       {...props}
     />
   );

@@ -9,10 +9,7 @@ export type TedoInputProps = InputProps;
 export const TedoInput = (props: TedoInputProps) => {
   return (
     <Input
-      radius="full"
-      classNames={{
-        inputWrapper: "border border-default-200 data-[focus=true]:border-primary",
-      }}
+      className="border border-default-200 data-[focus=true]:border-primary rounded-full"
       {...props}
     />
   );

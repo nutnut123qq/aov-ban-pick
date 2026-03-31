@@ -1,4 +1,4 @@
-import { heroui } from "@heroui/react";
+import { heroui } from "@heroui/theme";
 
 /** HeroUI + Tailwind v4 theme — TEDO primary/secondary palette. */
 export default heroui({
