@@ -15,6 +15,8 @@ export const KeycloakProvider = ({ children }: PropsWithChildren) => {
         () => ({ keycloakSwr }),
         [keycloakSwr]
     )
+
+    console.log(keycloakSwr.data)
     return (
         <KeycloakContext.Provider value={value}>
             {children}
