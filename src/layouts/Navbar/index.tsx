@@ -4,13 +4,13 @@ import React from "react"
 import Link from "next/link"
 import { useAppSelector } from "@/redux/hooks"
 import { TedoButton } from "@/components/ui/TedoButton"
-import { useKeycloakCore } from "@/hooks/singleton/keycloak/core"
+import { useKeycloak } from "@/hooks/singleton"
 
 const Navbar = () => {
     const user = useAppSelector((state) => state.user.user)
     const authenticated = useAppSelector((state) => state.user.authenticated)
 
-    const { data: keycloak } = useKeycloakCore()
+    const { logout } = useKeycloak()
 
     return (
         <nav className="flex items-center justify-between px-6 py-3 border-b border-default-200 bg-content1/70 backdrop-blur">
@@ -31,7 +31,7 @@ const Navbar = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => {
-                                window.location.href = "/api/auth/logout"
+                                void logout()
                             }}
                         >
                             Đăng xuất

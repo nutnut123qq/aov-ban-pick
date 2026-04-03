@@ -1,16 +1,39 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
+import Link from "next/link"
 import { useKeycloak } from "@/hooks/singleton"
 import { TedoButton } from "@/components/ui/TedoButton"
+import { useAppSelector } from "@/redux/hooks"
 
 const AuthLoginPage = () => {
     const keycloak = useKeycloak()
+    const user = useAppSelector((state) => state.user.user)
+    const [isRedirecting, setIsRedirecting] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        await keycloak.login()
+        setIsRedirecting(true)
+        try {
+            await keycloak.login()
+        } finally {
+            setIsRedirecting(false)
+        }
     }
+
+    const tokenParsed = keycloak.keycloak?.tokenParsed as
+        | { preferred_username?: string; email?: string; sub?: string }
+        | undefined
+    const username =
+        user?.username ??
+        tokenParsed?.preferred_username ??
+        user?.email ??
+        tokenParsed?.email ??
+        tokenParsed?.sub ??
+        null
+
+    const sessionActive =
+        keycloak.isAuthenticated && Boolean(keycloak.token)
 
     return (
         <main className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
@@ -24,18 +47,40 @@ const AuthLoginPage = () => {
                     </p>
                 </header>
 
-                <form
-                    className="space-y-4"
-                    onSubmit={handleSubmit}
-                >
-                    <TedoButton
-                        type="submit"
-                        className="w-full justify-center"
-                        isLoading={!keycloak.isReady}
+                {sessionActive ? (
+                    <div className="flex flex-col gap-3">
+                        <Link href="/" className="w-full">
+                            <TedoButton
+                                className="w-full justify-center"
+                                variant="outline"
+                            >
+                                Hồ sơ: {username ?? "Đã đăng nhập"}
+                            </TedoButton>
+                        </Link>
+                        <TedoButton
+                            className="w-full justify-center"
+                            variant="outline"
+                            onClick={() => {
+                                void keycloak.logout()
+                            }}
+                        >
+                            Đăng xuất
+                        </TedoButton>
+                    </div>
+                ) : (
+                    <form
+                        className="space-y-4"
+                        onSubmit={handleSubmit}
                     >
-                        Đăng nhập với Keycloak
-                    </TedoButton>
-                </form>
+                        <TedoButton
+                            type="submit"
+                            className="w-full justify-center"
+                            isDisabled={isRedirecting}
+                        >
+                            Đăng nhập với Keycloak
+                        </TedoButton>
+                    </form>
+                )}
             </section>
         </main>
     )

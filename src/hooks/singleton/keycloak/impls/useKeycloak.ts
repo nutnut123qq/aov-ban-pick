@@ -1,6 +1,6 @@
 import { use } from "react"
 import { KeycloakContext } from "../KeycloakContext"
-import { createKeycloak } from "@/modules/keycloak"
+import { createKeycloak, getKeycloakBrowserInitOptions } from "@/modules/keycloak"
 
 export interface KeycloakProfile {
     id?: string
@@ -21,13 +21,15 @@ export const useKeycloak = () => {
     const login = async () => {
         if (!keycloak) {
             const newKeycloak = createKeycloak()
-            await newKeycloak.init({ onLoad: "login-required" })
+            await newKeycloak.init(
+                getKeycloakBrowserInitOptions("login-required"),
+            )
             await newKeycloak.login()
-        } else if (!keycloak.token) {
-            await keycloak.init({ onLoad: "login-required" })
-        } else {
-            await keycloak.login()
+            return
         }
+        // Do not call `init` again: the adapter is already initialised once via SWR.
+        // After logout, `token` is cleared but a second `init` breaks; `login()` is enough.
+        await keycloak.login()
     }
 
     const logout = async () => {
