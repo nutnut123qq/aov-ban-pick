@@ -42,13 +42,13 @@ export const publicEnv = () => {
         },
         keycloak: {
             /** The URL of the Keycloak server. */
-            url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "http://localhost:8089",
+            url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "https://keycloak.dev.tedo.vn",
             /** The realm of the Keycloak server. */
-            realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || "master",
+            realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || "tedo",
             /** The client ID of the Keycloak server. */
-            clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "academy-web",
+            clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "tedo-frontend",
             /** The redirect URI of the Keycloak server. */
-            redirectUri: process.env.NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI || "http://localhost:3001/api/v1/keycloak/google/callback",
+            redirectUri: process.env.NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI || "http://localhost:3000/keycloak/google/callback",
         },
         tenant: {
             /** The tenant ID for multi-tenancy support. */
