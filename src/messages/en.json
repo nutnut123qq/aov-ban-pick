@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "brand": "Tedo Academy",
+    "signedInFallback": "Signed in",
+    "home": "Home",
+    "courses": "Courses",
+    "contact": "Contact",
+    "logout": "Logout",
+    "signIn": "Sign In"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "desc": "Sign in to your account to continue",
+      "google": "Continue with Google",
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password",
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "desc": "Create an account to continue",
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password"
+      },
+      "submit": "Sign Up",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign In"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry"
+  }
+}

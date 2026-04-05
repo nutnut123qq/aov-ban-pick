@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "brand": "Tedo Academy",
+    "signedInFallback": "Đã đăng nhập",
+    "home": "Trang chủ",
+    "courses": "Khóa học",
+    "contact": "Liên hệ",
+    "logout": "Đăng xuất",
+    "signIn": "Đăng nhập"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Đăng nhập",
+      "desc": "Đăng nhập để tiếp tục",
+      "google": "Đăng nhập với Google",
+      "email": {
+        "label": "Email",
+        "placeholder": "Nhập email của bạn"
+      },
+      "password": {
+        "label": "Mật khẩu",
+        "placeholder": "Nhập mật khẩu của bạn",
+        "show": "Hiện mật khẩu",
+        "hide": "Ẩn mật khẩu"
+      },
+      "rememberMe": "Ghi nhớ đăng nhập",
+      "forgotPassword": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "signUp": "Đăng ký"
+    },
+    "signUp": {
+      "title": "Đăng ký",
+      "desc": "Tạo tài khoản để tiếp tục",
+      "email": {
+        "label": "Email",
+        "placeholder": "Nhập email của bạn"
+      },
+      "password": {
+        "label": "Mật khẩu",
+        "placeholder": "Nhập mật khẩu của bạn"
+      },
+      "submit": "Đăng ký",
+      "haveAccount": "Đã có tài khoản?",
+      "signIn": "Đăng nhập"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "retry": "Thử lại"
+  }
+}
