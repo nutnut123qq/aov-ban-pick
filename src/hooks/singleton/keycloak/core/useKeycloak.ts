@@ -10,7 +10,7 @@ export const useKeycloakCore = () =>
         async () => {
             try {
                 const keycloak = createKeycloak()
-                await keycloak.init(getKeycloakBrowserInitOptions("check-sso"))
+                await keycloak.init(getKeycloakBrowserInitOptions())
                 return keycloak
             } catch {
                 return null

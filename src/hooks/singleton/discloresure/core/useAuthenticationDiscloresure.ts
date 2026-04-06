@@ -1,3 +1,3 @@
-import { useOverlayState } from "@heroui/react"
+import { useDisclosure } from "@heroui/react"
 
-export const useAuthenticationDisclosureCore = () => useOverlayState()
+export const useAuthenticationDisclosureCore = () => useDisclosure()

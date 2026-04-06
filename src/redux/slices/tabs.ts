@@ -9,17 +9,29 @@ export enum AuthenticationModalTab {
 }
 
 /**
+ * The tabs for the learn page.
+ */
+export enum LearnTab {
+    LessonVideos = "lessonVideos",
+    Foundations = "foundations",
+    Challenges = "challenges",
+    TopAchievers = "topAchievers",
+}
+
+/**
  * The slice for the authentication modal.
  */
-export interface AuthenticationModalSlice {
-    tab: AuthenticationModalTab
+export interface TabsSlice {
+    authenticationModalTab: AuthenticationModalTab
+    learnTab: LearnTab
 }
 
 /**
  * The initial state of the authentication modal slice.
  */
-const initialState: AuthenticationModalSlice = {
-    tab: AuthenticationModalTab.SignIn,
+const initialState: TabsSlice = {
+    authenticationModalTab: AuthenticationModalTab.SignIn,
+    learnTab: LearnTab.LessonVideos,
 }
 
 /**
@@ -33,10 +45,19 @@ export const tabsSlice = createSlice({
             state,
             action: PayloadAction<AuthenticationModalTab>
         ) => {
-            state.tab = action.payload
+            state.authenticationModalTab = action.payload
         },
         resetAuthenticationModalTab: (state) => {
-            state.tab = AuthenticationModalTab.SignIn
+            state.authenticationModalTab = AuthenticationModalTab.SignIn
+        },
+        setLearnTab: (
+            state,
+            action: PayloadAction<LearnTab>
+        ) => {
+            state.learnTab = action.payload
+        },
+        resetLearnTab: (state) => {
+            state.learnTab = LearnTab.LessonVideos
         },
     },
 })
@@ -52,4 +73,6 @@ export const tabsReducer = tabsSlice.reducer
 export const {
     setAuthenticationModalTab,
     resetAuthenticationModalTab,
+    setLearnTab,
+    resetLearnTab,
 } = tabsSlice.actions
