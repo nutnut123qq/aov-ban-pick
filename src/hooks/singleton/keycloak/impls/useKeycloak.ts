@@ -1,4 +1,5 @@
 import { use } from "react"
+import type { KeycloakLoginOptions } from "keycloak-js"
 import { KeycloakContext } from "../KeycloakContext"
 import { createKeycloak, getKeycloakBrowserInitOptions } from "@/modules/keycloak"
 
@@ -18,18 +19,18 @@ export const useKeycloak = () => {
     const { keycloakSwr } = use(KeycloakContext)!
     const keycloak = keycloakSwr.data
 
-    const login = async () => {
+    const login = async (options?: KeycloakLoginOptions) => {
         if (!keycloak) {
             const newKeycloak = createKeycloak()
-            await newKeycloak.init(
-                getKeycloakBrowserInitOptions("login-required"),
-            )
-            await newKeycloak.login()
+            // Same options as `useKeycloakCore` so behaviour matches the shared instance
+            // (no second init after the first successful SWR run).
+            await newKeycloak.init(getKeycloakBrowserInitOptions())
+            await newKeycloak.login(options)
             return
         }
         // Do not call `init` again: the adapter is already initialised once via SWR.
         // After logout, `token` is cleared but a second `init` breaks; `login()` is enough.
-        await keycloak.login()
+        await keycloak.login(options)
     }
 
     const logout = async () => {

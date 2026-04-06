@@ -6,13 +6,23 @@
     "courses": "Khóa học",
     "contact": "Liên hệ",
     "logout": "Đăng xuất",
-    "signIn": "Đăng nhập"
+    "signIn": "Đăng nhập",
+    "redirectingHome": "Đang chuyển về trang chủ…",
+    "userMenu": {
+      "label": "Menu tài khoản"
+    }
   },
   "auth": {
+    "loginPage": {
+      "title": "Đăng nhập Tedo",
+      "desc": "Sử dụng tài khoản Keycloak được cấp để tiếp tục.",
+      "submit": "Đăng nhập với Keycloak"
+    },
     "signIn": {
       "title": "Đăng nhập",
       "desc": "Đăng nhập để tiếp tục",
       "google": "Đăng nhập với Google",
+      "keycloak": "Đăng nhập với Keycloak",
       "email": {
         "label": "Email",
         "placeholder": "Nhập email của bạn"

@@ -6,13 +6,23 @@
     "courses": "Courses",
     "contact": "Contact",
     "logout": "Logout",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "redirectingHome": "Redirecting to home…",
+    "userMenu": {
+      "label": "Account menu"
+    }
   },
   "auth": {
+    "loginPage": {
+      "title": "Sign in to Tedo",
+      "desc": "Continue with your Keycloak account.",
+      "submit": "Continue with Keycloak"
+    },
     "signIn": {
       "title": "Sign In",
       "desc": "Sign in to your account to continue",
       "google": "Continue with Google",
+      "keycloak": "Continue with Keycloak",
       "email": {
         "label": "Email",
         "placeholder": "Enter your email"

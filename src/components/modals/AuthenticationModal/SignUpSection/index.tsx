@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from "react"
 import {
-    TedoModalBody,
     TedoInput,
     TedoButton,
     TedoLink,
@@ -16,6 +15,7 @@ import {
 import { EyeIcon, EyeClosedIcon } from "@phosphor-icons/react"
 import { useSignUpFormik } from "@/hooks/singleton"
 import { useTranslations } from "next-intl"
+import { AuthModalBody } from "../AuthModalBody"
 
 export const SignUpSection = () => {
     const [showPassword, setShowPassword] = useState(false)
@@ -32,9 +32,11 @@ export const SignUpSection = () => {
     } = useSignUpFormik()
 
     return (
-        <TedoModalBody>
+        <AuthModalBody>
             <TedoInput
                 isRequired
+                labelPlacement="outside-top"
+                variant="bordered"
                 type="email"
                 label={t("auth.signUp.email.label")}
                 placeholder={t("auth.signUp.email.placeholder")}
@@ -48,6 +50,8 @@ export const SignUpSection = () => {
             <Spacer y={3} />
             <TedoInput
                 isRequired
+                labelPlacement="outside-top"
+                variant="bordered"
                 label={t("auth.signUp.password.label")}
                 placeholder={t("auth.signUp.password.placeholder")}
                 type={showPassword ? "text" : "password"}
@@ -77,6 +81,8 @@ export const SignUpSection = () => {
             <Spacer y={3} />
             <TedoInput
                 isRequired
+                labelPlacement="outside-top"
+                variant="bordered"
                 type={showConfirmPassword ? "text" : "password"}
                 label={t("auth.signUp.confirmPassword.label")}
                 placeholder={t("auth.signUp.confirmPassword.placeholder")}
@@ -171,6 +177,6 @@ export const SignUpSection = () => {
                     {t("auth.signUp.signIn")}
                 </TedoLink>
             </div>
-        </TedoModalBody>
+        </AuthModalBody>
     )
 }

@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from "react"
 import {
-    TedoModalBody,
     TedoInput,
     TedoDivider,
     TedoButton,
@@ -19,11 +18,13 @@ import {
 } from "@/redux/slices"
 import { useSignInFormik } from "@/hooks/singleton"
 import { useKeycloak } from "@/hooks/singleton"
-import { EyeClosedIcon, EyeIcon } from "lucide-react"
+import { EyeClosedIcon, EyeIcon, LogIn } from "lucide-react"
+import { AuthModalBody } from "../AuthModalBody"
 
 export const SignInSection = () => {
     const [showPassword, setShowPassword] = useState(false)
-    const { data: keycloak, isLoading: keycloakLoading } = useKeycloak()
+    const { isLoading: keycloakLoading, login: redirectToKeycloak } =
+        useKeycloak()
     const dispatch = useAppDispatch()
     const t = useTranslations()
     const {
@@ -36,29 +37,65 @@ export const SignInSection = () => {
     } = useSignInFormik()
 
     return (
-        <TedoModalBody>
+        <AuthModalBody>
             <TedoButton
                 type="button"
                 variant="bordered"
-                className="w-full text-sm"
-                isDisabled={keycloakLoading || !keycloak}
-                startContent={<GoogleIcon className="w-5 h-5" />}
-                onPress={
-                    async () => {
-                        await keycloak?.login({
-                            idpHint: "google",
-                        }
-                        )
-                    }
+                className="h-10 min-h-10 w-full !flex flex-row flex-nowrap items-center justify-center gap-2 text-sm"
+                isDisabled={keycloakLoading}
+                startContent={
+                    <span
+                        aria-hidden
+                        className="flex size-5 shrink-0 items-center justify-center"
+                    >
+                        <GoogleIcon className="size-5 shrink-0 block" />
+                    </span>
                 }
+                onPress={() => {
+                    void redirectToKeycloak({ idpHint: "google" }).catch(
+                        (err: unknown) => {
+                            console.error(
+                                "[auth] Google sign-in redirect failed",
+                                err,
+                            )
+                        },
+                    )
+                }}
             >
                 {t("auth.signIn.google")}
+            </TedoButton>
+            <Spacer y={2} />
+            <TedoButton
+                type="button"
+                variant="bordered"
+                className="h-10 min-h-10 w-full !flex flex-row flex-nowrap items-center justify-center gap-2 text-sm"
+                isDisabled={keycloakLoading}
+                startContent={
+                    <span
+                        aria-hidden
+                        className="flex size-5 shrink-0 items-center justify-center"
+                    >
+                        <LogIn className="size-5 shrink-0 stroke-[2]" />
+                    </span>
+                }
+                onPress={() => {
+                    void redirectToKeycloak().catch((err: unknown) => {
+                        console.error(
+                            "[auth] Keycloak sign-in redirect failed",
+                            err,
+                        )
+                    })
+                }}
+            >
+                {t("auth.signIn.keycloak")}
             </TedoButton>
             <Spacer y={3} />
             <TedoDivider />
             <Spacer y={3} />
             <TedoInput
                 isRequired
+                labelPlacement="outside-top"
+                variant="bordered"
                 type="email"
                 label={t("auth.signIn.email.label")}
                 placeholder={t("auth.signIn.email.placeholder")}
@@ -72,6 +109,8 @@ export const SignInSection = () => {
             <Spacer y={3} />
             <TedoInput
                 isRequired
+                labelPlacement="outside-top"
+                variant="bordered"
                 type={showPassword ? "text" : "password"}
                 label={t("auth.signIn.password.label")}
                 placeholder={t("auth.signIn.password.placeholder")}
@@ -140,6 +179,6 @@ export const SignInSection = () => {
                     {t("auth.signIn.signUp")}
                 </TedoLink>
             </div>
-        </TedoModalBody>
+        </AuthModalBody>
     )
 }
