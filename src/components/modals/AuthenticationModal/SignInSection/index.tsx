@@ -1,29 +1,25 @@
 "use client"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import {
-    TedoInput,
-    TedoDivider,
-    TedoButton,
-    TedoCheckbox,
-    TedoLink,
-} from "../../../atomic"
-import { Spacer } from "@heroui/react"
 import { GoogleIcon } from "../../../svg"
 import { useAppDispatch } from "@/redux"
-
 import { useTranslations } from "next-intl"
 import {
     AuthenticationModalTab,
     setAuthenticationModalTab,
 } from "@/redux/slices"
 import { useKeycloak, useAuthenticationDisclosure } from "@/hooks/singleton"
-import { EyeClosedIcon, EyeIcon, LogIn } from "lucide-react"
+import { EyeClosedIcon, EyeIcon, LogIn, ArrowRight } from "lucide-react"
 import { AuthModalBody } from "../AuthModalBody"
 import { loginWithKeycloak, type LoginResponse } from "@/services/auth"
 import { setUser, setAuthenticated } from "@/redux/slices/user"
 import type { UserEntity } from "@/modules/types"
 import { jwtDecode } from "jwt-decode"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface KeycloakTokenPayload {
     sub?: string
@@ -97,7 +93,7 @@ export const SignInSection = () => {
             }
 
             onClose()
-            void router.push("/")
+            router.push("/")
         } catch (err: unknown) {
             console.error("[auth] Login failed:", err)
             setError("Invalid username/email or password")
@@ -107,148 +103,142 @@ export const SignInSection = () => {
     }
 
     return (
-        <AuthModalBody>
-            <TedoButton
-                type="button"
-                variant="bordered"
-                className="h-10 min-h-10 w-full !flex flex-row flex-nowrap items-center justify-center gap-2 text-sm"
-                isDisabled={keycloakLoading}
-                startContent={
-                    <span
-                        aria-hidden
-                        className="flex size-5 shrink-0 items-center justify-center"
-                    >
-                        <GoogleIcon className="size-5 shrink-0 block" />
-                    </span>
-                }
-                onPress={() => {
-                    void redirectToKeycloak({ idpHint: "google" }).catch(
-                        (err: unknown) => {
-                            console.error(
-                                "[auth] Google sign-in redirect failed",
-                                err,
+        <AuthModalBody className="p-0!">
+            <div className="space-y-6 px-6 pb-6 pt-5">
+                <div className="space-y-2.5">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="h-11 w-full gap-2 border-border/80 bg-background font-normal"
+                        onClick={async () => {
+                            await redirectToKeycloak({ idpHint: "google" }).catch(
+                                (err: unknown) => {
+                                    console.error("[auth] Google sign-in redirect failed", err)
+                                },
                             )
-                        },
-                    )
-                }}
-            >
-                {t("auth.signIn.google")}
-            </TedoButton>
-            <Spacer y={2} />
-            <TedoButton
-                type="button"
-                variant="bordered"
-                className="h-10 min-h-10 w-full !flex flex-row flex-nowrap items-center justify-center gap-2 text-sm"
-                isDisabled={keycloakLoading}
-                startContent={
-                    <span
-                        aria-hidden
-                        className="flex size-5 shrink-0 items-center justify-center"
+                        }}
+                        disabled={keycloakLoading}
                     >
-                        <LogIn className="size-5 shrink-0 stroke-[2]" />
+                        <GoogleIcon className="size-5 shrink-0" />
+                        {t("auth.signIn.google")}
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="h-11 w-full gap-2 border-border/80 bg-background font-normal"
+                        onClick={async () => {
+                            await redirectToKeycloak().catch((err: unknown) => {
+                                console.error("[auth] Keycloak sign-in redirect failed", err)
+                            })
+                        }}
+                        disabled={keycloakLoading}
+                    >
+                        <LogIn className="size-5 shrink-0" />
+                        {t("auth.signIn.keycloak")}
+                    </Button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                        or
                     </span>
-                }
-                onPress={() => {
-                    void redirectToKeycloak().catch((err: unknown) => {
-                        console.error(
-                            "[auth] Keycloak sign-in redirect failed",
-                            err,
-                        )
-                    })
-                }}
-            >
-                {t("auth.signIn.keycloak")}
-            </TedoButton>
-            <Spacer y={3} />
-            <TedoDivider />
-            <Spacer y={3} />
-            <form onSubmit={handleSubmit} className="flex flex-col gap-0">
-                <TedoInput
-                    isRequired
-                    labelPlacement="outside-top"
-                    variant="bordered"
-                    type="text"
-                    label={t("auth.signIn.email.label")}
-                    placeholder={t("auth.signIn.email.placeholder")}
-                    value={email}
-                    onValueChange={setEmail}
-                />
-                <Spacer y={3} />
-                <TedoInput
-                    isRequired
-                    labelPlacement="outside-top"
-                    variant="bordered"
-                    type={showPassword ? "text" : "password"}
-                    label={t("auth.signIn.password.label")}
-                    placeholder={t("auth.signIn.password.placeholder")}
-                    value={password}
-                    onValueChange={setPassword}
-                    endContent={
-                        <TedoLink
-                            as="button"
-                            type="button"
-                            className="mr-1 flex items-center justify-center rounded-md p-1 text-foreground-500 outline-none transition-opacity hover:opacity-80"
-                            aria-label={
-                                showPassword ? t("auth.signIn.password.hide") : t("auth.signIn.password.show")
-                            }
-                            onPress={() => setShowPassword((s) => !s)}
-                        >
-                            {showPassword ? (
-                                <EyeIcon className="h-4 w-4" />
-                            ) : (
-                                <EyeClosedIcon className="h-4 w-4" />
-                            )}
-                        </TedoLink>
-                    }
-                />
-                <Spacer y={3} />
-                {error && (
-                    <>
-                        <div className="text-sm text-danger mb-2">{error}</div>
-                        <Spacer y={1} />
-                    </>
-                )}
-                <div className="flex justify-between">
-                    <div className="flex items-center gap-1.5">
-                        <TedoCheckbox
-                            size="sm"
-                            aria-label={t("auth.signIn.rememberMe")}
-                            isSelected={rememberMe}
-                            onValueChange={setRememberMe}
-                        />
-                        <div className="text-xs text-foreground-500">
-                            {t("auth.signIn.rememberMe")}
+                    <div className="h-px flex-1 bg-border" />
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="signin-email" className="text-sm font-medium">
+                                {t("auth.signIn.email.label")}
+                            </Label>
+                            <Input
+                                id="signin-email"
+                                type="text"
+                                placeholder={t("auth.signIn.email.placeholder")}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="h-11 bg-background"
+                            />
                         </div>
-                    </div>
-                    <TedoLink className="text-xs">{t("auth.signIn.forgotPassword")}</TedoLink>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="signin-password" className="text-sm font-medium">
+                                {t("auth.signIn.password.label")}
+                            </Label>
+                            <div className="relative">
+                                <Input
+                                    id="signin-password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder={t("auth.signIn.password.placeholder")}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="h-11 bg-background pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    aria-label={showPassword ? t("auth.signIn.password.hide") : t("auth.signIn.password.show")}
+                                >
+                                    {showPassword ? <EyeClosedIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Error */}
+                        {error && (
+                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                                <p className="text-sm text-destructive">{error}</p>
+                            </div>
+                        )}
+
+                        {/* Remember & Forgot */}
+                        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                            <div className="flex min-w-0 items-center gap-2">
+                                <Checkbox
+                                    id="signin-remember"
+                                    checked={rememberMe}
+                                    onCheckedChange={(checked) => setRememberMe(checked === true)}
+                                />
+                                <Label htmlFor="signin-remember" className="cursor-pointer text-sm text-muted-foreground">
+                                    {t("auth.signIn.rememberMe")}
+                                </Label>
+                            </div>
+                            <button
+                                type="button"
+                                className="shrink-0 text-sm text-primary underline-offset-4 hover:underline"
+                            >
+                                {t("auth.signIn.forgotPassword")}
+                            </button>
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="h-11 w-full"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <>
+                                    {t("auth.signIn.submit")}
+                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                </>
+                            )}
+                        </Button>
+                </form>
+
+                <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 border-t border-border/60 pt-5 text-center text-sm">
+                    <span className="text-muted-foreground">{t("auth.signIn.noAccount")}</span>
+                    <button
+                        type="button"
+                        className="font-medium text-primary underline-offset-4 hover:underline"
+                        onClick={() => dispatch(setAuthenticationModalTab(AuthenticationModalTab.SignUp))}
+                    >
+                        {t("auth.signIn.signUp")}
+                    </button>
                 </div>
-                <Spacer y={3} />
-                <TedoButton
-                    type="submit"
-                    color="primary"
-                    fullWidth
-                    isLoading={isSubmitting}
-                >
-                    {t("auth.signIn.submit")}
-                </TedoButton>
-            </form>
-            <Spacer y={3} />
-            <div className="flex justify-center items-center gap-1">
-                <div className="text-xs text-foreground-500">
-                    {t("auth.signIn.noAccount")}
-                </div>
-                <TedoLink
-                    className="text-xs"
-                    onPress={() =>
-                        dispatch(
-                            setAuthenticationModalTab(
-                                AuthenticationModalTab.SignUp
-                            )
-                        )
-                    }
-                >
-                    {t("auth.signIn.signUp")}
-                </TedoLink>
             </div>
         </AuthModalBody>
     )

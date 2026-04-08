@@ -57,9 +57,9 @@ export const AuthenticationModal = () => {
             >
                 <div
                     className={cn(
-                        "relative isolate z-0 w-full max-w-xs overflow-hidden rounded-large",
-                        "border border-default-200 bg-background text-foreground",
-                        "shadow-large ring-1 ring-default-200",
+                        "relative isolate z-0 w-full max-w-[420px] overflow-hidden rounded-2xl",
+                        "border border-border/80 bg-background text-foreground",
+                        "shadow-xl",
                         "outline-none"
                     )}
                     onClick={(e) => e.stopPropagation()}
@@ -71,7 +71,7 @@ export const AuthenticationModal = () => {
                         size="sm"
                         radius="full"
                         aria-label="Close"
-                        className="absolute end-2 top-2 z-10 min-w-8 text-foreground-500"
+                        className="absolute end-3 top-3 z-10 min-w-8 text-muted-foreground hover:text-foreground"
                         onPress={() => closeDisclosure()}
                     >
                         <X className="h-4 w-4" />

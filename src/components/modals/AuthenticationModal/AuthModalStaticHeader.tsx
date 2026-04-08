@@ -1,6 +1,6 @@
 "use client"
 
-import { cn, Spacer } from "@heroui/react"
+import { cn } from "@heroui/react"
 import React from "react"
 
 export interface AuthModalStaticHeaderProps {
@@ -11,7 +11,7 @@ export interface AuthModalStaticHeaderProps {
     descriptionId?: string
 }
 
-/** Header layout matching former TedoModalHeader (no ModalContext). */
+/** Single title + subtitle row; pairs with form body (no duplicate hero). */
 export const AuthModalStaticHeader = ({
     title,
     description,
@@ -21,23 +21,23 @@ export const AuthModalStaticHeader = ({
 }: AuthModalStaticHeaderProps) => (
     <header
         className={cn(
-            "flex flex-col justify-center px-6 pt-6 pb-2 text-center",
+            "border-b border-border/60 px-6 pb-4 pt-5 text-start pe-14",
             className
         )}
     >
-        <div id={titleId} className="text-lg font-bold">
+        <div
+            id={titleId}
+            className="text-xl font-semibold tracking-tight text-foreground"
+        >
             {title}
         </div>
         {description ? (
-            <>
-                <Spacer y={2} />
-                <div
-                    id={descriptionId}
-                    className="text-xs font-normal text-foreground-500"
-                >
-                    {description}
-                </div>
-            </>
+            <div
+                id={descriptionId}
+                className="mt-1.5 text-sm leading-snug text-muted-foreground"
+            >
+                {description}
+            </div>
         ) : null}
     </header>
 )
