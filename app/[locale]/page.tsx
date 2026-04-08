@@ -13,14 +13,12 @@ const fadeInUp = {
 }
 
 const Page = () => {
-    const { onOpen } = useAuthenticationDisclosure()
 
-    return (
-        <div>
-            <Spacer y={20} />
-            <Button onPress={onOpen}>Test Modal</Button>
-            <Spacer y={20} />
-            <motion.div
+  return (
+    <div>
+      <Spacer y={20} />
+      <Spacer y={20} />
+      <motion.div
         className="grid grid-cols-1 md:grid-cols-5 gap-6"
         {...fadeInUp}
       >
