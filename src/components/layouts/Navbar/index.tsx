@@ -24,51 +24,50 @@ import {
 import { ChevronDown } from "lucide-react"
 import React from "react"
 import { useTranslations } from "next-intl"
-
-type TokenParsedLike = {
-    name?: string
-    preferred_username?: string
-    email?: string
-    sub?: string
-}
+import { setUser, setAuthenticated } from "@/redux/slices/user"
 
 export const Navbar = () => {
     const dispatch = useAppDispatch()
     const { onOpen } = useAuthenticationDisclosure()
-    const {
-        keycloak,
-        isLoading: keycloakLoading,
-        isAuthenticated,
-        token,
-        logout,
-    } = useKeycloak()
-    const user = useAppSelector((state) => state.user.user)
+    const { logout } = useKeycloak()
+    const { user, authenticated } = useAppSelector((state) => state.user)
     const t = useTranslations()
 
-    const tokenParsed = keycloak?.tokenParsed as TokenParsedLike | undefined
     const displayName =
-        (typeof tokenParsed?.name === "string" && tokenParsed.name.trim()
-            ? tokenParsed.name.trim()
-            : null) ??
         user?.username ??
-        (typeof tokenParsed?.preferred_username === "string"
-            ? tokenParsed.preferred_username
-            : null) ??
         user?.email ??
-        tokenParsed?.email ??
         t("nav.signedInFallback")
 
     const initialsSource =
-        (typeof tokenParsed?.name === "string" && tokenParsed.name) ||
         user?.username ||
-        tokenParsed?.preferred_username ||
         displayName
     const avatarLetter =
         typeof initialsSource === "string" && initialsSource.length > 0
             ? initialsSource.trim().charAt(0).toUpperCase()
             : "?"
 
-    const sessionActive = isAuthenticated && Boolean(token)
+    const sessionActive = authenticated && Boolean(user)
+
+    const handleLogout = async () => {
+        // Clear localStorage tokens
+        localStorage.removeItem("access_token")
+        localStorage.removeItem("refresh_token")
+
+        // Clear Redux state
+        dispatch(setUser(null))
+        dispatch(setAuthenticated(false))
+
+        // Clear cookies (for middleware)
+        document.cookie = "keycloak_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        document.cookie = "keycloak_token_expiry=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+
+        // Try to logout from Keycloak (if connected)
+        try {
+            await logout()
+        } catch (err) {
+            console.error("[auth] Keycloak logout failed:", err)
+        }
+    }
 
     return (
         <HeroUINavbar shouldHideOnScroll>
@@ -94,11 +93,7 @@ export const Navbar = () => {
             </NavbarContent>
             <NavbarContent justify="end" className="shrink-0">
                 <NavbarItem className="shrink-0">
-                    {keycloakLoading ? (
-                        <Button isDisabled variant="flat">
-                            …
-                        </Button>
-                    ) : sessionActive ? (
+                    {sessionActive ? (
                         <TedoDropdown placement="bottom-end">
                             <TedoDropdownTrigger>
                                 <Button
@@ -132,7 +127,7 @@ export const Navbar = () => {
                                     className="text-danger"
                                     color="danger"
                                     onPress={() => {
-                                        void logout()
+                                        void handleLogout()
                                     }}
                                 >
                                     {t("nav.logout")}

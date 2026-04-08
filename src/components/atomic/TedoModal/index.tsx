@@ -24,7 +24,7 @@ export const TedoModalContent = (props: ModalContentProps) => {
     return <ModalContent {...props} />
 }
 
-export interface TedoModalHeaderProps extends React.ComponentProps<typeof ModalHeader> {
+export interface TedoModalHeaderProps extends Omit<ModalHeaderProps, "children"> {
     title: string
     description?: React.ReactNode
 }

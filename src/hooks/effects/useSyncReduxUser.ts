@@ -4,7 +4,7 @@ import { useKeycloak } from "@/hooks/singleton"
 import { useQueryUserSwr } from "@/hooks/singleton/swr/impls/api/graphql/queries"
 import type { QueryMeResponse } from "@/modules/api"
 import { userEntityFromKeycloakTokenParsed } from "@/modules/keycloak/userEntityFromTokenParsed"
-import { useAppDispatch } from "@/redux/hooks"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { setAuthenticated, setUser } from "@/redux/slices/user"
 import { useEffect } from "react"
 
@@ -15,6 +15,7 @@ export const useSyncReduxUser = () => {
     const dispatch = useAppDispatch()
     const keycloak = useKeycloak()
     const queryUserSwr = useQueryUserSwr()
+    const existingUser = useAppSelector((state) => state.user.user)
 
     useEffect(() => {
         if (keycloak.isLoading) {
@@ -23,6 +24,10 @@ export const useSyncReduxUser = () => {
 
         const inst = keycloak.data
         if (!inst?.authenticated) {
+            // Don't override if user exists from localStorage login
+            if (existingUser) {
+                return
+            }
             dispatch(setAuthenticated(false))
             dispatch(setUser(null))
             return
@@ -34,6 +39,10 @@ export const useSyncReduxUser = () => {
             >[0],
         )
         if (!base) {
+            // Don't override if user exists from localStorage login
+            if (existingUser) {
+                return
+            }
             dispatch(setAuthenticated(false))
             dispatch(setUser(null))
             return
@@ -62,5 +71,6 @@ export const useSyncReduxUser = () => {
         keycloak.data?.tokenParsed,
         queryUserSwr.data,
         dispatch,
+        existingUser,
     ])
 }

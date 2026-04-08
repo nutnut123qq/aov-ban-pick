@@ -7,7 +7,7 @@ export const TedoTable = (props: TableProps) => {
     return <Table {...props} />
 }
 
-export const TedoTableBody = (props: TableBodyProps) => {
+export const TedoTableBody = <T,>(props: TableBodyProps<T>) => {
     return <TableBody {...props} />
 }
 
