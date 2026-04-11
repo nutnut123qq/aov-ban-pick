@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode"
 import { useAppDispatch } from "@/redux/hooks"
 import { setUser, setAuthenticated } from "@/redux/slices/user"
 import type { UserEntity } from "@/modules/types"
+import { getAccessToken, clearTokens } from "@/services/auth"
 
 interface KeycloakTokenPayload {
     sub?: string
@@ -34,7 +35,7 @@ export const useSyncAuthFromStorage = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        const accessToken = localStorage.getItem("access_token")
+        const accessToken = getAccessToken()
 
         if (!accessToken) {
             return
@@ -45,8 +46,7 @@ export const useSyncAuthFromStorage = () => {
 
             // Check if token is expired
             if (payload.exp && payload.exp * 1000 < Date.now()) {
-                localStorage.removeItem("access_token")
-                localStorage.removeItem("refresh_token")
+                clearTokens()
                 return
             }
 

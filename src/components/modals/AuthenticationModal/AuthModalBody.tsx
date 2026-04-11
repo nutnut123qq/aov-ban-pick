@@ -7,8 +7,8 @@ import React, { type PropsWithChildren } from "react"
 export const AuthModalBody = ({
     className,
     children,
-}: PropsWithChildren<{ className?: string }>) => (
-    <div className={cn("flex flex-1 flex-col gap-0 p-4", className)}>
+}: React.PropsWithChildren<{ className?: string }>) => (
+    <div className={cn("flex flex-1 flex-col gap-0", className)}>
         {children}
     </div>
 )

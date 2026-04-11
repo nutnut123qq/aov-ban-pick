@@ -2,7 +2,6 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 
 import { loginWithKeycloak } from "@/services/auth"
-import { publicEnv } from "@/resources/env"
 
 /**
  * Formik values for the sign in form
@@ -44,19 +43,7 @@ export const useSignInFormikCore = () =>
         onSubmit: async (values, { setSubmitting, setFieldError }) => {
             try {
                 const data = await loginWithKeycloak(values.email, values.password)
-                console.log(data)
-                localStorage.setItem(
-                    publicEnv().keycloak.tokenKey ?? "access_token",
-                    data.access_token,
-                )
-                if (data.refresh_token) {
-                    localStorage.setItem(
-                        publicEnv().keycloak.refreshTokenKey ?? "refresh_token",
-                        data.refresh_token,
-                    )
-                }
-
-                globalThis.location.href = "/"
+                return data
             } catch (error: unknown) {
                 console.error("[auth] Login failed:", error)
                 setFieldError(
