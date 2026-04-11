@@ -9,17 +9,15 @@ import {
     setAuthenticationModalTab,
 } from "@/redux/slices"
 import { useKeycloak, useAuthenticationDisclosure } from "@/hooks/singleton"
-import { EyeClosedIcon, EyeIcon, LogIn, ArrowRight } from "lucide-react"
+import { EyeIcon, EyeClosedIcon } from "@phosphor-icons/react"
+import { LogIn, ArrowRight } from "lucide-react"
 import { AuthModalBody } from "../AuthModalBody"
-import { loginWithKeycloak, type LoginResponse } from "@/services/auth"
+import { loginWithKeycloak, saveTokens, type LoginResponse } from "@/services/auth"
 import { setUser, setAuthenticated } from "@/redux/slices/user"
 import type { UserEntity } from "@/modules/types"
 import { jwtDecode } from "jwt-decode"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button, Input } from "@heroui/react"
 
 interface KeycloakTokenPayload {
     sub?: string
@@ -55,11 +53,10 @@ export const SignInSection = () => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [rememberMe, setRememberMe] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault()
         setError(null)
         setIsSubmitting(true)
@@ -79,10 +76,7 @@ export const SignInSection = () => {
         try {
             const data: LoginResponse = await loginWithKeycloak(email, password)
 
-            localStorage.setItem("access_token", data.access_token)
-            if (data.refresh_token) {
-                localStorage.setItem("refresh_token", data.refresh_token)
-            }
+            saveTokens(data)
 
             const tokenParsed = jwtDecode<KeycloakTokenPayload>(data.access_token)
             if (tokenParsed) {
@@ -104,110 +98,109 @@ export const SignInSection = () => {
 
     return (
         <AuthModalBody className="p-0!">
-            <div className="space-y-6 px-6 pb-6 pt-5">
-                <div className="space-y-2.5">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="h-11 w-full gap-2 border-border/80 bg-background font-normal"
-                        onClick={async () => {
-                            await redirectToKeycloak({ idpHint: "google" }).catch(
-                                (err: unknown) => {
-                                    console.error("[auth] Google sign-in redirect failed", err)
-                                },
-                            )
-                        }}
-                        disabled={keycloakLoading}
-                    >
-                        <GoogleIcon className="size-5 shrink-0" />
-                        {t("auth.signIn.google")}
-                    </Button>
+            <div className="px-6 pb-6 pt-2">
+                <div className="bg-content1 rounded-2xl border border-divider shadow-medium p-6 space-y-6">
+                    {/* Social login */}
+                    <div className="space-y-3">
+                        <Button
+                            type="button"
+                            variant="flat"
+                            className="w-full h-11 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider rounded-xl"
+                            onPress={async () => {
+                                await redirectToKeycloak({ idpHint: "google" }).catch(
+                                    (err: unknown) => {
+                                        console.error("[auth] Google sign-in redirect failed", err)
+                                    },
+                                )
+                            }}
+                            isLoading={keycloakLoading}
+                        >
+                            <GoogleIcon className="size-5 shrink-0" />
+                            {t("auth.signIn.google")}
+                        </Button>
 
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="h-11 w-full gap-2 border-border/80 bg-background font-normal"
-                        onClick={async () => {
-                            await redirectToKeycloak().catch((err: unknown) => {
-                                console.error("[auth] Keycloak sign-in redirect failed", err)
-                            })
-                        }}
-                        disabled={keycloakLoading}
-                    >
-                        <LogIn className="size-5 shrink-0" />
-                        {t("auth.signIn.keycloak")}
-                    </Button>
-                </div>
+                        <Button
+                            type="button"
+                            variant="flat"
+                            className="w-full h-11 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider rounded-xl"
+                            onPress={async () => {
+                                await redirectToKeycloak().catch((err: unknown) => {
+                                    console.error("[auth] Keycloak sign-in redirect failed", err)
+                                })
+                            }}
+                            isLoading={keycloakLoading}
+                        >
+                            <LogIn className="size-5 shrink-0" />
+                            {t("auth.signIn.keycloak")}
+                        </Button>
+                    </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                        or
-                    </span>
-                    <div className="h-px flex-1 bg-border" />
-                </div>
+                    {/* Divider */}
+                    <div className="flex items-center gap-3">
+                        <div className="h-px flex-1 bg-divider" />
+                        <span className="text-tiny text-foreground-400 font-medium uppercase tracking-widest">
+                            or
+                        </span>
+                        <div className="h-px flex-1 bg-divider" />
+                    </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="signin-email" className="text-sm font-medium">
-                                {t("auth.signIn.email.label")}
-                            </Label>
-                            <Input
-                                id="signin-email"
-                                type="text"
-                                placeholder={t("auth.signIn.email.placeholder")}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="h-11 bg-background"
-                            />
-                        </div>
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <Input
+                            id="signin-email"
+                            type="text"
+                            // label={t("auth.signIn.email.label")}
+                            placeholder={t("auth.signIn.email.placeholder")}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            classNames={{
+                                base: "max-w-full",
+                                label: "text-small font-medium text-foreground",
+                                input: "text-small",
+                                inputWrapper: "h-12 min-h-12 rounded-xl shadow-sm",
+                            }}
+                        />
 
-                        <div className="space-y-2">
-                            <Label htmlFor="signin-password" className="text-sm font-medium">
-                                {t("auth.signIn.password.label")}
-                            </Label>
-                            <div className="relative">
-                                <Input
-                                    id="signin-password"
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder={t("auth.signIn.password.placeholder")}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="h-11 bg-background pr-10"
-                                />
+                        <Input
+                            id="signin-password"
+                            type={showPassword ? "text" : "password"}
+                            // label={t("auth.signIn.password.label")}
+                            placeholder={t("auth.signIn.password.placeholder")}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            endContent={
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    className="text-foreground-400 hover:text-foreground transition-colors cursor-pointer"
                                     aria-label={showPassword ? t("auth.signIn.password.hide") : t("auth.signIn.password.show")}
                                 >
-                                    {showPassword ? <EyeClosedIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+                                    {showPassword
+                                        ? <EyeClosedIcon className="w-4 h-4" />
+                                        : <EyeIcon className="w-4 h-4" />
+                                    }
                                 </button>
-                            </div>
-                        </div>
+                            }
+                            classNames={{
+                                base: "max-w-full",
+                                label: "text-small font-medium text-foreground",
+                                input: "text-small",
+                                inputWrapper: "h-12 min-h-12 pr-1 rounded-xl shadow-sm",
+                            }}
+                        />
 
                         {/* Error */}
                         {error && (
-                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-                                <p className="text-sm text-destructive">{error}</p>
+                            <div className="p-3 rounded-xl bg-danger-50 border border-danger-100">
+                                <p className="text-tiny text-danger">{error}</p>
                             </div>
                         )}
 
-                        {/* Remember & Forgot */}
-                        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-                            <div className="flex min-w-0 items-center gap-2">
-                                <Checkbox
-                                    id="signin-remember"
-                                    checked={rememberMe}
-                                    onCheckedChange={(checked) => setRememberMe(checked === true)}
-                                />
-                                <Label htmlFor="signin-remember" className="cursor-pointer text-sm text-muted-foreground">
-                                    {t("auth.signIn.rememberMe")}
-                                </Label>
-                            </div>
+                        {/* Forgot password link */}
+                        <div className="flex justify-end">
                             <button
                                 type="button"
-                                className="shrink-0 text-sm text-primary underline-offset-4 hover:underline"
+                                className="text-tiny text-primary font-medium underline-offset-4 hover:underline"
                             >
                                 {t("auth.signIn.forgotPassword")}
                             </button>
@@ -215,29 +208,30 @@ export const SignInSection = () => {
 
                         <Button
                             type="submit"
-                            className="h-11 w-full"
-                            disabled={isSubmitting}
+                            color="primary"
+                            className="w-full h-12 font-medium shadow-md hover:shadow-lg transition-shadow rounded-xl"
+                            isLoading={isSubmitting}
                         >
-                            {isSubmitting ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
+                            {!isSubmitting && (
                                 <>
                                     {t("auth.signIn.submit")}
                                     <ArrowRight className="w-4 h-4 ml-2" />
                                 </>
                             )}
                         </Button>
-                </form>
+                    </form>
 
-                <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 border-t border-border/60 pt-5 text-center text-sm">
-                    <span className="text-muted-foreground">{t("auth.signIn.noAccount")}</span>
-                    <button
-                        type="button"
-                        className="font-medium text-primary underline-offset-4 hover:underline"
-                        onClick={() => dispatch(setAuthenticationModalTab(AuthenticationModalTab.SignUp))}
-                    >
-                        {t("auth.signIn.signUp")}
-                    </button>
+                    {/* Footer */}
+                    <div className="flex items-center justify-center gap-x-1.5 pt-2 text-tiny border-t border-divider">
+                        <span className="text-foreground-400">{t("auth.signIn.noAccount")}</span>
+                        <button
+                            type="button"
+                            className="font-semibold text-primary underline-offset-4 hover:underline"
+                            onClick={() => dispatch(setAuthenticationModalTab(AuthenticationModalTab.SignUp))}
+                        >
+                            {t("auth.signIn.signUp")}
+                        </button>
+                    </div>
                 </div>
             </div>
         </AuthModalBody>
