@@ -10,7 +10,7 @@ import { SingletonHookProvider } from "@/hooks/singleton"
 import { ReduxProvider } from "@/redux"
 import { UseEffects } from "@/hooks"
 import { ModalContainer } from "@/components/modals"
-import { Navbar } from "@/components/layouts"
+import { ConditionalNavbar } from "@/components/ConditionalNavbar"
 
 export const InnerLayout = ({ children }: PropsWithChildren) => {
     return (
@@ -26,9 +26,10 @@ export const InnerLayout = ({ children }: PropsWithChildren) => {
                         <SwrProvider>
                             <SingletonHookProvider>
                                 <UseEffects />
-                                <Navbar />
+                                <ConditionalNavbar>
+                                    {children}
+                                </ConditionalNavbar>
                                 <ModalContainer />
-                                {children}
                             </SingletonHookProvider>
                             <ToastProvider />
                         </SwrProvider>

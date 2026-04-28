@@ -288,14 +288,14 @@ A fullstack developer works with various technologies across the entire web appl
 // Helper function to build course content structure
 export const buildCourseContent = () => {
     const sections = [...mockCourseSections]
-    
+
     sections.forEach((section) => {
         section.chapters = mockCourseChapters.filter((ch) => ch.sectionId === section.id)
         section.chapters.forEach((chapter) => {
             chapter.lessons = mockLessons.filter((les) => les.chapterId === chapter.id)
         })
     })
-    
+
     return sections
 }
 
