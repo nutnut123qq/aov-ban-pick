@@ -131,14 +131,7 @@ const MyLearningPage = () => {
     return (
         <div className="min-h-screen">
             {/* Header */}
-            <motion.section className="bg-gradient-to-r from-primary/10 to-primary/5 py-12" {...fadeInUp}>
-                <div className="container mx-auto px-4">
-                    <h1 className="text-3xl font-bold mb-2">Khóa học của tôi</h1>
-                    <p className="text-muted-foreground">
-                        Theo dõi tiến độ học tập của bạn
-                    </p>
-                </div>
-            </motion.section>
+          
 
             <div className="container mx-auto px-4 py-8">
                 {/* Stats */}
