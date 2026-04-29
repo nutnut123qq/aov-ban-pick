@@ -153,20 +153,49 @@ export function Carousel({
                     <style>{`
                         .swiper-button-next,
                         .swiper-button-prev {
-                            width: 32px !important;
-                            height: 32px !important;
+                            width: 44px !important;
+                            height: 44px !important;
                             color: white !important;
-                            background: none !important;
-                            border: none !important;
+                            background: rgba(255, 255, 255, 0.15) !important;
+                            backdrop-filter: blur(8px) !important;
+                            -webkit-backdrop-filter: blur(8px) !important;
+                            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+                            border-radius: 9999px !important;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: center !important;
                         }
                         .swiper-button-next::after,
                         .swiper-button-prev::after {
-                            font-size: 12px !important;
-                            font-weight: bold;
+                            font-size: 16px !important;
+                            font-weight: 700 !important;
+                            transition: transform 0.3s ease !important;
                         }
                         .swiper-button-next:hover,
                         .swiper-button-prev:hover {
-                            background: none !important;
+                            background: rgba(255, 255, 255, 0.9) !important;
+                            color: #181d26 !important;
+                            border-color: rgba(255, 255, 255, 0.9) !important;
+                            transform: scale(1.12) !important;
+                            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+                        }
+                        .swiper-button-next:hover::after {
+                            transform: translateX(1px) !important;
+                        }
+                        .swiper-button-prev:hover::after {
+                            transform: translateX(-1px) !important;
+                        }
+                        .swiper-button-disabled {
+                            opacity: 0.35 !important;
+                            pointer-events: none !important;
+                        }
+                        @media (max-width: 768px) {
+                            .swiper-button-next,
+                            .swiper-button-prev {
+                                display: none !important;
+                            }
                         }
                     `}</style>
                 </>
