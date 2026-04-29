@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { memo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Play, Users, Clock, ChevronRight, Star } from "lucide-react"
@@ -10,15 +10,28 @@ import { CourseHoverPreview } from "@/components/course/CourseHoverPreview"
 import { useHoverPreview } from "@/modules/hooks"
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
+import { COURSE_CARD } from "@/modules/utils/constants"
 
 import type { CourseEntity } from "@/mocks"
 
 interface CourseCardProps {
     course: CourseEntity
     showHoverPreview?: boolean
+    variant?: "default" | "compact" | "featured"
+    className?: string
 }
 
-export function CourseCard({ course, showHoverPreview = true }: CourseCardProps) {
+/**
+ * Unified CourseCard component with hover preview support
+ * Optimized with React.memo for performance
+ * All cards have consistent height for uniform grid display
+ */
+export const CourseCard = memo(function CourseCard({
+    course,
+    showHoverPreview = true,
+    variant = "default",
+    className = "",
+}: CourseCardProps) {
     const {
         cardRef,
         hoverPreviewRef,
@@ -29,7 +42,11 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
         closePreview,
         handlePreviewMouseEnter,
         handlePreviewMouseLeave,
-    } = useHoverPreview({ enabled: showHoverPreview })
+    } = useHoverPreview({
+        enabled: showHoverPreview,
+        hoverDelay: COURSE_CARD.HOVER_DELAY_MS,
+        leaveDelay: COURSE_CARD.LEAVE_DELAY_MS,
+    })
 
     const hoverPreviewContent = isOpen && position && mounted ? (
         <div
@@ -49,81 +66,103 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
 
     const levelStyle = levelConfig[course.level]
 
+    const cardClasses = {
+        default: "bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800",
+        compact: "bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 group cursor-pointer border border-gray-100 dark:border-gray-800",
+        featured: "bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer border-2 border-primary/20",
+    }
+
     return (
-        <div className="relative">
-            <Link href={`/courses/${course.slug}`}>
+        <div className={`relative flex flex-col h-full ${className}`}>
+            <Link href={`/courses/${course.slug}`} className="flex flex-col h-full">
                 <div
                     ref={cardRef}
-                    className="h-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800"
+                    className={`${cardClasses[variant]} flex flex-col h-full`}
                     onMouseEnter={openPreview}
                     onMouseLeave={closePreview}
                 >
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    {/* Image - Fixed aspect ratio for consistency */}
+                    <div className="relative aspect-[16/10] overflow-hidden shrink-0">
                         <Image
                             src={course.thumbnail || "/placeholder-course.jpg"}
                             alt={course.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />
                         {course.isFeatured && (
-                            <span className="absolute top-3 left-3 px-2 py-1 text-xs font-medium bg-primary text-primary-foreground rounded-md">
+                            <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-semibold bg-primary text-primary-foreground rounded-md">
                                 Nổi bật
                             </span>
                         )}
                         {course.discountPrice && (
-                            <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-md">
+                            <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold bg-red-500 text-white rounded-md">
                                 -{Math.round((1 - course.discountPrice / course.price) * 100)}%
                             </span>
                         )}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                            <div className="w-14 h-14 rounded-full bg-white/0 group-hover:bg-white/90 flex items-center justify-center transition-all duration-300 scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100">
-                                <Play className="w-6 h-6 text-gray-900 ml-1" fill="currentColor" />
+                            <div className="w-12 h-12 rounded-full bg-white/0 group-hover:bg-white/90 flex items-center justify-center transition-all duration-300 scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100">
+                                <Play className="w-5 h-5 text-gray-900 ml-0.5" fill="currentColor" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelStyle.color}`}>
+                    {/* Content - Fixed height section */}
+                    <div className="p-3 flex flex-col flex-1 min-h-0">
+                        {/* Top: Level + Category */}
+                        <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
+                            <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${levelStyle.color}`}>
                                 {levelStyle.label}
                             </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{course.category?.name}</span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
+                                {course.category?.name}
+                            </span>
                         </div>
-                        <h3 className="font-semibold text-base leading-snug mb-1 line-clamp-2 text-gray-900 dark:text-gray-100">
+
+                        {/* Title - Fixed 2 lines */}
+                        <h3 className="font-semibold text-sm leading-snug line-clamp-2 mb-1 text-gray-900 dark:text-gray-100 shrink-0">
                             {course.title}
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
+
+                        {/* Description - Fixed 2 lines */}
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mb-2 flex-1">
                             {course.shortDescription}
                         </p>
-                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-3">
+
+                        {/* Stats - Fixed height */}
+                        <div className="flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400 mb-2 shrink-0">
                             <span className="flex items-center gap-1">
                                 <Users className="w-3 h-3" />
-                                {course.enrollmentCount.toLocaleString()}
+                                {course.enrollmentCount > 999 
+                                    ? `${(course.enrollmentCount / 1000).toFixed(1)}k` 
+                                    : course.enrollmentCount}
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 {formatDurationShort(course.duration)}
                             </span>
                             {course.rating && (
-                                <span className="flex items-center gap-1">
+                                <span className="flex items-center gap-0.5">
                                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                                     {course.rating.toFixed(1)}
                                 </span>
                             )}
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
-                            <div className="flex items-center gap-2">
+
+                        {/* Price - Fixed layout */}
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800 shrink-0">
+                            <div className="flex items-center gap-1.5">
                                 {course.discountPrice ? (
                                     <>
-                                        <span className="text-lg font-bold text-primary">
+                                        <span className="text-base font-bold text-primary">
                                             {formatPrice(course.discountPrice)}
                                         </span>
-                                        <span className="text-sm text-gray-400 line-through">
+                                        <span className="text-[11px] text-gray-400 line-through">
                                             {formatPrice(course.price)}
                                         </span>
                                     </>
                                 ) : (
-                                    <span className="text-lg font-bold text-primary">
+                                    <span className="text-base font-bold text-primary">
                                         {formatPrice(course.price)}
                                     </span>
                                 )}
@@ -137,6 +176,6 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
             {mounted && createPortal(hoverPreviewContent, document.body)}
         </div>
     )
-}
+})
 
 export default CourseCard

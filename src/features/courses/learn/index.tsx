@@ -9,7 +9,7 @@ import { getCourseBySlug, getCourseContent, getCourses } from "@/mocks"
 import type { CourseEntity, CourseSectionEntity, LessonEntity } from "@/mocks"
 import {
     VideoPlayer,
-    CourseSidebar,
+    DesktopCourseSidebar,
     MobileCourseSidebar,
     LessonNavigation,
     LessonHeader,
@@ -138,7 +138,7 @@ const CourseLearnPage = () => {
                     <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-border pointer-events-none" />
 
                     <aside className={`hidden lg:block bg-card overflow-hidden transition-all duration-300 ${sidebarCollapsed ? "w-12" : "w-80"}`}>
-                        <CourseSidebar
+                        <DesktopCourseSidebar
                             sections={courseContent}
                             currentLessonId={currentLesson.id}
                             completedLessons={completedLessons}
@@ -150,7 +150,7 @@ const CourseLearnPage = () => {
                     {/* Toggle button - nằm giữa cạnh phải, đè lên đường line */}
                     <button
                         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-8 h-8 rounded-full bg-background border-2 border-gray-200 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+                        className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-8 h-8 rounded-full bg-background border-2 border-gray-200 items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
                         title={sidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
                     >
                         {sidebarCollapsed ? (
@@ -167,7 +167,7 @@ const CourseLearnPage = () => {
                     currentLessonId={currentLesson.id}
                     completedLessons={completedLessons}
                     onSelectLesson={handleSelectLesson}
-                    open={sidebarOpen}
+                    isOpen={sidebarOpen}
                     onOpenChange={setSidebarOpen}
                 />
 

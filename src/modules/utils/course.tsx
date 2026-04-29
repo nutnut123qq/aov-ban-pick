@@ -3,11 +3,12 @@
 
 import type { LessonEntity } from "@/mocks"
 import { Video, FileText, FileQuestion, Play } from "lucide-react"
+import type { CourseLevel, EnrollmentStatus } from "@/modules/types/enums"
 
 /**
  * Course level configuration with label and colors
  */
-export const levelConfig = {
+export const levelConfig: Record<CourseLevel, { label: string; color: string }> = {
     BEGINNER: {
         label: "Cơ bản",
         color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
@@ -20,12 +21,12 @@ export const levelConfig = {
         label: "Nâng cao",
         color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
     },
-} as const
+}
 
 /**
  * Enrollment status configuration
  */
-export const enrollmentStatusConfig = {
+export const enrollmentStatusConfig: Record<EnrollmentStatus, { label: string; color: string }> = {
     PENDING: {
         label: "Đang chờ",
         color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
@@ -50,7 +51,7 @@ export const enrollmentStatusConfig = {
         label: "Hoàn thành",
         color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
     },
-} as const
+}
 
 /**
  * Get icon for lesson type
@@ -71,17 +72,17 @@ export const getLessonIcon = (type: LessonEntity["type"]) => {
 /**
  * Course level color only (for inline use)
  */
-export const levelColors = {
+export const levelColors: Record<CourseLevel, string> = {
     BEGINNER: "text-green-600 dark:text-green-400",
     INTERMEDIATE: "text-yellow-600 dark:text-yellow-400",
     ADVANCED: "text-red-600 dark:text-red-400",
-} as const
+}
 
 /**
  * Course level badge classes
  */
-export const levelBadgeClasses = {
+export const levelBadgeClasses: Record<CourseLevel, string> = {
     BEGINNER: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
     INTERMEDIATE: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
     ADVANCED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-} as const
+}

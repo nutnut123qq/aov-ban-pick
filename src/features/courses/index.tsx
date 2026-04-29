@@ -361,14 +361,16 @@ const CoursesPage = () => {
                         </p>
 
                         {viewMode === "grid" ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
                                 {isLoading ? (
                                     Array.from({ length: 8 }).map((_, i) => <CourseCardSkeleton key={i} />)
                                 ) : filteredCourses.length > 0 ? (
                                     filteredCourses
                                         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                         .map((course) => (
-                                            <CourseCard key={course.id} course={course} />
+                                            <div key={course.id} className="flex">
+                                                <CourseCard course={course} className="w-full" />
+                                            </div>
                                         ))
                                 ) : (
                                     <div className="col-span-full text-center py-12">
