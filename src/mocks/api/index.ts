@@ -163,6 +163,18 @@ export async function getProgramById(id: string): Promise<TrainingProgramEntity 
     return mockPrograms.find((p) => p.id === id) || null
 }
 
+export async function getProgramBySlug(slug: string): Promise<TrainingProgramEntity | null> {
+    await delay(200)
+    const { mockPrograms } = await import("../data/programs")
+    return mockPrograms.find((p) => p.slug === slug) || null
+}
+
+export async function getLearningPathBySlug(slug: string): Promise<LearningPathEntity | null> {
+    await delay(200)
+    const { mockLearningPaths } = await import("../data/programs")
+    return mockLearningPaths.find((p) => p.slug === slug) || null
+}
+
 export async function getLearningPaths(): Promise<LearningPathEntity[]> {
     await delay(200)
     const { mockLearningPaths } = await import("../data/programs")
