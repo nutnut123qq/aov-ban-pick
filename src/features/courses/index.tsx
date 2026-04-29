@@ -45,28 +45,16 @@ import {
 } from "@/mocks"
 import type { CourseEntity, CourseCategoryEntity } from "@/mocks"
 
+import { formatPrice, formatDurationShort } from "@/modules/utils"
+import { levelConfig } from "@/modules/utils/course"
+
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeOut" as const },
+    transition: { duration: 0.5, ease: "easeOut" },
 }
 
-const formatPrice = (price: number, currency: string = "VND") => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-    }).format(price)
-}
-
-const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`
-    }
-    return `${minutes}m`
-}
+const formatDuration = formatDurationShort
 
 interface FilterState {
     search: string
@@ -439,12 +427,8 @@ const CoursesPage = () => {
                                                 </div>
                                                 <div className="flex-1 p-4 flex flex-col justify-center">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${
-                                                            course.level === "BEGINNER" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" :
-                                                            course.level === "INTERMEDIATE" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300" :
-                                                            "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                                                        }`}>
-                                                            {course.level === "BEGINNER" ? "Cơ bản" : course.level === "INTERMEDIATE" ? "Trung cấp" : "Nâng cao"}
+                                                        <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelConfig[course.level].color}`}>
+                                                            {levelConfig[course.level].label}
                                                         </span>
                                                         <span className="text-xs text-muted-foreground">{course.category?.name}</span>
                                                     </div>

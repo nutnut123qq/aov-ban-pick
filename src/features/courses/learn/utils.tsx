@@ -1,16 +1,36 @@
-"use client"
-import { LessonEntity } from "@/mocks"
-import { Video, FileText, FileQuestion, Play } from "lucide-react"
+// Re-export all shared utilities from modules/utils
+// This file maintains backward compatibility for imports
 
-export const formatPrice = (price: number, currency: string = "VND") => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-    }).format(price)
-}
+import {
+    formatPrice,
+    formatDurationShort,
+    formatDurationLong,
+    formatNumber,
+    formatPercent,
+} from "@/modules/utils/format"
 
-export const formatDuration = (seconds: number) => {
+export { formatPrice, formatDurationShort, formatDurationLong, formatNumber, formatPercent }
+
+export {
+    levelConfig,
+    enrollmentStatusConfig,
+    getLessonIcon,
+    levelColors,
+    levelBadgeClasses,
+} from "@/modules/utils/course"
+
+export {
+    fadeInUp,
+    fadeInUpWithDelay,
+    staggerContainer,
+    fadeIn,
+    scaleIn,
+    slideInRight,
+    slideInUp,
+} from "@/modules/utils/animations"
+
+// Video time format: 1:30:00 or 30:00 (kept for backward compatibility)
+export const formatDuration = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
     const secs = Math.floor(seconds % 60)
@@ -21,30 +41,6 @@ export const formatDuration = (seconds: number) => {
     return `${minutes}:${secs.toString().padStart(2, "0")}`
 }
 
-export const formatDurationLong = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const parts = []
-    if (hours > 0) parts.push(`${hours} giờ`)
-    if (minutes > 0) parts.push(`${minutes} phút`)
-    return parts.join(" ")
-}
-
-export const getLessonIcon = (type: LessonEntity["type"]) => {
-    switch (type) {
-        case "VIDEO":
-            return <Video className="w-4 h-4" />
-        case "TEXT":
-            return <FileText className="w-4 h-4" />
-        case "QUIZ":
-            return <FileQuestion className="w-4 h-4" />
-        default:
-            return <Play className="w-4 h-4" />
-    }
-}
-
-export const levelLabels = {
-    BEGINNER: { label: "Cơ bản", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" },
-    INTERMEDIATE: { label: "Trung cấp", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300" },
-    ADVANCED: { label: "Nâng cao", color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300" },
-} as const
+// levelLabels alias for backward compatibility
+import { levelConfig as _levelConfig } from "@/modules/utils/course"
+export const levelLabels = _levelConfig

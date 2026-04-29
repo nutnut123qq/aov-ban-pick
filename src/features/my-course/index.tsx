@@ -16,32 +16,10 @@ import { CourseCardFullImageSkeleton } from "@/components/common"
 import { getMyEnrollments } from "@/mocks"
 import type { EnrollmentEntity } from "@/mocks"
 
-const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`
-    }
-    return `${minutes}m`
-}
+import { formatDurationShort } from "@/modules/utils"
+import { enrollmentStatusConfig } from "@/modules/utils/course"
 
-const statusColors = {
-    PENDING: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
-    APPROVED: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-    REJECTED: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
-    ENROLLED: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    DROPPED: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
-    COMPLETED: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-}
-
-const statusLabels = {
-    PENDING: "Đang chờ",
-    APPROVED: "Đã duyệt",
-    REJECTED: "Từ chối",
-    ENROLLED: "Đang học",
-    DROPPED: "Đã bỏ",
-    COMPLETED: "Hoàn thành",
-}
+const formatDuration = formatDurationShort
 
 const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntity; index: number }) => {
     const course = enrollment.course as any
@@ -87,8 +65,8 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                     <div className="p-4">
                         <div className="flex items-center gap-2 mb-2">
                             {/* Status badge instead of level */}
-                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${statusColors[enrollment.status]}`}>
-                                {statusLabels[enrollment.status]}
+                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${enrollmentStatusConfig[enrollment.status].color}`}>
+                                {enrollmentStatusConfig[enrollment.status].label}
                             </span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">{course?.category?.name}</span>
                         </div>

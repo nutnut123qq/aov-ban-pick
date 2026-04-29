@@ -6,37 +6,19 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { CourseEntity } from "@/mocks"
 
+import { formatPrice, formatDurationShort } from "@/modules/utils"
+import { levelConfig } from "@/modules/utils/course"
+
 interface CourseHoverPreviewProps {
     course: CourseEntity
-}
-
-const formatPrice = (price: number, currency: string = "VND") => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-    }).format(price)
-}
-
-const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`
-    }
-    return `${minutes}m`
-}
-
-const levelLabels = {
-    BEGINNER: "Cơ bản",
-    INTERMEDIATE: "Trung cấp",
-    ADVANCED: "Nâng cao",
 }
 
 export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
     const instructorName = course.instructors?.[0]?.user
         ? `${course.instructors[0].user.firstName || ""} ${course.instructors[0].user.lastName || ""}`.trim()
         : "Giảng viên"
+
+    const levelStyle = levelConfig[course.level]
 
     return (
         <div className="relative w-[310px] bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-300 dark:border-gray-800 overflow-visible animate-in fade-in-0 zoom-in-95 duration-200">
@@ -65,7 +47,7 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                     {course.isPremium && (
                         <Badge className="bg-amber-500 text-white">Premium</Badge>
                     )}
-                    <Badge variant="secondary">{levelLabels[course.level]}</Badge>
+                    <Badge variant="secondary">{levelStyle.label}</Badge>
                 </div>
 
                 {/* Title */}
@@ -95,7 +77,7 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                 <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-3 pb-3 border-b border-gray-100 dark:border-gray-800">
                     <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
-                        {formatDuration(course.duration)}
+                        {formatDurationShort(course.duration)}
                     </span>
                     <span className="flex items-center gap-1">
                         <FileText className="w-3.5 h-3.5" />

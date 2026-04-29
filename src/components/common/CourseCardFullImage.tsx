@@ -4,44 +4,19 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Play, Users, Clock, Star, ChevronRight } from "lucide-react"
-import { CourseHoverPreview } from "@/components/course/CourseHoverPreview"
-import type { CourseEntity } from "@/mocks"
-import { useState, useRef, useCallback, useEffect } from "react"
 import { createPortal } from "react-dom"
+
+import { CourseHoverPreview } from "@/components/course/CourseHoverPreview"
+import { useHoverPreview } from "@/modules/hooks"
+import { formatPrice, formatDurationShort } from "@/modules/utils"
+import { levelConfig } from "@/modules/utils/course"
+
+import type { CourseEntity } from "@/mocks"
 
 interface CourseCardFullImageProps {
     course: CourseEntity
     showHoverPreview?: boolean
     aspectRatio?: "video" | "square" | "wide" | "auto"
-}
-
-const formatPrice = (price: number, currency: string = "VND") => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-    }).format(price)
-}
-
-const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`
-    }
-    return `${minutes}m`
-}
-
-const levelColors = {
-    BEGINNER: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-    INTERMEDIATE: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-    ADVANCED: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-}
-
-const levelLabels = {
-    BEGINNER: "Cơ bản",
-    INTERMEDIATE: "Trung cấp",
-    ADVANCED: "Nâng cao",
 }
 
 const aspectRatioClasses = {
@@ -56,105 +31,27 @@ export function CourseCardFullImage({
     showHoverPreview = true,
     aspectRatio = "video",
 }: CourseCardFullImageProps) {
-    const [isHoverPreviewOpen, setIsHoverPreviewOpen] = useState(false)
-    const [hoverPreviewPosition, setHoverPreviewPosition] = useState<{ x: number; y: number } | null>(null)
-    const [mounted, setMounted] = useState(false)
-    const cardRef = useRef<HTMLDivElement>(null)
-    const hoverPreviewRef = useRef<HTMLDivElement>(null)
-    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const {
+        cardRef,
+        hoverPreviewRef,
+        isOpen,
+        position,
+        mounted,
+        openPreview,
+        closePreview,
+        handlePreviewMouseEnter,
+        handlePreviewMouseLeave,
+    } = useHoverPreview({ enabled: showHoverPreview })
 
-    useEffect(() => {
-        setMounted(true)
-    }, [])
-
-    const calculatePosition = useCallback((cardElement: HTMLElement) => {
-        const cardRect = cardElement.getBoundingClientRect()
-        const viewportWidth = window.innerWidth
-        const viewportHeight = window.innerHeight
-        const hoverCardHeight = 520
-        const gap = 16
-
-        let x = cardRect.right + gap
-        let y = cardRect.top
-
-        if (x + 340 > viewportWidth - 20) {
-            x = viewportWidth - 340 - 20
-        }
-
-        if (y + hoverCardHeight > viewportHeight - 20) {
-            y = Math.max(20, viewportHeight - hoverCardHeight - 20)
-        }
-
-        return { x, y }
-    }, [])
-
-    const handleMouseEnter = useCallback(() => {
-        if (!showHoverPreview) return
-
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current)
-        }
-
-        hoverTimeoutRef.current = setTimeout(() => {
-            if (cardRef.current) {
-                const position = calculatePosition(cardRef.current)
-                setHoverPreviewPosition(position)
-                setIsHoverPreviewOpen(true)
-            }
-        }, 200)
-    }, [showHoverPreview, calculatePosition])
-
-    const handleMouseLeave = useCallback(() => {
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current)
-        }
-
-        setTimeout(() => {
-            if (hoverPreviewRef.current && hoverPreviewRef.current.matches(":hover")) {
-                return
-            }
-            setIsHoverPreviewOpen(false)
-        }, 100)
-    }, [])
-
-    const handlePreviewMouseEnter = useCallback(() => {
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current)
-        }
-        setIsHoverPreviewOpen(true)
-    }, [])
-
-    const handlePreviewMouseLeave = useCallback(() => {
-        setIsHoverPreviewOpen(false)
-    }, [])
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                setIsHoverPreviewOpen(false)
-            }
-        }
-        document.addEventListener("keydown", handleKeyDown)
-        return () => document.removeEventListener("keydown", handleKeyDown)
-    }, [])
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsHoverPreviewOpen(false)
-        }
-        window.addEventListener("scroll", handleScroll, true)
-        return () => window.removeEventListener("scroll", handleScroll, true)
-    }, [])
-
-    const hoverPreviewContent = isHoverPreviewOpen && hoverPreviewPosition && mounted ? (
+    const hoverPreviewContent = isOpen && position && mounted ? (
         <div
             ref={hoverPreviewRef}
             onMouseEnter={handlePreviewMouseEnter}
             onMouseLeave={handlePreviewMouseLeave}
             style={{
                 position: "fixed",
-                left: hoverPreviewPosition.x,
-                top: hoverPreviewPosition.y,
+                left: position.x,
+                top: position.y,
                 zIndex: 99999,
             }}
         >
@@ -162,16 +59,18 @@ export function CourseCardFullImage({
         </div>
     ) : null
 
+    const levelStyle = levelConfig[course.level]
+
     return (
         <div className="relative">
             <Link href={`/courses/${course.slug}`}>
                 <div
                     ref={cardRef}
                     className="h-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
+                    onMouseEnter={openPreview}
+                    onMouseLeave={closePreview}
                 >
-                    {/* Image - Full width, no padding */}
+                    {/* Image */}
                     <div className={`relative ${aspectRatioClasses[aspectRatio]} overflow-hidden`}>
                         <Image
                             src={course.thumbnail || "/placeholder-course.jpg"}
@@ -196,11 +95,11 @@ export function CourseCardFullImage({
                         </div>
                     </div>
 
-                    {/* Content - No padding on sides, only bottom */}
+                    {/* Content */}
                     <div className="p-4">
                         <div className="flex items-center gap-2 mb-2">
-                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelColors[course.level]}`}>
-                                {levelLabels[course.level]}
+                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelStyle.color}`}>
+                                {levelStyle.label}
                             </span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">{course.category?.name}</span>
                         </div>
@@ -217,7 +116,7 @@ export function CourseCardFullImage({
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatDuration(course.duration)}
+                                {formatDurationShort(course.duration)}
                             </span>
                             {course.rating && (
                                 <span className="flex items-center gap-1">
