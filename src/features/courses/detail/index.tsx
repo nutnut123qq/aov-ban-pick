@@ -21,7 +21,6 @@ import {
     CourseInstructor,
     RelatedCourses,
     CourseDetailSkeleton,
-    fadeInUp,
     formatDurationLong,
 } from "./components"
 
@@ -69,16 +68,16 @@ const CourseDetailPage = () => {
         setExpandedSections(newExpanded)
     }
 
-    const totalLessons = courseContent.reduce((acc, section) => {
-        return acc + section.chapters?.reduce((chAcc, chapter) => {
-            return chAcc + (chapter.lessons?.length || 0)
-        }, 0) || 0
+    const totalLessons = (courseContent || []).reduce((acc, section) => {
+        return acc + ((section.chapters || []).reduce((chAcc, chapter) => {
+            return chAcc + ((chapter.lessons || []).length)
+        }, 0))
     }, 0)
 
-    const totalDuration = courseContent.reduce((acc, section) => {
-        return acc + section.chapters?.reduce((chAcc, chapter) => {
-            return chAcc + (chapter.lessons?.reduce((lesAcc, lesson) => lesAcc + (lesson.duration || 0), 0) || 0)
-        }, 0) || 0
+    const totalDuration = (courseContent || []).reduce((acc, section) => {
+        return acc + ((section.chapters || []).reduce((chAcc, chapter) => {
+            return chAcc + ((chapter.lessons || []).reduce((lesAcc, lesson) => lesAcc + (lesson.duration || 0), 0))
+        }, 0))
     }, 0)
 
     if (isLoading) {
@@ -102,9 +101,9 @@ const CourseDetailPage = () => {
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
             <motion.div
-                initial={fadeInUp.initial}
-                animate={fadeInUp.animate}
-                transition={fadeInUp.transition}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
             >
                 <CourseHero
                     course={course}

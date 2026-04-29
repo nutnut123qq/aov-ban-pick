@@ -15,11 +15,11 @@ export const TedoTableCell = (props: TableCellProps) => {
     return <TableCell {...props} />
 }
 
-export const TedoTableColumn = (props: TableColumnProps) => {
+export const TedoTableColumn = <T,>(props: TableColumnProps<T>) => {
     return <TableColumn {...props} />
 }
 
-export const TedoTableHeader = (props: TableHeaderProps) => {
+export const TedoTableHeader = <T,>(props: TableHeaderProps<T>) => {
     return <TableHeader {...props} />
 }
 

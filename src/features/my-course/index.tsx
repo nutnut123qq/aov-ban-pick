@@ -16,12 +16,6 @@ import { CourseCardFullImageSkeleton } from "@/components/common"
 import { getMyEnrollments } from "@/mocks"
 import type { EnrollmentEntity } from "@/mocks"
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut" },
-}
-
 const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
@@ -50,10 +44,14 @@ const statusLabels = {
 }
 
 const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntity; index: number }) => {
-    const course = enrollment.course
+    const course = enrollment.course as any
 
     return (
-        <motion.div {...fadeInUp} transition={{ delay: index * 0.1 }}>
+        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
+                        >
             <Link href={`/courses/${course?.slug}`}>
                 <div className="h-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800">
                     {/* Image - Same as CourseCard */}
@@ -198,13 +196,23 @@ const MyLearningPage = () => {
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
             <div className="container mx-auto px-4 py-6">
                 {/* Header */}
-                <motion.div {...fadeInUp} className="mb-6">
+                <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className="mb-6"
+                        >
                     <h1 className="text-2xl font-bold mb-1">Khóa học của tôi</h1>
                     <p className="text-sm text-muted-foreground">Theo dõi và quản lý hành trình học tập của bạn</p>
                 </motion.div>
 
                 {/* Stats Grid - Compact */}
-                <motion.div {...fadeInUp} transition={{ delay: 0.1 }} className="grid grid-cols-4 gap-3 mb-6">
+                <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+                            className="grid grid-cols-4 gap-3 mb-6"
+                        >
                     {statsData.map((stat, i) => (
                         <div key={i} className={`${stat.bg} rounded-xl p-3`}>
                             <div className="flex items-center gap-2">
@@ -217,7 +225,11 @@ const MyLearningPage = () => {
                 </motion.div>
 
                 {/* Tabs Content */}
-                <motion.div {...fadeInUp} transition={{ delay: 0.2 }}>
+                <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
+                        >
                     <Tabs defaultValue="all" className="w-full">
                         <TabsList className="mb-4 bg-muted/50 h-auto p-1 rounded-lg">
                             <TabsTrigger value="all" className="gap-2 py-2 px-4 data-[state=active]:bg-background">
@@ -325,7 +337,12 @@ const EmptyState = ({ type = "all" }: { type?: "all" | "in-progress" | "complete
     const { icon: Icon, title, description, action, href } = content[type]
 
     return (
-        <motion.div {...fadeInUp} className="text-center py-12">
+        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className="text-center py-12"
+                        >
             <Card className="max-w-sm mx-auto p-6">
                 <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-6 h-6 text-muted-foreground" />

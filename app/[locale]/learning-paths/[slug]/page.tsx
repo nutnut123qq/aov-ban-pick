@@ -14,11 +14,6 @@ import { Separator } from "@/components/ui/separator"
 import { getLearningPathBySlug } from "@/mocks"
 import type { LearningPathEntity } from "@/mocks"
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeOut" },
-}
 
 const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
@@ -94,7 +89,11 @@ const LearningPathDetailPage = () => {
                     Quay lại danh sách
                 </Link>
 
-                <motion.div {...fadeInUp}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
                     <Badge variant="secondary" className="mb-2">Learning Path</Badge>
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">{path.title}</h1>
                     <p className="text-muted-foreground max-w-2xl mb-6">{path.description}</p>

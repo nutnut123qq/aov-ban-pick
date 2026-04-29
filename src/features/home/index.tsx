@@ -51,7 +51,11 @@ const HomePage = () => {
                 const sortedByEnrollment = [...allCoursesData.data].sort((a, b) => b.enrollmentCount - a.enrollmentCount)
                 setPopularCourses(sortedByEnrollment.slice(0, 8))
 
-                const sortedByNewest = [...allCoursesData.data].sort((a, b) => b.id - a.id)
+                const sortedByNewest = [...allCoursesData.data].sort((a, b) => {
+                    const dateA = new Date(a.createdAt || 0).getTime()
+                    const dateB = new Date(b.createdAt || 0).getTime()
+                    return dateB - dateA
+                })
                 setNewestCourses(sortedByNewest.slice(0, 8))
             } catch (error) {
                 console.error("Error loading home data:", error)

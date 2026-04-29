@@ -42,8 +42,8 @@ function paginate<T>(
     // Filter by search
     if (search) {
         const searchLower = search.toLowerCase()
-        filtered = filtered.filter((item: Record<string, unknown>) =>
-            Object.values(item).some((val) =>
+        filtered = filtered.filter((item) =>
+            Object.values(item as Record<string, unknown>).some((val) =>
                 String(val).toLowerCase().includes(searchLower)
             )
         )
@@ -51,11 +51,15 @@ function paginate<T>(
 
     // Sort
     if (sortBy) {
-        filtered.sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
-            const aVal = a[sortBy]
-            const bVal = b[sortBy]
-            if (aVal < bVal) return sortOrder === "asc" ? -1 : 1
-            if (aVal > bVal) return sortOrder === "asc" ? 1 : -1
+        filtered.sort((a, b) => {
+            const aVal = (a as Record<string, unknown>)[sortBy]
+            const bVal = (b as Record<string, unknown>)[sortBy]
+            if (typeof aVal === "string" && typeof bVal === "string") {
+                return sortOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
+            }
+            if (typeof aVal === "number" && typeof bVal === "number") {
+                return sortOrder === "asc" ? aVal - bVal : bVal - aVal
+            }
             return 0
         })
     }

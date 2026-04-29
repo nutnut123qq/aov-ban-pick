@@ -23,11 +23,6 @@ import { Separator } from "@/components/ui/separator"
 import { getProgramBySlug } from "@/mocks"
 import type { TrainingProgramEntity } from "@/mocks"
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeOut" },
-}
 
 const formatPrice = (price: number, currency: string = "VND") => {
     return new Intl.NumberFormat("vi-VN", {
@@ -137,7 +132,11 @@ const ProgramDetailPage = () => {
                                 Quay lại
                             </Button>
                         </Link>
-                        <motion.div {...fadeInUp}>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
                             <Badge className="mb-2 bg-white/20 text-white border-white/30 hover:bg-white/30">Chương trình đào tạo</Badge>
                             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
                                 {program.title}

@@ -54,7 +54,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const [showSpeedMenu, setShowSpeedMenu] = useState(false)
     const [buffered, setBuffered] = useState(0)
 
-    const controlsTimeoutRef = useRef<NodeJS.Timeout>()
+    const controlsTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
     // Format time display
     const formatTime = (seconds: number) => {

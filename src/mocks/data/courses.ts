@@ -3,6 +3,9 @@ import type { CourseEntity } from "../types/course"
 import { mockCourseCategories } from "./categories"
 import { mockUsers } from "./users"
 
+// Type for course user references (email is required)
+type CourseUser = { id: string; username: string; email: string; firstName?: string; lastName?: string; avatar?: string | null }
+
 export const mockCourses: CourseEntity[] = [
     {
         id: "course-001",
@@ -26,7 +29,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as CourseUser,
                 bio: "10+ years experience in software development",
                 title: "Senior Software Engineer",
                 socialLinks: {
@@ -75,7 +78,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-002",
                 userId: "user-003",
-                user: mockUsers[2],
+                user: mockUsers[2] as CourseUser,
                 bio: "DevOps Engineer at FAANG",
                 title: "Principal DevOps Engineer",
                 createdAt: "2024-02-01T00:00:00.000Z",
@@ -119,7 +122,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as CourseUser,
                 bio: "10+ years experience in software development",
                 title: "Senior Software Engineer",
                 createdAt: "2024-01-15T00:00:00.000Z",
@@ -163,7 +166,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as CourseUser,
                 bio: "10+ years experience in software development",
                 title: "Senior Software Engineer",
                 createdAt: "2024-01-15T00:00:00.000Z",
@@ -207,7 +210,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as CourseUser,
                 bio: "10+ years experience in software development",
                 title: "Senior Software Engineer",
                 createdAt: "2024-01-15T00:00:00.000Z",
@@ -251,7 +254,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-003",
                 userId: "user-008",
-                user: mockUsers[7],
+                user: mockUsers[7] as CourseUser,
                 bio: "AWS Certified Professional",
                 title: "Cloud Solutions Architect",
                 createdAt: "2024-04-15T00:00:00.000Z",
@@ -295,7 +298,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-002",
                 userId: "user-003",
-                user: mockUsers[2],
+                user: mockUsers[2] as CourseUser,
                 bio: "DevOps Engineer at FAANG",
                 title: "Principal DevOps Engineer",
                 createdAt: "2024-02-01T00:00:00.000Z",
@@ -339,7 +342,7 @@ export const mockCourses: CourseEntity[] = [
             {
                 id: "inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as CourseUser,
                 bio: "10+ years experience in software development",
                 title: "Senior Software Engineer",
                 createdAt: "2024-01-15T00:00:00.000Z",

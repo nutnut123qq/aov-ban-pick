@@ -19,16 +19,16 @@ export const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
     onToggleSection,
     courseSlug,
 }) => {
-    const totalLessons = sections.reduce((acc, section) => {
-        return acc + section.chapters?.reduce((chAcc, chapter) => {
-            return chAcc + (chapter.lessons?.length || 0)
-        }, 0) || 0
+    const totalLessons = (sections || []).reduce((acc, section) => {
+        return acc + ((section.chapters || []).reduce((chAcc, chapter) => {
+            return chAcc + ((chapter.lessons || []).length)
+        }, 0))
     }, 0)
 
-    const totalDuration = sections.reduce((acc, section) => {
-        return acc + section.chapters?.reduce((chAcc, chapter) => {
-            return chAcc + (chapter.lessons?.reduce((lesAcc, lesson) => lesAcc + (lesson.duration || 0), 0) || 0)
-        }, 0) || 0
+    const totalDuration = (sections || []).reduce((acc, section) => {
+        return acc + ((section.chapters || []).reduce((chAcc, chapter) => {
+            return chAcc + ((chapter.lessons || []).reduce((lesAcc, lesson) => lesAcc + (lesson.duration || 0), 0))
+        }, 0))
     }, 0)
 
     return (

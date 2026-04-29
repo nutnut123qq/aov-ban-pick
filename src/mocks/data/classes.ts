@@ -3,6 +3,9 @@ import type { ClassEntity, EnrollmentEntity, ClassMemberEntity } from "../types/
 import { mockCourses } from "./courses"
 import { mockUsers } from "./users"
 
+// Type for class user references (email is required)
+type ClassUser = { id: string; username: string; email: string; firstName?: string; lastName?: string; avatar?: string | null }
+
 export const mockClasses: ClassEntity[] = [
     {
         id: "class-001",
@@ -20,7 +23,7 @@ export const mockClasses: ClassEntity[] = [
             {
                 id: "class-inst-001",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as ClassUser,
             },
         ],
         startDate: "2024-03-01T00:00:00.000Z",
@@ -74,7 +77,7 @@ export const mockClasses: ClassEntity[] = [
             {
                 id: "class-inst-002",
                 userId: "user-003",
-                user: mockUsers[2],
+                user: mockUsers[2] as ClassUser,
             },
         ],
         startDate: "2024-04-01T00:00:00.000Z",
@@ -121,7 +124,7 @@ export const mockClasses: ClassEntity[] = [
             {
                 id: "class-inst-003",
                 userId: "user-002",
-                user: mockUsers[1],
+                user: mockUsers[1] as ClassUser,
             },
         ],
         startDate: "2024-05-01T00:00:00.000Z",
@@ -149,7 +152,7 @@ export const mockEnrollments: EnrollmentEntity[] = [
     {
         id: "enroll-001",
         userId: "user-004",
-        user: mockUsers[3],
+        user: mockUsers[3] as ClassUser,
         courseId: "course-001",
         course: {
             id: "course-001",
@@ -174,7 +177,7 @@ export const mockEnrollments: EnrollmentEntity[] = [
     {
         id: "enroll-002",
         userId: "user-004",
-        user: mockUsers[3],
+        user: mockUsers[3] as ClassUser,
         courseId: "course-005",
         course: {
             id: "course-005",
@@ -194,7 +197,7 @@ export const mockEnrollments: EnrollmentEntity[] = [
     {
         id: "enroll-003",
         userId: "user-004",
-        user: mockUsers[3],
+        user: mockUsers[3] as ClassUser,
         courseId: "course-004",
         course: {
             id: "course-004",
@@ -214,7 +217,7 @@ export const mockEnrollments: EnrollmentEntity[] = [
     {
         id: "enroll-004",
         userId: "user-005",
-        user: mockUsers[4],
+        user: mockUsers[4] as ClassUser,
         courseId: "course-001",
         course: {
             id: "course-001",
@@ -239,7 +242,7 @@ export const mockEnrollments: EnrollmentEntity[] = [
     {
         id: "enroll-005",
         userId: "user-006",
-        user: mockUsers[5],
+        user: mockUsers[5] as ClassUser,
         courseId: "course-002",
         course: {
             id: "course-002",
@@ -268,7 +271,7 @@ export const mockClassMembers: ClassMemberEntity[] = [
         id: "member-001",
         classId: "class-001",
         userId: "user-004",
-        user: mockUsers[3],
+        user: mockUsers[3] as ClassUser,
         role: "STUDENT",
         status: "ACTIVE",
         enrolledAt: "2024-02-20T00:00:00.000Z",
@@ -279,7 +282,7 @@ export const mockClassMembers: ClassMemberEntity[] = [
         id: "member-002",
         classId: "class-001",
         userId: "user-005",
-        user: mockUsers[4],
+        user: mockUsers[4] as ClassUser,
         role: "STUDENT",
         status: "ACTIVE",
         enrolledAt: "2024-02-25T00:00:00.000Z",
@@ -290,7 +293,7 @@ export const mockClassMembers: ClassMemberEntity[] = [
         id: "member-003",
         classId: "class-001",
         userId: "user-007",
-        user: mockUsers[6],
+        user: mockUsers[6] as ClassUser,
         role: "TEACHING_ASSISTANT",
         status: "ACTIVE",
         enrolledAt: "2024-02-15T00:00:00.000Z",

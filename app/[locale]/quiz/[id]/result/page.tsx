@@ -14,11 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getQuizById } from "@/mocks"
 import type { QuizEntity } from "@/mocks"
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeOut" },
-}
 
 const QuizResultPage = () => {
     const params = useParams()
@@ -80,7 +75,12 @@ const QuizResultPage = () => {
     return (
         <div className="min-h-screen bg-muted/30">
             <div className="container mx-auto px-4 py-8 max-w-3xl">
-                <motion.div {...fadeInUp} className="text-center mb-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="text-center mb-8"
+                >
                     <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
                         passed ? "bg-green-100" : "bg-red-100"
                     }`}>
@@ -106,7 +106,11 @@ const QuizResultPage = () => {
                     </p>
                 </motion.div>
 
-                <motion.div {...fadeInUp} transition={{ delay: 0.1 }}>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
+                >
                     <Card className="mb-6">
                         <CardHeader className="pb-3">
                             <CardTitle className="text-center">Kết quả bài kiểm tra</CardTitle>
@@ -143,7 +147,12 @@ const QuizResultPage = () => {
                     </Card>
                 </motion.div>
 
-                <motion.div {...fadeInUp} transition={{ delay: 0.2 }} className="mt-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+                    className="mt-8"
+                >
                     <div className="flex flex-col sm:flex-row gap-4">
                         <Link href={`/courses/${quiz.course?.slug}`} className="flex-1">
                             <Button variant="outline" className="w-full gap-2">
