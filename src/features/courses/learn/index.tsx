@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Menu, ArrowLeft, BookOpen } from "lucide-react"
+import { Menu, ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -28,6 +28,7 @@ const CourseLearnPage = () => {
     const [currentLesson, setCurrentLesson] = useState<LessonEntity | null>(null)
     const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set())
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
     // Load course data
     useEffect(() => {
@@ -132,14 +133,33 @@ const CourseLearnPage = () => {
             {/* Main Content */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Desktop Sidebar */}
-                <aside className="hidden lg:block w-80 border-r bg-card overflow-hidden">
-                    <CourseSidebar
-                        sections={courseContent}
-                        currentLessonId={currentLesson.id}
-                        completedLessons={completedLessons}
-                        onSelectLesson={handleSelectLesson}
-                    />
-                </aside>
+                <div className="relative">
+                    {/* Đường line bên phải - luôn hiển thị */}
+                    <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-px bg-border pointer-events-none" />
+
+                    <aside className={`hidden lg:block bg-card overflow-hidden transition-all duration-300 ${sidebarCollapsed ? "w-12" : "w-80"}`}>
+                        <CourseSidebar
+                            sections={courseContent}
+                            currentLessonId={currentLesson.id}
+                            completedLessons={completedLessons}
+                            onSelectLesson={handleSelectLesson}
+                            isCollapsed={sidebarCollapsed}
+                        />
+                    </aside>
+
+                    {/* Toggle button - nằm giữa cạnh phải, đè lên đường line */}
+                    <button
+                        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-8 h-8 rounded-full bg-background border-2 border-gray-200 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors shadow-md"
+                        title={sidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
+                    >
+                        {sidebarCollapsed ? (
+                            <ChevronLeft className="w-4 h-4" />
+                        ) : (
+                            <ChevronRight className="w-4 h-4" />
+                        )}
+                    </button>
+                </div>
 
                 {/* Mobile Sidebar */}
                 <MobileCourseSidebar

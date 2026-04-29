@@ -50,7 +50,7 @@ export const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
             {sections.map((section) => (
                 <Card key={section.id}>
                     <button
-                        className="w-full p-2 flex items-center justify-between text-left"
+                        className="w-full p-2 px-3 flex items-center justify-between text-left"
                         onClick={() => onToggleSection(section.id)}
                     >
                         <div>

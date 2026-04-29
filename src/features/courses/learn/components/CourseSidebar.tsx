@@ -6,6 +6,7 @@ import {
     ChevronDown,
     ChevronUp,
     ChevronLeft,
+    ChevronRight,
     CheckCircle,
     Circle,
     Play,
@@ -15,6 +16,8 @@ import {
     Menu,
     X,
     Home,
+    PanelRightClose,
+    PanelRightOpen,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -34,6 +37,8 @@ interface CourseSidebarProps {
     currentLessonId?: string
     completedLessons?: Set<string>
     onSelectLesson?: (lesson: LessonEntity) => void
+    isCollapsed?: boolean
+    onCollapsedChange?: (collapsed: boolean) => void
 }
 
 export const CourseSidebar: React.FC<CourseSidebarProps> = ({
@@ -41,6 +46,8 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
     currentLessonId,
     completedLessons = new Set(),
     onSelectLesson,
+    isCollapsed = false,
+    onCollapsedChange,
 }) => {
     const [expandedSections, setExpandedSections] = useState<Set<string>>(
         new Set(sections.map((s) => s.id))
@@ -56,8 +63,31 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
         setExpandedSections(newExpanded)
     }
 
+    const toggleCollapse = () => {
+        onCollapsedChange?.(!isCollapsed)
+    }
+
     const isLessonCompleted = (lessonId: string) => completedLessons.has(lessonId)
     const isCurrentLesson = (lessonId: string) => currentLessonId === lessonId
+
+    if (isCollapsed) {
+        return (
+            <div className="h-full flex flex-col items-center py-4">
+                {/* Collapsed content - just show section dots */}
+                <div className="flex flex-col items-center gap-2 overflow-y-auto flex-1 py-4">
+                    {sections.map((section, index) => (
+                        <div
+                            key={section.id}
+                            className="w-8 h-8 rounded-full bg-muted flex items-center justify-center cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
+                            title={section.title}
+                        >
+                            <span className="text-xs font-medium">{index + 1}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="h-full flex flex-col">
@@ -106,11 +136,10 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                                     return (
                                                         <button
                                                             key={lesson.id}
-                                                            className={`w-full flex items-start gap-3 p-3 text-left rounded-lg transition-colors ${
-                                                                isCurrent
-                                                                    ? "bg-primary/10 text-primary"
-                                                                    : "hover:bg-muted/50"
-                                                            }`}
+                                                            className={`w-full flex items-start gap-3 p-3 text-left rounded-lg transition-colors ${isCurrent
+                                                                ? "bg-primary/10 text-primary"
+                                                                : "hover:bg-muted/50"
+                                                                }`}
                                                             onClick={() => onSelectLesson?.(lesson)}
                                                         >
                                                             {/* Status Icon */}
