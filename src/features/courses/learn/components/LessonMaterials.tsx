@@ -9,7 +9,7 @@ import {
     Code,
     Image as ImageIcon,
 } from "lucide-react"
-import type { LessonMaterialEntity } from "@/mocks"
+import type { LessonMaterialEntity } from "@/modules/types"
 
 interface LessonMaterialsProps {
     materials?: LessonMaterialEntity[]

@@ -11,7 +11,8 @@ import { useHoverPreview } from "@/modules/hooks"
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
 
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
+import type { CourseLevel } from "@/modules/types/enums"
 
 interface CourseCardProps {
     course: CourseEntity
@@ -52,7 +53,7 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
         </div>
     ) : null
 
-    const levelStyle = levelConfig[course.level]
+    const levelStyle = course.level ? levelConfig[course.level as CourseLevel] : { label: "", color: "bg-gray-100 text-gray-800" }
 
     return (
         <div className="relative">
@@ -66,7 +67,7 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
                     {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden">
                         <Image
-                            src={course.thumbnail || "/placeholder-course.jpg"}
+                            src={course.thumbnailUrl || course.cdnUrl || "/placeholder-course.jpg"}
                             alt={course.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -78,7 +79,7 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
                         )}
                         {course.discountPrice && (
                             <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-md">
-                                -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                -{Math.round((1 - course.discountPrice / (course.originalPrice ?? 1)) * 100)}%
                             </span>
                         )}
                         {/* Play button overlay */}
@@ -110,7 +111,7 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatDurationShort(course.duration)}
+                                {formatDurationShort(course.estimatedMinutes ?? 0)}
                             </span>
                             {course.rating && (
                                 <span className="flex items-center gap-1">
@@ -127,12 +128,12 @@ export function CourseCard({ course, showHoverPreview = true }: CourseCardProps)
                                             {formatPrice(course.discountPrice)}
                                         </span>
                                         <span className="text-sm text-gray-400 line-through">
-                                            {formatPrice(course.price)}
+                                            {formatPrice(course.originalPrice ?? 0)}
                                         </span>
                                     </>
                                 ) : (
                                     <span className="text-lg font-bold text-primary">
-                                        {formatPrice(course.price)}
+                                        {formatPrice(course.originalPrice ?? 0)}
                                     </span>
                                 )}
                             </div>

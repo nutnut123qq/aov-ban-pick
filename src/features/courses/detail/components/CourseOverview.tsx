@@ -1,6 +1,6 @@
 import React from "react"
 import { CheckCircle, Award } from "lucide-react"
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
 
 interface CourseOverviewProps {
     course: CourseEntity
@@ -17,30 +17,30 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course }) => {
                 </div>
             </div>
 
-            {/* Requirements */}
-            {course.requirements && course.requirements.length > 0 && (
+            {/* Prerequisites */}
+            {course.prerequisites && course.prerequisites.length > 0 && (
                 <div>
                     <h2 className="text-xl font-bold mb-4">Yêu cầu</h2>
                     <ul className="space-y-2">
-                        {course.requirements.map((req, i) => (
-                            <li key={i} className="flex items-start gap-2">
+                        {course.prerequisites.map((prereq) => (
+                            <li key={prereq.id} className="flex items-start gap-2">
                                 <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                                <span>{req}</span>
+                                <span>{prereq.content}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
 
-            {/* Outcomes */}
-            {course.outcomes && course.outcomes.length > 0 && (
+            {/* Value Propositions */}
+            {course.valuePropositions && course.valuePropositions.length > 0 && (
                 <div>
                     <h2 className="text-xl font-bold mb-4">Bạn sẽ học được gì</h2>
                     <ul className="grid md:grid-cols-2 gap-3">
-                        {course.outcomes.map((outcome, i) => (
-                            <li key={i} className="flex items-start gap-2">
+                        {course.valuePropositions.map((vp) => (
+                            <li key={vp.id} className="flex items-start gap-2">
                                 <Award className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                                <span>{outcome}</span>
+                                <span>{vp.content}</span>
                             </li>
                         ))}
                     </ul>

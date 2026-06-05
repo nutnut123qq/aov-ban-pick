@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, Users, Clock, BookOpen, Play, CheckCircle } from "lucide-react"
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
 import { formatPrice, formatDurationLong, levelLabels } from "../utils"
 
 interface LessonHeaderProps {
@@ -16,8 +16,6 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
     course,
     currentLessonTitle,
 }) => {
-    const instructor = course.instructors?.[0]
-
     return (
         <div className="bg-white dark:bg-gray-900 border-b">
             <div className="container mx-auto px-4 py-3">
@@ -26,7 +24,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
                     <div className="flex items-center gap-4">
                         <Link href={`/courses/${course.slug}`} className="hidden sm:block">
                             <Image
-                                src={course.thumbnail || "/placeholder-course.jpg"}
+                                src={course.thumbnailUrl || course.cdnUrl || "/placeholder-course.jpg"}
                                 alt={course.title}
                                 width={80}
                                 height={45}
@@ -53,14 +51,10 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
                         {/* Instructor */}
                         <div className="hidden md:flex items-center gap-2">
                             <Avatar className="w-8 h-8">
-                                <AvatarImage src={instructor?.user?.avatar || ""} />
-                                <AvatarFallback className="text-xs">
-                                    {instructor?.user?.firstName?.charAt(0) || "I"}
-                                </AvatarFallback>
+                                <AvatarImage src="" />
+                                <AvatarFallback className="text-xs">T</AvatarFallback>
                             </Avatar>
-                            <span className="text-sm">
-                                {instructor?.user?.firstName} {instructor?.user?.lastName}
-                            </span>
+                            <span className="text-sm">TEDO</span>
                         </div>
 
                         {/* Quick Stats */}

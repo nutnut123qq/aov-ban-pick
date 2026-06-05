@@ -1,7 +1,7 @@
 // Course-related utilities - labels, colors, configs
 "use client"
 
-import type { LessonEntity } from "@/mocks"
+import type { LessonEntity } from "@/modules/types"
 import { Video, FileText, FileQuestion, Play } from "lucide-react"
 import type { CourseLevel, EnrollmentStatus } from "@/modules/types/enums"
 

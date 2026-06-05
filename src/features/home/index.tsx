@@ -5,12 +5,11 @@ import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 import { Carousel, defaultBannerSlides } from "@/components/ui/carousel"
 import {
-    getFeaturedCourses,
     getCategories,
     getPrograms,
-    getCourses,
 } from "@/mocks"
-import type { CourseEntity, CourseCategoryEntity, TrainingProgramEntity } from "@/mocks"
+import { queryCourses, defaultCoursesSorts } from "@/modules/api"
+import type { CourseEntity, CourseCategoryEntity, TrainingProgramEntity } from "@/modules/types"
 
 import {
     CategoriesSection,
@@ -19,7 +18,6 @@ import {
     WhyChooseUsSection,
     CTASection,
 } from "./components"
-import { CourseCardSkeleton } from "@/components/common"
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -38,25 +36,37 @@ const HomePage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [coursesData, categoriesData, programsData, allCoursesData] = await Promise.all([
-                    getFeaturedCourses(),
+                const [allCoursesRes, categoriesData, programsData] = await Promise.all([
+                    queryCourses({
+                        variables: {
+                            request: {
+                                filters: {
+                                    sorts: [...defaultCoursesSorts],
+                                    pageNumber: 0,
+                                    limit: 100,
+                                },
+                            },
+                        },
+                    }),
                     getCategories(),
                     getPrograms({ limit: 3 }),
-                    getCourses({ limit: 50 }),
                 ])
-                setFeaturedCourses(coursesData)
-                setCategories(categoriesData.slice(0, 6))
-                setPrograms(programsData.data)
 
-                const sortedByEnrollment = [...allCoursesData.data].sort((a, b) => b.enrollmentCount - a.enrollmentCount)
+                const allCourses = allCoursesRes.data?.courses.data ?? []
+                setFeaturedCourses(allCourses.filter((c) => c.isFeatured).slice(0, 8))
+
+                const sortedByEnrollment = [...allCourses].sort((a, b) => b.enrollmentCount - a.enrollmentCount)
                 setPopularCourses(sortedByEnrollment.slice(0, 8))
 
-                const sortedByNewest = [...allCoursesData.data].sort((a, b) => {
+                const sortedByNewest = [...allCourses].sort((a, b) => {
                     const dateA = new Date(a.createdAt || 0).getTime()
                     const dateB = new Date(b.createdAt || 0).getTime()
                     return dateB - dateA
                 })
                 setNewestCourses(sortedByNewest.slice(0, 8))
+
+                setCategories(categoriesData.slice(0, 6))
+                setPrograms(programsData.data as unknown as TrainingProgramEntity[])
             } catch (error) {
                 console.error("Error loading home data:", error)
             } finally {

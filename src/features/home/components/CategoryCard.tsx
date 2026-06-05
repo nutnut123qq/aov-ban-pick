@@ -4,7 +4,7 @@ import React from "react"
 import Link from "next/link"
 import { Layers } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import type { CourseCategoryEntity } from "@/mocks"
+import type { CourseCategoryEntity } from "@/modules/types"
 
 interface CategoryCardProps {
     category: CourseCategoryEntity

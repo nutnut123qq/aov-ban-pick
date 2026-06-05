@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
@@ -13,8 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { CourseCardFullImageSkeleton } from "@/components/common"
-import { getMyEnrollments } from "@/mocks"
-import type { EnrollmentEntity } from "@/mocks"
+import { useQueryMyEnrollmentsSwr } from "@/hooks/singleton/swr"
+import type { EnrollmentEntity } from "@/modules/types"
 
 import { formatDurationShort } from "@/modules/utils"
 import { enrollmentStatusConfig } from "@/modules/utils/course"
@@ -22,7 +22,7 @@ import { enrollmentStatusConfig } from "@/modules/utils/course"
 const formatDuration = formatDurationShort
 
 const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntity; index: number }) => {
-    const course = enrollment.course as any
+    const course = enrollment.course
 
     return (
         <motion.div
@@ -35,7 +35,7 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                     {/* Image - Same as CourseCard */}
                     <div className="relative aspect-[4/3] overflow-hidden">
                         <Image
-                            src={course?.thumbnail || "/placeholder-course.jpg"}
+                            src={course?.thumbnailUrl || "/placeholder-course.jpg"}
                             alt={course?.title || ""}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -50,7 +50,7 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                         {/* Discount badge */}
                         {course?.discountPrice && (
                             <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-md">
-                                -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                -{Math.round((1 - course.discountPrice / (course.originalPrice ?? 1)) * 100)}%
                             </span>
                         )}
                         {/* Play button overlay */}
@@ -102,7 +102,7 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatDuration(course?.duration || 0)}
+                                {formatDuration(course?.estimatedMinutes ?? 0)}
                             </span>
                             {course?.rating && (
                                 <span className="flex items-center gap-1">
@@ -118,15 +118,15 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                                 {course?.discountPrice ? (
                                     <>
                                         <span className="text-lg font-bold text-primary">
-                                            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course.discountPrice)}
+                                            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course.discountPrice ?? 0)}
                                         </span>
                                         <span className="text-sm text-gray-400 line-through">
-                                            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course.price)}
+                                            {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course.originalPrice ?? 0)}
                                         </span>
                                     </>
                                 ) : (
                                     <span className="text-lg font-bold text-primary">
-                                        {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course?.price || 0)}
+                                        {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", minimumFractionDigits: 0 }).format(course?.originalPrice ?? 0)}
                                     </span>
                                 )}
                             </div>
@@ -140,27 +140,13 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
 }
 
 const MyLearningPage = () => {
-    const [enrollments, setEnrollments] = useState<EnrollmentEntity[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const data = await getMyEnrollments()
-                setEnrollments(data)
-            } catch (error) {
-                console.error("Error loading enrollments:", error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        loadData()
-    }, [])
+    const { data: enrollmentsData, isLoading } = useQueryMyEnrollmentsSwr()
+    const enrollments = (enrollmentsData?.data ?? []) as EnrollmentEntity[]
 
     const inProgressCourses = enrollments.filter((e) => e.status === "ENROLLED")
     const completedCourses = enrollments.filter((e) => e.status === "COMPLETED")
     const totalProgress = enrollments.length > 0
-        ? Math.round(enrollments.reduce((acc, e) => acc + e.progress, 0) / enrollments.length)
+        ? Math.round(enrollments.reduce((acc, e) => acc + (e.progress ?? 0), 0) / enrollments.length)
         : 0
 
     const statsData = [

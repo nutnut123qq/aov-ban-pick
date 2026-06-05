@@ -10,7 +10,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { CourseCard } from "@/components/course/CourseCard"
 import { CourseCardSkeleton } from "@/components/common"
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
 
 import "swiper/css"
 import "swiper/css/pagination"

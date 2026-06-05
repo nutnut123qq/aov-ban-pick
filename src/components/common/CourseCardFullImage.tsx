@@ -11,7 +11,8 @@ import { useHoverPreview } from "@/modules/hooks"
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
 
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
+import type { CourseLevel } from "@/modules/types/enums"
 
 interface CourseCardFullImageProps {
     course: CourseEntity
@@ -58,7 +59,7 @@ export const CourseCardFullImage = memo(function CourseCardFullImage({
         </div>
     ) : null
 
-    const levelStyle = levelConfig[course.level]
+    const levelStyle = course.level ? levelConfig[course.level as CourseLevel] : { label: "", color: "bg-gray-100 text-gray-800" }
 
     const aspectRatioClasses = {
         video: "aspect-video",
@@ -79,7 +80,7 @@ export const CourseCardFullImage = memo(function CourseCardFullImage({
                     {/* Image */}
                     <div className={`relative ${aspectRatioClasses[aspectRatio]} overflow-hidden shrink-0`}>
                         <Image
-                            src={course.thumbnail || "/placeholder-course.jpg"}
+                            src={course.thumbnailUrl || course.cdnUrl || "/placeholder-course.jpg"}
                             alt={course.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -92,7 +93,7 @@ export const CourseCardFullImage = memo(function CourseCardFullImage({
                         )}
                         {course.discountPrice && (
                             <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold bg-red-500 text-white rounded-md">
-                                -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                -{Math.round((1 - course.discountPrice / (course.originalPrice ?? 1)) * 100)}%
                             </span>
                         )}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
@@ -134,7 +135,7 @@ export const CourseCardFullImage = memo(function CourseCardFullImage({
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatDurationShort(course.duration)}
+                                {formatDurationShort(course.estimatedMinutes ?? 0)}
                             </span>
                             {course.rating && (
                                 <span className="flex items-center gap-0.5">
@@ -153,12 +154,12 @@ export const CourseCardFullImage = memo(function CourseCardFullImage({
                                             {formatPrice(course.discountPrice)}
                                         </span>
                                         <span className="text-[11px] text-gray-400 line-through">
-                                            {formatPrice(course.price)}
+                                            {formatPrice(course.originalPrice ?? 0)}
                                         </span>
                                     </>
                                 ) : (
                                     <span className="text-base font-bold text-primary">
-                                        {formatPrice(course.price)}
+                                        {formatPrice(course.originalPrice ?? 0)}
                                     </span>
                                 )}
                             </div>

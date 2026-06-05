@@ -32,7 +32,7 @@ export const useQueryCoursesSwrCore = () => {
                 throw new Error("Courses not found")
             }
             /** Set the courses. */
-            dispatch(setCourses(data.data.courses.data?.data ?? []))
+            dispatch(setCourses(data.data.courses.data ?? []))
             /** Return the data. */
             return data.data
         })

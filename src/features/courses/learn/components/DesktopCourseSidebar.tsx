@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChevronLeft, ChevronRight, CheckCircle, Circle, Play, FileText, FileQuestion, Lock } from "lucide-react"
 import { getLessonIcon, formatDuration } from "../utils"
-import type { CourseSectionEntity, LessonEntity } from "@/mocks"
+import type { CourseSectionEntity, LessonEntity } from "@/modules/types"
 
 interface DesktopCourseSidebarProps {
     sections: CourseSectionEntity[]

@@ -10,6 +10,10 @@ export interface UserEntity extends AbstractEntity {
     username: string
     /** The email of the user. */
     email: string | null
+    /** The full name of the user. */
+    fullName?: string | null
+    /** The avatar URL of the user. */
+    avatar?: string | null
     /** The Keycloak ID of the user. */
     keycloakId: string
     /** Whether the user is deleted. */

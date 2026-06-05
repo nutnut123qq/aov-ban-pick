@@ -10,7 +10,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ProgramCard } from "./ProgramCard"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { TrainingProgramEntity } from "@/mocks"
+import type { TrainingProgramEntity } from "@/modules/types"
 
 import "swiper/css"
 import "swiper/css/pagination"

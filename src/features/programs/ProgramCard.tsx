@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 
-import type { TrainingProgramEntity, LearningPathEntity } from "@/mocks"
+import type { TrainingProgramEntity, LearningPathEntity } from "@/modules/types"
 
 // ============================================
 // PROGRAM CARD

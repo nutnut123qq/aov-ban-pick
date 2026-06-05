@@ -40,10 +40,13 @@ import {
 import { CourseCard, CourseCardSkeleton } from "@/components/common"
 
 import {
-    getCourses,
     getCategories,
 } from "@/mocks"
-import type { CourseEntity, CourseCategoryEntity } from "@/mocks"
+import type { CourseCategoryEntity } from "@/modules/types"
+import type { CourseEntity } from "@/modules/types"
+import {
+    useQueryCoursesSwr,
+} from "@/hooks/singleton/swr"
 
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
@@ -65,9 +68,10 @@ interface FilterState {
 }
 
 const CoursesPage = () => {
-    const [courses, setCourses] = useState<CourseEntity[]>([])
+    const { data: coursesData, isLoading } = useQueryCoursesSwr()
+    const courses = (coursesData?.courses.data ?? []) as CourseEntity[]
+
     const [categories, setCategories] = useState<CourseCategoryEntity[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
     const [showMobileFilters, setShowMobileFilters] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
@@ -81,39 +85,32 @@ const CoursesPage = () => {
         sortBy: "popular",
     })
 
-    const loadData = async () => {
-        setIsLoading(true)
-        try {
-            const [coursesData, categoriesData] = await Promise.all([
-                getCourses({ limit: 20, sortBy: "enrollmentCount", sortOrder: "desc" }),
-                getCategories(),
-            ])
-            setCourses(coursesData.data)
-            setCategories(categoriesData)
-        } catch (error) {
-            console.error("Error loading courses:", error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
     useEffect(() => {
-        loadData()
+        const loadCategories = async () => {
+            try {
+                const categoriesData = await getCategories()
+                setCategories(categoriesData)
+            } catch (error) {
+                console.error("Error loading categories:", error)
+            }
+        }
+        loadCategories()
     }, [])
 
     const filteredCourses = courses.filter((course) => {
         if (filters.search && !course.title.toLowerCase().includes(filters.search.toLowerCase())) {
             return false
         }
-        if (filters.categoryId !== "all" && course.categoryId !== filters.categoryId) {
+        if (filters.categoryId !== "all" && course.category?.id !== filters.categoryId) {
             return false
         }
         if (filters.level !== "all" && course.level !== filters.level) {
             return false
         }
         if (filters.priceRange !== "all") {
-            if (filters.priceRange === "free" && course.price > 0) return false
-            if (filters.priceRange === "paid" && course.price === 0) return false
+            const price = course.originalPrice ?? 0
+            if (filters.priceRange === "free" && price > 0) return false
+            if (filters.priceRange === "paid" && price === 0) return false
             if (filters.priceRange === "discount" && !course.discountPrice) return false
         }
         return true
@@ -407,11 +404,11 @@ const CoursesPage = () => {
                                     filteredCourses
                                         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                         .map((course) => (
-                                            <Link key={course.id} href={`/courses/${course.slug}`}>
+                                            <Link key={course.id} href={`/courses/${course.slug ?? course.id}`}>
                                                 <div className="flex bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-100 dark:border-gray-800">
                                                 <div className="w-64 h-40 relative shrink-0">
                                                     <Image
-                                                        src={course.thumbnail || "/placeholder-course.jpg"}
+                                                        src={course.thumbnailUrl || course.cdnUrl || "/placeholder-course.jpg"}
                                                         alt={course.title}
                                                         fill
                                                         className="object-cover rounded-l-2xl"
@@ -421,29 +418,31 @@ const CoursesPage = () => {
                                                             Nổi bật
                                                         </span>
                                                     )}
-                                                    {course.discountPrice && (
+                                                    {course.discountPrice && (course.originalPrice ?? 0) > 0 && (
                                                         <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-md">
-                                                            -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                                            -{Math.round((1 - course.discountPrice / (course.originalPrice ?? 1)) * 100)}%
                                                         </span>
                                                     )}
                                                 </div>
                                                 <div className="flex-1 p-4 flex flex-col justify-center">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelConfig[course.level].color}`}>
-                                                            {levelConfig[course.level].label}
-                                                        </span>
+                                                        {course.level && (
+                                                            <span className={`px-2 py-0.5 text-xs font-medium rounded-md ${levelConfig[course.level as import("@/modules/types/enums").CourseLevel].color}`}>
+                                                                {levelConfig[course.level as import("@/modules/types/enums").CourseLevel].label}
+                                                            </span>
+                                                        )}
                                                         <span className="text-xs text-muted-foreground">{course.category?.name}</span>
                                                     </div>
                                                     <h3 className="font-semibold text-base line-clamp-1 mb-1">{course.title}</h3>
                                                     <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                                                        {course.shortDescription}
+                                                        {course.shortDescription || course.description}
                                                     </p>
                                                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                                                         <span className="flex items-center gap-1">
                                                             {course.enrollmentCount.toLocaleString()} học viên
                                                         </span>
                                                         <span className="flex items-center gap-1">
-                                                            {formatDuration(course.duration)}
+                                                            {formatDuration(course.estimatedMinutes ?? 0)}
                                                         </span>
                                                         {course.rating && (
                                                             <span className="flex items-center gap-1">
@@ -461,12 +460,12 @@ const CoursesPage = () => {
                                                                     {formatPrice(course.discountPrice)}
                                                                 </span>
                                                                 <span className="text-sm text-gray-400 line-through">
-                                                                    {formatPrice(course.price)}
+                                                                    {formatPrice(course.originalPrice ?? 0)}
                                                                 </span>
                                                             </>
                                                         ) : (
                                                             <span className="text-lg font-bold text-primary">
-                                                                {formatPrice(course.price)}
+                                                                {formatPrice(course.originalPrice ?? 0)}
                                                             </span>
                                                         )}
                                                     </div>

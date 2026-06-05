@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ChevronDown, ChevronUp, Lock, Play } from "lucide-react"
-import type { CourseSectionEntity } from "@/mocks"
+import type { CourseSectionEntity } from "@/modules/types"
 import { formatDurationLong, formatDuration, getLessonIcon } from "./utils"
 
 interface CourseCurriculumProps {

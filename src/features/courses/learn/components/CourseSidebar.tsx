@@ -29,7 +29,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import type { CourseSectionEntity, CourseChapterEntity, LessonEntity } from "@/mocks"
+import type { CourseSectionEntity, CourseChapterEntity, LessonEntity } from "@/modules/types"
 import { getLessonIcon, formatDuration } from "../utils"
 
 interface CourseSidebarProps {

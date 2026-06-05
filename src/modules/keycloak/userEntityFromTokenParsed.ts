@@ -20,8 +20,8 @@ export const userEntityFromKeycloakTokenParsed = (
     const now = new Date()
     return {
         id: sub,
-        createdAt: now,
-        updatedAt: now,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
         username: parsed.preferred_username ?? parsed.email ?? sub,
         email: parsed.email ?? null,
         keycloakId: sub,

@@ -14,4 +14,10 @@ export interface EnrollmentEntity extends AbstractEntity {
     userId: string
     /** The course ID. */
     courseId: string
+    /** Enrollment status. */
+    status: import("@/modules/types/enums").EnrollmentStatus
+    /** Progress percentage (0-100). */
+    progress?: number
+    /** Completion date. */
+    completedAt?: string | null
 }

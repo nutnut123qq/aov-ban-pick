@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Menu, ChevronDown, ChevronRight, CheckCircle, Circle, X } from "lucide-react"
 import { getLessonIcon, formatDuration } from "../utils"
-import type { CourseSectionEntity, LessonEntity } from "@/mocks"
+import type { CourseSectionEntity, LessonEntity } from "@/modules/types"
 
 interface MobileCourseSidebarProps {
     sections: CourseSectionEntity[]

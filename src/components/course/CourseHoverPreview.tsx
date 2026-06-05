@@ -4,7 +4,7 @@ import React from "react"
 import { Star, Clock, Check, FileText, Globe, ShoppingCart, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
 
 import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
@@ -14,11 +14,9 @@ interface CourseHoverPreviewProps {
 }
 
 export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
-    const instructorName = course.instructors?.[0]?.user
-        ? `${course.instructors[0].user.firstName || ""} ${course.instructors[0].user.lastName || ""}`.trim()
-        : "Giảng viên"
+    const instructorName = "Giảng viên TEDO"
 
-    const levelStyle = levelConfig[course.level]
+    const levelStyle = course.level ? levelConfig[course.level as import("@/modules/types/enums").CourseLevel] : { label: "", color: "bg-gray-100 text-gray-800" }
 
     return (
         <div className="relative w-[310px] bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-300 dark:border-gray-800 overflow-visible animate-in fade-in-0 zoom-in-95 duration-200">
@@ -44,9 +42,7 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                     {course.isFeatured && (
                         <Badge className="bg-primary text-primary-foreground">Nổi bật</Badge>
                     )}
-                    {course.isPremium && (
-                        <Badge className="bg-amber-500 text-white">Premium</Badge>
-                    )}
+
                     <Badge variant="secondary">{levelStyle.label}</Badge>
                 </div>
 
@@ -77,11 +73,11 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                 <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-3 pb-3 border-b border-gray-100 dark:border-gray-800">
                     <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
-                        {formatDurationShort(course.duration)}
+                        {formatDurationShort(course.estimatedMinutes ?? 0)}
                     </span>
                     <span className="flex items-center gap-1">
                         <FileText className="w-3.5 h-3.5" />
-                        {course.language || "Tiếng Việt"}
+                        {"Tiếng Việt"}
                     </span>
                     <span className="flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />
@@ -95,16 +91,16 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                 </p>
 
                 {/* Learning outcomes */}
-                {course.outcomes && course.outcomes.length > 0 && (
+                {course.valuePropositions && course.valuePropositions.length > 0 && (
                     <div className="mb-4">
                         <h4 className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
                             Bạn sẽ học được
                         </h4>
                         <ul className="space-y-1.5">
-                            {course.outcomes.slice(0, 4).map((outcome, index) => (
+                            {course.valuePropositions.slice(0, 4).map((vp, index) => (
                                 <li key={index} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
                                     <Check className="w-3.5 h-3.5 text-green-500 mt-0.5 shrink-0" />
-                                    <span className="line-clamp-1">{outcome}</span>
+                                    <span className="line-clamp-1">{vp.content}</span>
                                 </li>
                             ))}
                         </ul>
@@ -121,18 +117,18 @@ export function CourseHoverPreview({ course }: CourseHoverPreviewProps) {
                                         {formatPrice(course.discountPrice)}
                                     </span>
                                     <span className="text-sm text-gray-400 line-through">
-                                        {formatPrice(course.price)}
+                                        {formatPrice(course.originalPrice ?? 0)}
                                     </span>
                                 </>
                             ) : (
                                 <span className="text-xl font-bold text-black dark:text-white">
-                                    {formatPrice(course.price)}
+                                    {formatPrice(course.originalPrice ?? 0)}
                                 </span>
                             )}
                         </div>
-                        {course.discountPrice && (
+                        {course.discountPrice && course.originalPrice && course.originalPrice > 0 && (
                             <Badge variant="destructive" className="text-xs">
-                                -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                -{Math.round((1 - course.discountPrice / course.originalPrice) * 100)}%
                             </Badge>
                         )}
                     </div>

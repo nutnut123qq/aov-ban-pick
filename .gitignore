@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# project docs
+docs/PHASE1_FRONTEND_PAGES.md
+FEATURES_REST_API.md
+GRAPHQL_FRONTEND.md

@@ -7,12 +7,16 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { queryCourse, QueryCourse } from "@/modules/api"
+import type { CourseEntity } from "@/modules/types"
+import type { CourseSectionEntity } from "@/modules/types"
 import {
-    getCourseBySlug,
-    getCourses,
-    getCourseContent,
-} from "@/mocks"
-import type { CourseEntity, CourseSectionEntity } from "@/mocks"
+    useQueryCoursesSwr,
+    useQueryCourseEnrollmentStatusSwr,
+} from "@/hooks/singleton/swr"
+import { useAppDispatch } from "@/redux"
+import { setCourseId } from "@/redux/slices"
+
 import {
     CourseHero,
     CoursePriceCard,
@@ -21,33 +25,85 @@ import {
     CourseInstructor,
     RelatedCourses,
     CourseDetailSkeleton,
-    formatDurationLong,
 } from "./components"
 
 const CourseDetailPage = () => {
     const params = useParams()
     const slug = params.slug as string
+    const dispatch = useAppDispatch()
 
     const [course, setCourse] = useState<CourseEntity | null>(null)
-    const [relatedCourses, setRelatedCourses] = useState<CourseEntity[]>([])
     const [courseContent, setCourseContent] = useState<CourseSectionEntity[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
 
+    const { data: coursesData } = useQueryCoursesSwr()
+    const allCourses = (coursesData?.courses.data ?? []) as CourseEntity[]
+
     useEffect(() => {
         const loadData = async () => {
+            setIsLoading(true)
             try {
-                const [courseData, relatedData, contentData] = await Promise.all([
-                    getCourseBySlug(slug),
-                    getCourses({ limit: 4 }),
-                    getCourseContent(),
-                ])
+                const res = await queryCourse({
+                    query: QueryCourse.QueryBySlug,
+                    variables: {
+                        request: { slug },
+                    },
+                })
+                const courseData = (res.data as import("@/modules/api/graphql/queries/query-course").QueryCourseBySlugResponse | undefined)?.courseBySlug ?? null
                 setCourse(courseData)
-                setRelatedCourses(relatedData.data.filter((c) => c.slug !== slug).slice(0, 3))
-                setCourseContent(contentData)
-                // Expand first section by default
-                if (contentData.length > 0) {
-                    setExpandedSections(new Set([contentData[0].id]))
+                if (courseData?.id) {
+                    dispatch(setCourseId(courseData.id))
+                }
+                const modules = courseData?.modules ?? []
+                const adaptedSections: CourseSectionEntity[] = modules.map((module) => ({
+                    id: module.id,
+                    courseId: courseData?.id ?? "",
+                    title: module.title,
+                    description: module.description ?? undefined,
+                    order: module.orderIndex,
+                    isPublished: true,
+                    createdAt: (module as unknown as { createdAt: string }).createdAt ?? new Date().toISOString(),
+                    updatedAt: (module as unknown as { updatedAt: string }).updatedAt ?? new Date().toISOString(),
+                    chapters: [
+                        {
+                            id: `${module.id}-chapter`,
+                            sectionId: module.id,
+                            title: "",
+                            description: "",
+                            order: 0,
+                            isPublished: true,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            lessons: (module.contents ?? []).map((content) => {
+                                let duration = 0
+                                try {
+                                    const parsed = JSON.parse(content.data ?? "{}")
+                                    duration = parsed.estimatedMinutes ?? 0
+                                } catch {
+                                    duration = 0
+                                }
+                                return {
+                                    id: content.id,
+                                    chapterId: `${module.id}-chapter`,
+                                    courseId: courseData?.id ?? "",
+                                    title: `Bài ${content.orderIndex + 1}`,
+                                    description: "",
+                                    type: "VIDEO" as const,
+                                    duration,
+                                    order: content.orderIndex,
+                                    isFree: false,
+                                    isPublished: true,
+                                    createdAt: (content as unknown as { createdAt: string }).createdAt ?? new Date().toISOString(),
+                                    updatedAt: (content as unknown as { updatedAt: string }).updatedAt ?? new Date().toISOString(),
+                                }
+                            }),
+                        },
+                    ],
+                })) as unknown as CourseSectionEntity[]
+                setCourseContent(adaptedSections)
+                if (adaptedSections.length > 0) {
+                    setExpandedSections(new Set([adaptedSections[0].id]))
                 }
             } catch (error) {
                 console.error("Error loading course:", error)
@@ -56,7 +112,11 @@ const CourseDetailPage = () => {
             }
         }
         loadData()
-    }, [slug])
+    }, [slug, dispatch])
+
+    const relatedCourses = allCourses
+        .filter((c) => c.slug !== slug && c.id !== course?.id)
+        .slice(0, 3)
 
     const toggleSection = (sectionId: string) => {
         const newExpanded = new Set(expandedSections)

@@ -3,9 +3,9 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, Users, Clock, BookOpen } from "lucide-react"
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
+import type { CourseLevel } from "@/modules/types/enums"
 import { levelLabels, formatDurationLong } from "./utils"
 
 interface CourseHeroProps {
@@ -19,6 +19,9 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
     totalLessons,
     totalDuration,
 }) => {
+    const level = course.level
+    const levelStyle = level ? levelLabels[level as CourseLevel] : { label: "", color: "bg-gray-100 text-gray-800" }
+
     return (
         <section className="bg-gradient-to-br from-primary/10 via-background to-primary/5 py-12">
             <div className="container mx-auto px-4">
@@ -32,9 +35,11 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                     <div className="lg:col-span-2 space-y-6">
                         {/* Badges */}
                         <div className="flex items-center gap-3 mb-4">
-                            <Badge className={levelLabels[course.level].color}>
-                                {levelLabels[course.level].label}
-                            </Badge>
+                            {level && (
+                                <Badge className={levelStyle.color}>
+                                    {levelStyle.label}
+                                </Badge>
+                            )}
                             <Badge variant="secondary">{course.category?.name}</Badge>
                             {course.isFeatured && (
                                 <Badge className="bg-primary text-primary-foreground">Nổi bật</Badge>
@@ -44,7 +49,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Title & Description */}
                         <div>
                             <h1 className="text-3xl md:text-4xl font-bold mb-4">{course.title}</h1>
-                            <p className="text-lg text-muted-foreground">{course.shortDescription}</p>
+                            <p className="text-lg text-muted-foreground">{course.shortDescription || course.description}</p>
                         </div>
 
                         {/* Stats */}
@@ -67,24 +72,6 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                             <div className="flex items-center gap-1">
                                 <BookOpen className="w-5 h-5" />
                                 <span>{totalLessons} bài học</span>
-                            </div>
-                        </div>
-
-                        {/* Instructor */}
-                        <div className="flex items-center gap-4">
-                            <Avatar className="w-12 h-12">
-                                <AvatarImage src={course.instructors?.[0]?.user?.avatar || ""} />
-                                <AvatarFallback>
-                                    {course.instructors?.[0]?.user?.firstName?.charAt(0) || "I"}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="font-semibold">
-                                    {course.instructors?.[0]?.user?.firstName} {course.instructors?.[0]?.user?.lastName}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    {course.instructors?.[0]?.title || "Giảng viên"}
-                                </p>
                             </div>
                         </div>
                     </div>

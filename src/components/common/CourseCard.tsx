@@ -12,7 +12,7 @@ import { formatPrice, formatDurationShort } from "@/modules/utils"
 import { levelConfig } from "@/modules/utils/course"
 import { COURSE_CARD } from "@/modules/utils/constants"
 
-import type { CourseEntity } from "@/mocks"
+import type { CourseEntity } from "@/modules/types"
 
 interface CourseCardProps {
     course: CourseEntity
@@ -64,7 +64,10 @@ export const CourseCard = memo(function CourseCard({
         </div>
     ) : null
 
-    const levelStyle = levelConfig[course.level]
+    const levelStyle = course.level ? levelConfig[course.level as import("@/modules/types/enums").CourseLevel] : { label: "", color: "bg-gray-100 text-gray-800" }
+    const thumbnailUrl = course.thumbnailUrl || course.cdnUrl || "/placeholder-course.jpg"
+    const displayPrice = course.discountPrice ?? course.originalPrice ?? 0
+    const originalPrice = course.originalPrice ?? 0
 
     const cardClasses = {
         default: "bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800",
@@ -74,7 +77,7 @@ export const CourseCard = memo(function CourseCard({
 
     return (
         <div className={`relative flex flex-col h-full ${className}`}>
-            <Link href={`/courses/${course.slug}`} className="flex flex-col h-full">
+            <Link href={`/courses/${course.slug ?? course.id}`} className="flex flex-col h-full">
                 <div
                     ref={cardRef}
                     className={`${cardClasses[variant]} flex flex-col h-full`}
@@ -84,7 +87,7 @@ export const CourseCard = memo(function CourseCard({
                     {/* Image - Fixed aspect ratio for consistency */}
                     <div className="relative aspect-[16/10] overflow-hidden shrink-0">
                         <Image
-                            src={course.thumbnail || "/placeholder-course.jpg"}
+                            src={thumbnailUrl}
                             alt={course.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -95,9 +98,9 @@ export const CourseCard = memo(function CourseCard({
                                 Nổi bật
                             </span>
                         )}
-                        {course.discountPrice && (
+                        {course.discountPrice && originalPrice > 0 && (
                             <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold bg-red-500 text-white rounded-md">
-                                -{Math.round((1 - course.discountPrice / course.price) * 100)}%
+                                -{Math.round((1 - course.discountPrice / originalPrice) * 100)}%
                             </span>
                         )}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
@@ -111,9 +114,11 @@ export const CourseCard = memo(function CourseCard({
                     <div className="p-3 flex flex-col flex-1 min-h-0">
                         {/* Top: Level + Category */}
                         <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
-                            <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${levelStyle.color}`}>
-                                {levelStyle.label}
-                            </span>
+                            {course.level && (
+                                <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${levelStyle.color}`}>
+                                    {levelStyle.label}
+                                </span>
+                            )}
                             <span className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
                                 {course.category?.name}
                             </span>
@@ -126,7 +131,7 @@ export const CourseCard = memo(function CourseCard({
 
                         {/* Description - Fixed 2 lines */}
                         <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mb-2 flex-1">
-                            {course.shortDescription}
+                            {course.shortDescription || course.description}
                         </p>
 
                         {/* Stats - Fixed height */}
@@ -139,7 +144,7 @@ export const CourseCard = memo(function CourseCard({
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatDurationShort(course.duration)}
+                                {formatDurationShort(course.estimatedMinutes ?? 0)}
                             </span>
                             {course.rating && (
                                 <span className="flex items-center gap-0.5">
@@ -158,12 +163,12 @@ export const CourseCard = memo(function CourseCard({
                                             {formatPrice(course.discountPrice)}
                                         </span>
                                         <span className="text-[11px] text-gray-400 line-through">
-                                            {formatPrice(course.price)}
+                                            {formatPrice(originalPrice)}
                                         </span>
                                     </>
                                 ) : (
                                     <span className="text-base font-bold text-primary">
-                                        {formatPrice(course.price)}
+                                        {formatPrice(originalPrice)}
                                     </span>
                                 )}
                             </div>

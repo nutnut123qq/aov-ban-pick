@@ -9,7 +9,7 @@ import {
     getPrograms,
     getLearningPaths,
 } from "@/mocks"
-import type { TrainingProgramEntity, LearningPathEntity } from "@/mocks"
+import type { TrainingProgramEntity, LearningPathEntity } from "@/modules/types"
 
 import {
     ProgramCard,
@@ -31,7 +31,7 @@ const ProgramsPage = () => {
                     getLearningPaths(),
                 ])
                 setPrograms(programsData.data)
-                setLearningPaths(pathsData)
+                setLearningPaths(pathsData as unknown as LearningPathEntity[])
             } catch (error) {
                 console.error("Error loading programs:", error)
             } finally {

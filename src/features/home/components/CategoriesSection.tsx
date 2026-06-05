@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { CategoryCard } from "./CategoryCard"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { CourseCategoryEntity } from "@/mocks"
+import type { CourseCategoryEntity } from "@/modules/types"
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },

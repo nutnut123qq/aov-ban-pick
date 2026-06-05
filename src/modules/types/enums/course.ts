@@ -31,6 +31,7 @@ export const LessonType = {
     TEXT: "TEXT",
     QUIZ: "QUIZ",
     ASSIGNMENT: "ASSIGNMENT",
+    LIVE: "LIVE",
     PROJECT: "PROJECT",
 } as const
 

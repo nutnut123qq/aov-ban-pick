@@ -1,12 +1,13 @@
 "use client"
 import React, { useEffect, useState, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Menu, ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react"
+import { Menu, ChevronRight, ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getCourseBySlug, getCourseContent, getCourses } from "@/mocks"
-import type { CourseEntity, CourseSectionEntity, LessonEntity } from "@/mocks"
+import { queryCourse, QueryCourse, queryCourseContent } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { CourseEntity, CourseSectionEntity, LessonEntity } from "@/modules/types"
 import {
     VideoPlayer,
     DesktopCourseSidebar,
@@ -29,33 +30,104 @@ const CourseLearnPage = () => {
     const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set())
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const keycloak = useKeycloak()
 
     // Load course data
     useEffect(() => {
+        let cancelled = false
         const loadData = async () => {
             try {
-                const [courseData, contentData] = await Promise.all([
-                    getCourseBySlug(slug),
-                    getCourseContent(),
+                const token = keycloak.data?.token
+                const [courseRes, contentRes] = await Promise.all([
+                    queryCourse({
+                        query: QueryCourse.QueryBySlug,
+                        variables: {
+                            request: { slug },
+                        },
+                        token,
+                    }),
+                    queryCourseContent({
+                        variables: {
+                            request: { slug },
+                        },
+                        token,
+                    }),
                 ])
-                setCourse(courseData)
-                setCourseContent(contentData)
+                const courseData = (courseRes.data as import("@/modules/api/graphql/queries/query-course").QueryCourseBySlugResponse | undefined)?.courseBySlug ?? null
+                if (cancelled) return
+
+                setCourse(courseData as CourseEntity | null)
+
+                const rawSections = contentRes.data?.courseContent ?? []
+                const mappedSections: CourseSectionEntity[] = rawSections.map((section: any) => ({
+                    id: section.id,
+                    createdAt: "",
+                    updatedAt: "",
+                    courseId: courseData?.id || "",
+                    title: section.title,
+                    description: section.description,
+                    order: section.orderIndex,
+                    isPublished: true,
+                    chapters: (section.chapters ?? []).map((chapter: any) => ({
+                        id: chapter.id,
+                        createdAt: "",
+                        updatedAt: "",
+                        sectionId: section.id,
+                        title: chapter.title,
+                        description: chapter.description,
+                        order: chapter.orderIndex,
+                        isPublished: true,
+                        lessons: (chapter.lessons ?? []).map((lesson: any) => ({
+                            id: lesson.id,
+                            createdAt: "",
+                            updatedAt: "",
+                            chapterId: chapter.id,
+                            courseId: courseData?.id || "",
+                            title: lesson.title,
+                            description: lesson.description,
+                            type: lesson.type,
+                            duration: lesson.duration,
+                            order: lesson.orderIndex,
+                            isFree: lesson.isFree,
+                            isPublished: true,
+                            content: lesson.content,
+                            materials: (lesson.materials ?? []).map((m: any) => ({
+                                id: m.id,
+                                lessonId: lesson.id,
+                                title: m.title,
+                                type: m.type,
+                                url: m.url,
+                                size: m.size,
+                                createdAt: m.createdAt,
+                            })),
+                        })),
+                    })),
+                }))
+                if (cancelled) return
+                setCourseContent(mappedSections)
 
                 // Find first lesson
-                if (contentData.length > 0 && contentData[0].chapters?.length) {
-                    const firstChapter = contentData[0].chapters[0]
+                if (mappedSections.length > 0 && mappedSections[0].chapters?.length) {
+                    const firstChapter = mappedSections[0].chapters[0]
                     if (firstChapter.lessons?.length) {
                         setCurrentLesson(firstChapter.lessons[0])
                     }
                 }
             } catch (error) {
-                console.error("Error loading course:", error)
+                if (!cancelled) {
+                    console.error("Error loading course:", error)
+                }
             } finally {
-                setIsLoading(false)
+                if (!cancelled) {
+                    setIsLoading(false)
+                }
             }
         }
         loadData()
-    }, [slug])
+        return () => {
+            cancelled = true
+        }
+    }, [slug, keycloak.data?.token])
 
     // Get all lessons in order
     const allLessons = useMemo(() => {
