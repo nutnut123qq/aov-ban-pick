@@ -49,7 +49,7 @@ export const useSyncReduxUser = () => {
         }
 
         const gql = queryUserSwr.data as QueryMeResponse | undefined
-        const apiUser = gql?.me?.data?.data ?? null
+        const apiUser = gql?.me ?? null
 
         if (apiUser?.id) {
             dispatch(

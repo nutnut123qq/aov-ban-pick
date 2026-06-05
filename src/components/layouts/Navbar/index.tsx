@@ -2,6 +2,7 @@
 
 import React from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useLocale } from "@/hooks"
 import { useRouter } from "@/i18n/navigation"
@@ -15,34 +16,71 @@ import {
 import { setUser, setAuthenticated } from "@/redux/slices/user"
 import { clearTokens } from "@/services/auth"
 
-import { Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react"
-import { LogOut, ChevronDown, Sun, Moon, Globe } from "lucide-react"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+    LogOut,
+    Sun,
+    Moon,
+    Globe,
+    BookOpen,
+    User,
+    Settings,
+    GraduationCap,
+    Menu,
+    X,
+} from "lucide-react"
+import { cn } from "@/lib/utils"
+
+const languages = [
+    { code: "vi" as const, label: "Tiếng Việt", flag: "VN" },
+    { code: "en" as const, label: "English", flag: "EN" },
+]
 
 interface NavLinkProps {
     href: string
     children: React.ReactNode
-    isActive?: boolean
+    onClick?: () => void
 }
 
-const NavLink = ({ href, children, isActive }: NavLinkProps) => (
-    <Link
-        href={href}
-        className={`relative text-sm font-medium transition-colors hover:text-foreground ${isActive
-            ? "text-foreground"
-            : "text-foreground-500"
-            }`}
-    >
-        {children}
-        {isActive && (
-            <span className="absolute -bottom-0.5 inset-x-0 h-px rounded-full bg-foreground" />
-        )}
-    </Link>
-)
+const NavLink = ({ href, children, onClick }: NavLinkProps) => {
+    const pathname = usePathname()
 
-const languages = [
-    { code: "vi" as const, label: "Tiếng Việt", flag: "🇻🇳" },
-    { code: "en" as const, label: "English", flag: "🇺🇸" },
-]
+    // Check if a path is active
+    const isActiveLink = (path: string) => {
+        if (path === "/") {
+            return pathname === "/" || pathname === "/vi" || pathname === "/en"
+        }
+        return pathname?.includes(path)
+    }
+
+    const active = isActiveLink(href)
+
+    return (
+        <Link
+            href={href}
+            onClick={onClick}
+            className={cn(
+                "relative text-sm font-medium transition-colors hover:text-foreground py-2 px-3 rounded-lg",
+                active
+                    ? "text-foreground bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            )}
+        >
+            {children}
+            {active && (
+                <span className="absolute bottom-0 inset-x-3 h-0.5 rounded-full bg-primary" />
+            )}
+        </Link>
+    )
+}
 
 export const Navbar = () => {
     const dispatch = useAppDispatch()
@@ -55,6 +93,7 @@ export const Navbar = () => {
 
     const [isDark, setIsDark] = React.useState(false)
     const [mounted, setMounted] = React.useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
     React.useEffect(() => {
         setMounted(true)
@@ -99,130 +138,154 @@ export const Navbar = () => {
         }
     }
 
+    const getInitials = (name: string) => {
+        return name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2)
+    }
+
     const currentLang = languages.find((l) => l.code === locale) ?? languages[0]
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-divider bg-content1/80 backdrop-blur-md supports-backdrop-filter:bg-content1/60">
-            <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
+        <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 {/* Brand */}
                 <Link
                     href="/"
-                    className="text-base font-semibold tracking-tight text-foreground shrink-0"
+                    className="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground shrink-0"
                 >
-                    {t("nav.brand")}
+                    <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground">
+                        <GraduationCap className="size-5" />
+                    </div>
+                    <span className="hidden sm:block">{t("nav.brand")}</span>
                 </Link>
 
-                {/* Center Nav Links */}
-                <nav className="hidden sm:flex items-center gap-5" aria-label="Main navigation">
-                    <NavLink href="/" isActive>
+                {/* Center Nav Links - Desktop */}
+                <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+                    <NavLink href="/">
                         {t("nav.home")}
                     </NavLink>
-                    <NavLink href="/khoa-hoc">
+                    <NavLink href="/courses">
                         {t("nav.courses")}
                     </NavLink>
-                    <NavLink href="#">
-                        {t("nav.contact")}
+                    <NavLink href="/programs">
+                        Chương trình
+                    </NavLink>
+                    <NavLink href="/my-learning">
+                        Khóa học của tôi
                     </NavLink>
                 </nav>
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                     {/* Language Switcher */}
-                    <Dropdown placement="bottom-end">
-                        <DropdownTrigger>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
                             <Button
-                                variant="flat"
+                                variant="ghost"
                                 size="sm"
-                                radius="lg"
-                                className="gap-1.5 h-9 px-2.5 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider text-foreground-600"
+                                className="gap-2 h-9 px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
                             >
                                 <Globe className="size-4" />
-                                <span className="hidden sm:inline">{currentLang.code.toUpperCase()}</span>
+                                <span className="hidden lg:inline">{currentLang.code.toUpperCase()}</span>
                             </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                            aria-label="Language selection"
-                            selectionMode="single"
-                            selectedKeys={new Set([locale])}
-                            onSelectionChange={(keys) => {
-                                const selected = Array.from(keys)[0] as "en" | "vi"
-                                if (selected) handleLocaleChange(selected)
-                            }}
-                            itemClasses={{
-                                base: "gap-2",
-                            }}
-                        >
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-40">
                             {languages.map((lang) => (
-                                <DropdownItem
+                                <DropdownMenuItem
                                     key={lang.code}
-                                    startContent={
-                                        <span className="text-base">{lang.flag}</span>
-                                    }
+                                    onClick={() => handleLocaleChange(lang.code)}
+                                    className={cn(
+                                        "cursor-pointer",
+                                        currentLang.code === lang.code && "bg-accent"
+                                    )}
                                 >
+                                    <span className="mr-2 font-medium">{lang.flag}</span>
                                     {lang.label}
-                                </DropdownItem>
+                                </DropdownMenuItem>
                             ))}
-                        </DropdownMenu>
-                    </Dropdown>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                     {/* Theme Toggle */}
                     {mounted && (
                         <Button
-                            variant="flat"
-                            isIconOnly
-                            size="sm"
-                            radius="lg"
-                            className="h-9 w-9 bg-content2 hover:bg-content3 transition-colors border border-divider"
-                            onPress={toggleTheme}
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                            onClick={toggleTheme}
                             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
                         >
-                            {isDark
-                                ? <Sun className="size-4 text-foreground-600" />
-                                : <Moon className="size-4 text-foreground-600" />
-                            }
+                            {isDark ? (
+                                <Sun className="size-4" />
+                            ) : (
+                                <Moon className="size-4" />
+                            )}
                         </Button>
                     )}
 
                     {sessionActive ? (
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                                 <Button
-                                    variant="flat"
-                                    radius="lg"
-                                    className="h-9 max-w-[min(200px,60vw)] gap-2 px-2 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider text-foreground"
+                                    variant="ghost"
+                                    className="gap-2 h-9 px-2 text-sm font-medium hover:bg-accent"
                                 >
-                                    <Avatar
-                                        size="sm"
-                                        name={displayName}
-                                        className="text-tiny"
-                                    />
-                                    <span className="hidden min-w-0 truncate sm:block">
+                                    <Avatar size="sm" className="size-7">
+                                        <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                                            {getInitials(displayName)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <span className="hidden lg:block max-w-[120px] truncate">
                                         {displayName}
                                     </span>
-                                    <ChevronDown className="size-3.5 shrink-0 text-foreground-500" />
                                 </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                aria-label="User menu"
-                                className="w-48"
-                            >
-                                <DropdownItem
-                                    key="logout"
-                                    className="text-danger"
-                                    color="danger"
-                                    startContent={<LogOut className="size-4" />}
-                                    onPress={handleLogout}
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <div className="px-2 py-1.5">
+                                    <p className="text-sm font-medium">{displayName}</p>
+                                    <p className="text-xs text-muted-foreground truncate">
+                                        {user?.email}
+                                    </p>
+                                </div>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/profile" className="flex items-center gap-2">
+                                        <User className="size-4" />
+                                        Hồ sơ
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/my-learning" className="flex items-center gap-2">
+                                        <BookOpen className="size-4" />
+                                        Khóa học của tôi
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/settings" className="flex items-center gap-2">
+                                        <Settings className="size-4" />
+                                        Cài đặt
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onClick={handleLogout}
+                                    className="cursor-pointer text-destructive focus:text-destructive"
                                 >
+                                    <LogOut className="size-4 mr-2" />
                                     {t("nav.logout")}
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     ) : (
                         <Button
-                            color="primary"
+                            variant="default"
                             size="sm"
-                            radius="lg"
-                            onPress={() => {
+                            className="h-9 px-4 font-medium"
+                            onClick={() => {
                                 dispatch(
                                     setAuthenticationModalTab(
                                         AuthenticationModalTab.SignIn
@@ -234,8 +297,42 @@ export const Navbar = () => {
                             {t("nav.signIn")}
                         </Button>
                     )}
+
+                    {/* Mobile Menu Toggle */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden h-9 w-9"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? (
+                            <X className="size-5" />
+                        ) : (
+                            <Menu className="size-5" />
+                        )}
+                    </Button>
                 </div>
             </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+                <div className="md:hidden border-t border-border/50 bg-background">
+                    <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
+                        <NavLink href="/" onClick={() => setMobileMenuOpen(false)}>
+                            {t("nav.home")}
+                        </NavLink>
+                        <NavLink href="/courses" onClick={() => setMobileMenuOpen(false)}>
+                            {t("nav.courses")}
+                        </NavLink>
+                        <NavLink href="/programs" onClick={() => setMobileMenuOpen(false)}>
+                            Chương trình
+                        </NavLink>
+                        <NavLink href="/my-learning" onClick={() => setMobileMenuOpen(false)}>
+                            Khóa học của tôi
+                        </NavLink>
+                    </nav>
+                </div>
+            )}
         </header>
     )
 }

@@ -1,6 +1,5 @@
 import type { UserEntity } from "@/modules/types"
 import { createApolloClient } from "../clients"
-import type { GraphQLResponse } from "../types"
 import { DocumentNode, gql } from "@apollo/client"
 
 /** Inner `data` field after the global GraphQL response interceptor. */
@@ -11,14 +10,10 @@ export interface QueryMePayload {
 const query1 = gql`
   query Me {
     me {
-      success
-      message
-      error
-      data {
-        id
-        email
-        avatar
-      }
+      id
+      email
+      fullName
+      avatar
     }
   }
 `
@@ -36,14 +31,14 @@ export interface QueryMeParams {
 }
 
 export interface QueryMeResponse {
-    me: GraphQLResponse<QueryMePayload>
+    me: UserEntity | null
 }
 
 /**
  * Fetches the current user via Apollo.
  *
  * @param params - Document key, GraphQL variables, and optional bearer token
- * @returns Apollo query result; entity at `data.me.data.data`
+ * @returns Apollo query result; entity at `data.me`
  */
 export const queryMe = async ({
     query = QueryMe.Query1,

@@ -4,7 +4,7 @@ import { setCourse } from "@/redux/slices"
 import useSWR from "swr"
 
 /**
- * The core function to query courses with SWR.
+ * The core function to query a single course with SWR.
  */
 export const useQueryCourseSwrCore = () => {
     /** The dispatch. */
@@ -37,9 +37,10 @@ export const useQueryCourseSwrCore = () => {
                 throw new Error("Course not found")
             }
             /** Set the course. */
-            dispatch(setCourse(data.data.course.data ?? null))
+            const courseData = data.data as import("@/modules/api/graphql/queries/query-course").QueryCourseResponse
+            dispatch(setCourse(courseData.course ?? null))
             /** Return the data. */
-            return data.data
+            return courseData
         })
     /** Return the SWR. */
     return swr

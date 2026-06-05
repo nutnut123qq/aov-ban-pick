@@ -3,7 +3,6 @@ import { createApolloClient } from "../clients"
 import {
     SortBy,
     SortOrder,
-    type GraphQLResponse,
     type PaginationFilters,
 } from "../types"
 import { DocumentNode, gql } from "@apollo/client"
@@ -17,19 +16,30 @@ export interface QueryCoursesPayload {
 const query1 = gql`
   query Courses($request: CoursesRequest!) {
     courses(request: $request) {
-      success
-      message
-      error
+      count
       data {
-        count
-        data {
+        id
+        createdAt
+        updatedAt
+        title
+        slug
+        description
+        shortDescription
+        cdnUrl
+        thumbnailUrl
+        originalPrice
+        discountPrice
+        level
+        enrollmentCount
+        rating
+        reviewCount
+        isFeatured
+        status
+        estimatedMinutes
+        publishedAt
+        category {
           id
-          createdAt
-          updatedAt
-          title
-          slug
-          description
-          cdnUrl
+          name
         }
       }
     }
@@ -60,7 +70,7 @@ export interface QueryCoursesVariables {
 }
 
 export interface QueryCoursesResponse {
-    courses: GraphQLResponse<QueryCoursesPayload>
+    courses: QueryCoursesPayload
 }
 
 export interface QueryCoursesParams {
@@ -73,7 +83,7 @@ export interface QueryCoursesParams {
  * Fetches a paginated course list via Apollo.
  *
  * @param params - Document key, GraphQL variables, optional bearer token
- * @returns Rows at `data.courses.data.data`, total at `data.courses.data.count`
+ * @returns Rows at `data.courses.data`, total at `data.courses.count`
  */
 export const queryCourses = async ({
     query = QueryCourses.Query1,

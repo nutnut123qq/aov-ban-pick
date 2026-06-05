@@ -1,8 +1,7 @@
 import { createApolloClient } from "../clients"
-import type { GraphQLResponse } from "../types"
 import { DocumentNode, gql } from "@apollo/client"
 
-/** Payload inside `courseEnrollmentStatus.data` after the standard API wrapper. */
+/** Payload inside `courseEnrollmentStatus` returned by the resolver. */
 export interface CourseEnrollmentStatusData {
     enrollmentCount: number
     isEnrolled: boolean
@@ -11,13 +10,8 @@ export interface CourseEnrollmentStatusData {
 const query1 = gql`
   query CourseEnrollmentStatus($request: CourseEnrollmentStatusRequest!) {
     courseEnrollmentStatus(request: $request) {
-      success
-      message
-      error
-      data {
-        enrollmentCount
-        isEnrolled
-      }
+      enrollmentCount
+      isEnrolled
     }
   }
 `
@@ -45,13 +39,11 @@ export interface QueryCourseEnrollmentStatusParams {
 }
 
 export interface QueryCourseEnrollmentStatusResponse {
-    courseEnrollmentStatus: GraphQLResponse<CourseEnrollmentStatusData>
+    courseEnrollmentStatus: CourseEnrollmentStatusData
 }
 
 /**
  * Enrollment summary for a course: total count and optional `isEnrolled` when a Bearer token is sent.
- *
- * Mirrors `ref/course-enrollment-status/course-enrollment-status.resolver.ts`.
  */
 export const queryCourseEnrollmentStatus = async ({
     query = QueryCourseEnrollmentStatus.Query1,

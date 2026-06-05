@@ -9,15 +9,19 @@ import {
     setAuthenticationModalTab,
 } from "@/redux/slices"
 import { useKeycloak, useAuthenticationDisclosure } from "@/hooks/singleton"
-import { EyeIcon, EyeClosedIcon } from "@phosphor-icons/react"
-import { LogIn, ArrowRight } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
+import { LogIn, ArrowRight, Mail, Lock } from "lucide-react"
 import { AuthModalBody } from "../AuthModalBody"
 import { loginWithKeycloak, saveTokens, type LoginResponse } from "@/services/auth"
 import { setUser, setAuthenticated } from "@/redux/slices/user"
 import type { UserEntity } from "@/modules/types"
 import { jwtDecode } from "jwt-decode"
 
-import { Button, Input } from "@heroui/react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 interface KeycloakTokenPayload {
     sub?: string
@@ -33,8 +37,8 @@ const createUserFromToken = (payload: KeycloakTokenPayload): UserEntity => {
     const now = new Date()
     return {
         id: payload.sub ?? "",
-        createdAt: now,
-        updatedAt: now,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
         username: payload.preferred_username ?? payload.email ?? payload.sub ?? "",
         email: payload.email ?? null,
         keycloakId: payload.sub ?? "",
@@ -99,138 +103,158 @@ export const SignInSection = () => {
     return (
         <AuthModalBody className="p-0!">
             <div className="px-6 pb-6 pt-2">
-                <div className="bg-content1 rounded-2xl border border-divider shadow-medium p-6 space-y-6">
+                <div className="bg-card rounded-2xl border border-border shadow-lg p-6 space-y-6">
+                    {/* Header */}
+                    <div className="text-center space-y-1">
+                        <h2 className="text-xl font-semibold tracking-tight">
+                            Welcome back
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            Sign in to continue learning
+                        </p>
+                    </div>
+
                     {/* Social login */}
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
                         <Button
                             type="button"
-                            variant="flat"
-                            className="w-full h-11 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider rounded-xl"
-                            onPress={async () => {
+                            variant="outline"
+                            className="h-11 text-sm font-medium"
+                            onClick={async () => {
                                 await redirectToKeycloak({ idpHint: "google" }).catch(
                                     (err: unknown) => {
                                         console.error("[auth] Google sign-in redirect failed", err)
                                     },
                                 )
                             }}
-                            isLoading={keycloakLoading}
+                            disabled={keycloakLoading}
                         >
                             <GoogleIcon className="size-5 shrink-0" />
-                            {t("auth.signIn.google")}
+                            Google
                         </Button>
 
                         <Button
                             type="button"
-                            variant="flat"
-                            className="w-full h-11 text-small font-medium bg-content2 hover:bg-content3 transition-colors border border-divider rounded-xl"
-                            onPress={async () => {
+                            variant="outline"
+                            className="h-11 text-sm font-medium"
+                            onClick={async () => {
                                 await redirectToKeycloak().catch((err: unknown) => {
                                     console.error("[auth] Keycloak sign-in redirect failed", err)
                                 })
                             }}
-                            isLoading={keycloakLoading}
+                            disabled={keycloakLoading}
                         >
                             <LogIn className="size-5 shrink-0" />
-                            {t("auth.signIn.keycloak")}
+                            Keycloak
                         </Button>
                     </div>
 
                     {/* Divider */}
-                    <div className="flex items-center gap-3">
-                        <div className="h-px flex-1 bg-divider" />
-                        <span className="text-tiny text-foreground-400 font-medium uppercase tracking-widest">
-                            or
-                        </span>
-                        <div className="h-px flex-1 bg-divider" />
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <Separator className="w-full" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-3 text-muted-foreground">
+                                Or continue with
+                            </span>
+                        </div>
                     </div>
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <Input
-                            id="signin-email"
-                            type="text"
-                            // label={t("auth.signIn.email.label")}
-                            placeholder={t("auth.signIn.email.placeholder")}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            classNames={{
-                                base: "max-w-full",
-                                label: "text-small font-medium text-foreground",
-                                input: "text-small",
-                                inputWrapper: "h-12 min-h-12 rounded-xl shadow-sm",
-                            }}
-                        />
+                        <div className="space-y-2">
+                            <Label htmlFor="signin-email" className="text-sm font-medium">
+                                Email
+                            </Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                                <Input
+                                    id="signin-email"
+                                    type="text"
+                                    placeholder="you@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="h-11 pl-10 rounded-lg"
+                                    disabled={isSubmitting}
+                                />
+                            </div>
+                        </div>
 
-                        <Input
-                            id="signin-password"
-                            type={showPassword ? "text" : "password"}
-                            // label={t("auth.signIn.password.label")}
-                            placeholder={t("auth.signIn.password.placeholder")}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            endContent={
-                                <button
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <Label htmlFor="signin-password" className="text-sm font-medium">
+                                    Password
+                                </Label>
+                                <Button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="text-foreground-400 hover:text-foreground transition-colors cursor-pointer"
-                                    aria-label={showPassword ? t("auth.signIn.password.hide") : t("auth.signIn.password.show")}
+                                    variant="link"
+                                    className="h-auto p-0 text-xs text-primary hover:underline"
                                 >
-                                    {showPassword
-                                        ? <EyeClosedIcon className="w-4 h-4" />
-                                        : <EyeIcon className="w-4 h-4" />
-                                    }
-                                </button>
-                            }
-                            classNames={{
-                                base: "max-w-full",
-                                label: "text-small font-medium text-foreground",
-                                input: "text-small",
-                                inputWrapper: "h-12 min-h-12 pr-1 rounded-xl shadow-sm",
-                            }}
-                        />
+                                    Forgot password?
+                                </Button>
+                            </div>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                                <Input
+                                    id="signin-password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="h-11 pl-10 pr-10 rounded-lg"
+                                    disabled={isSubmitting}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="size-4" />
+                                    ) : (
+                                        <Eye className="size-4" />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
 
                         {/* Error */}
                         {error && (
-                            <div className="p-3 rounded-xl bg-danger-50 border border-danger-100">
-                                <p className="text-tiny text-danger">{error}</p>
+                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                                <p className="text-sm text-destructive">{error}</p>
                             </div>
                         )}
 
-                        {/* Forgot password link */}
-                        <div className="flex justify-end">
-                            <button
-                                type="button"
-                                className="text-tiny text-primary font-medium underline-offset-4 hover:underline"
-                            >
-                                {t("auth.signIn.forgotPassword")}
-                            </button>
-                        </div>
-
                         <Button
                             type="submit"
-                            color="primary"
-                            className="w-full h-12 font-medium shadow-md hover:shadow-lg transition-shadow rounded-xl"
-                            isLoading={isSubmitting}
+                            className="w-full h-11 font-medium shadow-md hover:shadow-lg transition-shadow"
+                            disabled={isSubmitting}
                         >
-                            {!isSubmitting && (
+                            {isSubmitting ? (
+                                <span className="animate-pulse">Signing in...</span>
+                            ) : (
                                 <>
-                                    {t("auth.signIn.submit")}
-                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                    Sign in
+                                    <ArrowRight className="size-4 ml-2" />
                                 </>
                             )}
                         </Button>
                     </form>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-center gap-x-1.5 pt-2 text-tiny border-t border-divider">
-                        <span className="text-foreground-400">{t("auth.signIn.noAccount")}</span>
-                        <button
+                    <div className="flex items-center justify-center gap-x-1.5 pt-2 text-sm border-t border-border">
+                        <span className="text-muted-foreground">Don't have an account?</span>
+                        <Button
                             type="button"
-                            className="font-semibold text-primary underline-offset-4 hover:underline"
+                            variant="link"
+                            className="h-auto p-0 text-sm font-semibold text-primary hover:underline"
                             onClick={() => dispatch(setAuthenticationModalTab(AuthenticationModalTab.SignUp))}
                         >
-                            {t("auth.signIn.signUp")}
-                        </button>
+                            Sign up
+                        </Button>
                     </div>
                 </div>
             </div>

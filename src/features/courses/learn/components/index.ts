@@ -1,0 +1,9 @@
+// Course learn components barrel export
+export { VideoPlayer } from "./VideoPlayer"
+export { DesktopCourseSidebar } from "./DesktopCourseSidebar"
+export { MobileCourseSidebar } from "./MobileCourseSidebar"
+export { CourseSidebar } from "./CourseSidebar"
+export { LessonSidebar } from "./LessonSidebar"
+export { LessonMaterials } from "./LessonMaterials"
+export { LessonHeader } from "./LessonHeader"
+export { LessonNavigation } from "./LessonNavigation"

@@ -12,7 +12,7 @@ export const useQueryCourseEnrollmentStatusSwrCore = () => {
     const authenticated = Boolean(keycloak.data?.authenticated)
     /** The SWR. */
     const swr = useSWR(
-        courseId && authenticated
+        courseId
             ? [
                 "QUERY_COURSE_ENROLLMENT_STATUS_SWR",
                 courseId,
@@ -35,7 +35,7 @@ export const useQueryCourseEnrollmentStatusSwrCore = () => {
             if (!data || !data.data) {
                 throw new Error("Course enrollment status not found")
             }
-            return data.data
+            return data.data.courseEnrollmentStatus
         }
     )
     /** Return the SWR. */

@@ -4,9 +4,9 @@ import "./globals.css"
 import React, { PropsWithChildren } from "react"
 import { NextIntlClientProvider } from "next-intl"
 import { InnerLayout } from "./InnerLayout"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const figtree = Figtree({
     subsets: ["latin"],
@@ -24,9 +24,7 @@ const Layout = ({ children }: PropsWithChildren) => {
             <body className={`${figtree.className} antialiased`}>
                 <NextIntlClientProvider>
                     <InnerLayout>
-                        <div className="p-6 max-w-[1024px] mx-auto">
-                            {children}
-                        </div>
+                        {children}
                     </InnerLayout>
                 </NextIntlClientProvider>
             </body>

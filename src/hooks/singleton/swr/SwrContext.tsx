@@ -6,6 +6,7 @@ import {
     useQueryCourseEnrollmentStatusSwrCore,
     useQueryCourseSwrCore,
     useQueryCoursesSwrCore,
+    useQueryMyEnrollmentsSwrCore,
     useQueryUserSwrCore,
 } from "./core"
 
@@ -14,6 +15,7 @@ export interface SwrContextType {
     queryCourseEnrollmentStatusSwr: ReturnType<typeof useQueryCourseEnrollmentStatusSwrCore>;
     queryCoursesSwr: ReturnType<typeof useQueryCoursesSwrCore>;
     queryUserSwr: ReturnType<typeof useQueryUserSwrCore>;
+    queryMyEnrollmentsSwr: ReturnType<typeof useQueryMyEnrollmentsSwrCore>;
     mutateCourseEnrollSwr: ReturnType<typeof useMutateCourseEnrollSwrCore>;
 }
 
@@ -24,6 +26,7 @@ export const SwrProvider = ({ children }: PropsWithChildren) => {
     const queryCourseEnrollmentStatusSwr = useQueryCourseEnrollmentStatusSwrCore()
     const queryCoursesSwr = useQueryCoursesSwrCore()
     const queryUserSwr = useQueryUserSwrCore()
+    const queryMyEnrollmentsSwr = useQueryMyEnrollmentsSwrCore()
     const mutateCourseEnrollSwr = useMutateCourseEnrollSwrCore()
     const values = useMemo(
         () => ({
@@ -31,6 +34,7 @@ export const SwrProvider = ({ children }: PropsWithChildren) => {
             queryCourseEnrollmentStatusSwr,
             queryCoursesSwr,
             queryUserSwr,
+            queryMyEnrollmentsSwr,
             mutateCourseEnrollSwr,
         }),
         [
@@ -38,6 +42,7 @@ export const SwrProvider = ({ children }: PropsWithChildren) => {
             queryCourseEnrollmentStatusSwr,
             queryCoursesSwr,
             queryUserSwr,
+            queryMyEnrollmentsSwr,
             mutateCourseEnrollSwr,
         ]
     )

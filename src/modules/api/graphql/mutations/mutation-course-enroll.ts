@@ -1,9 +1,8 @@
 import type { PaymentType } from "@/modules/types"
 import { createApolloClient } from "../clients"
-import type { GraphQLResponse } from "../types"
 import { DocumentNode, gql } from "@apollo/client"
 
-/** Payload inside `courseEnroll.data` after the standard API wrapper. */
+/** Payload returned by `courseEnroll` mutation. */
 export interface CourseEnrollData {
     checkoutUrl: string
     orderCode: string
@@ -15,16 +14,11 @@ export interface CourseEnrollData {
 const mutation1 = gql`
   mutation CourseEnroll($request: CourseEnrollRequest!) {
     courseEnroll(request: $request) {
-      success
-      message
-      error
-      data {
-        checkoutUrl
-        orderCode
-        preflightTransactionId
-        paymentLinkId
-        amount
-      }
+      checkoutUrl
+      orderCode
+      preflightTransactionId
+      paymentLinkId
+      amount
     }
   }
 `
@@ -55,13 +49,11 @@ export interface MutateCourseEnrollParams {
 }
 
 export interface MutateCourseEnrollResponse {
-    courseEnroll: GraphQLResponse<CourseEnrollData>
+    courseEnroll: CourseEnrollData
 }
 
 /**
  * Starts course checkout (PayOS or Sepay): creates preflight row and returns checkout URL / ids.
- *
- * Mirrors `ref/course-enroll/course-enroll.resolver.ts` (`courseEnroll`).
  */
 export const mutateCourseEnroll = async ({
     mutation = MutationCourseEnroll.Mutation1,

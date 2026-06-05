@@ -18,8 +18,8 @@ const createUserFromPayload = (payload: KeycloakTokenPayload): UserEntity => {
     const now = new Date()
     return {
         id: payload.sub ?? "",
-        createdAt: now,
-        updatedAt: now,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
         username: payload.preferred_username ?? payload.email ?? payload.sub ?? "",
         email: payload.email ?? null,
         keycloakId: payload.sub ?? "",
