@@ -1,0 +1,49 @@
+name: Deploy tedo-frontend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-tedo-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: tedo-frontend
+  DEPLOY_NAME: tedo-frontend
+  ENV_FILE: /var/www/tedo-Front-End/.env
+  KUBECONFIG: /root/.kube/config-tedo
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, tedo-vps]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build, push and rollout
+        run: |
+          set -euo pipefail
+          set -a && source "${ENV_FILE}" && set +a
+          TAG="sha-${GITHUB_SHA::12}"
+          USER="${{ secrets.DOCKER_USERNAME }}"
+
+          docker build \
+            --build-arg NEXT_PUBLIC_API_GRAPHQL_BASE_URL \
+            --build-arg NEXT_PUBLIC_API_BASE_URL \
+            --build-arg NEXT_PUBLIC_KEYCLOAK_URL \
+            --build-arg NEXT_PUBLIC_KEYCLOAK_REALM \
+            --build-arg NEXT_PUBLIC_KEYCLOAK_CLIENT_ID \
+            --build-arg NEXT_PUBLIC_TENANT_ID \
+            -t "${USER}/${IMAGE_NAME}:${TAG}" \
+            -t "${USER}/${IMAGE_NAME}:latest" .
+
+          docker push "${USER}/${IMAGE_NAME}:${TAG}"
+          docker push "${USER}/${IMAGE_NAME}:latest"
+
+          k3s kubectl -n tedo set image "deploy/${DEPLOY_NAME}" \
+            "${DEPLOY_NAME}=${USER}/${IMAGE_NAME}:${TAG}"
+          k3s kubectl -n tedo rollout status "deploy/${DEPLOY_NAME}" --timeout=180s
