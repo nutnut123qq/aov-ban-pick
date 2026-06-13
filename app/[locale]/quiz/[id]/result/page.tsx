@@ -11,13 +11,15 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { getQuizById } from "@/mocks"
-import type { QuizEntity } from "@/mocks"
+import { queryTrainingQuiz } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { QuizEntity } from "@/modules/api"
 
 
 const QuizResultPage = () => {
     const params = useParams()
     const quizId = params.id as string
+    const token = useKeycloak().token
     
     const [quiz, setQuiz] = useState<QuizEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -25,7 +27,15 @@ const QuizResultPage = () => {
     useEffect(() => {
         const loadQuiz = async () => {
             try {
-                const quizData = await getQuizById(quizId)
+                if (!token) {
+                    setQuiz(null)
+                    return
+                }
+
+                const quizData = await queryTrainingQuiz({
+                    id: quizId,
+                    token,
+                })
                 setQuiz(quizData)
             } catch (error) {
                 console.error("Error loading quiz:", error)
@@ -34,7 +44,7 @@ const QuizResultPage = () => {
             }
         }
         loadQuiz()
-    }, [quizId])
+    }, [quizId, token])
 
     if (isLoading) {
         return (

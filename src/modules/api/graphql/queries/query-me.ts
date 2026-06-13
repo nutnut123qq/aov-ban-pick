@@ -50,7 +50,25 @@ export const queryMe = async ({
         token,
     })
 
-    return apollo.query<QueryMeResponse>({
+    const result = await apollo.query<QueryMeResponse>({
         query: queryMap[query],
     })
+
+    const user = result.data?.me
+
+    return {
+        ...result,
+        data: {
+            me: user
+                ? {
+                    ...user,
+                    createdAt: "",
+                    updatedAt: "",
+                    username: user.email ?? user.id,
+                    keycloakId: user.id,
+                    isDeleted: false,
+                }
+                : null,
+        },
+    }
 }

@@ -12,7 +12,7 @@ export interface CourseEnrollData {
 }
 
 const mutation1 = gql`
-  mutation CourseEnroll($request: CourseEnrollRequest!) {
+  mutation CourseEnroll($request: CourseEnrollRequestInput!) {
     courseEnroll(request: $request) {
       checkoutUrl
       orderCode

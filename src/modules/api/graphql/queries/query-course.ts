@@ -3,7 +3,7 @@ import { createApolloClient } from "../clients"
 import { DocumentNode, gql } from "@apollo/client"
 
 const query1 = gql`
-  query Course($request: CourseRequest!) {
+  query Course($request: CourseRequestInput!) {
     course(request: $request) {
       id
       createdAt
@@ -68,7 +68,7 @@ const query1 = gql`
 `
 
 const queryBySlug = gql`
-  query CourseBySlug($request: CourseBySlugRequest!) {
+  query CourseBySlug($request: CourseBySlugRequestInput!) {
     courseBySlug(request: $request) {
       id
       createdAt

@@ -24,8 +24,12 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
-import { getSurveyById } from "@/mocks"
-import type { SurveyEntity, SurveyQuestionEntity } from "@/mocks"
+import {
+    queryTrainingSurvey,
+    submitTrainingSurvey,
+} from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { SurveyEntity, SurveyQuestionEntity } from "@/modules/api"
 
 const RatingStars = ({ 
     value, 
@@ -172,6 +176,7 @@ const SurveyQuestionCard = ({
 const SurveyPage = () => {
     const params = useParams()
     const surveyId = params.id as string
+    const token = useKeycloak().token
     
     const [survey, setSurvey] = useState<SurveyEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -184,7 +189,15 @@ const SurveyPage = () => {
     useEffect(() => {
         const loadSurvey = async () => {
             try {
-                const surveyData = await getSurveyById(surveyId)
+                if (!token) {
+                    setSurvey(null)
+                    return
+                }
+
+                const surveyData = await queryTrainingSurvey({
+                    id: surveyId,
+                    token,
+                })
                 setSurvey(surveyData)
             } catch (error) {
                 console.error("Error loading survey:", error)
@@ -193,7 +206,7 @@ const SurveyPage = () => {
             }
         }
         loadSurvey()
-    }, [surveyId])
+    }, [surveyId, token])
 
     const handleAnswerChange = useCallback((questionId: string, answer: string | string[] | number) => {
         setAnswers((prev) => ({ ...prev, [questionId]: answer }))
@@ -201,8 +214,29 @@ const SurveyPage = () => {
 
     const handleSubmit = async () => {
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        setIsSubmitted(true)
+        try {
+            if (!token) return
+
+            await submitTrainingSurvey({
+                id: surveyId,
+                token,
+                details: Object.entries(answers).map(([questionId, answer]) => ({
+                    questionId,
+                    selectedOptionIds: Array.isArray(answer)
+                        ? answer
+                        : survey?.questions.find((question) => question.id === questionId)?.type === "SINGLE_CHOICE" && typeof answer === "string"
+                            ? [answer]
+                            : undefined,
+                    answerText: survey?.questions.find((question) => question.id === questionId)?.type === "TEXT" && typeof answer === "string"
+                        ? answer
+                        : undefined,
+                    numericValue: typeof answer === "number" ? answer : undefined,
+                })),
+            })
+            setIsSubmitted(true)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const answeredCount = Object.keys(answers).length

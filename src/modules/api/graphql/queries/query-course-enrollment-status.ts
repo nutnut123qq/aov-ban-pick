@@ -8,7 +8,7 @@ export interface CourseEnrollmentStatusData {
 }
 
 const query1 = gql`
-  query CourseEnrollmentStatus($request: CourseEnrollmentStatusRequest!) {
+  query CourseEnrollmentStatus($request: CourseEnrollmentStatusRequestInput!) {
     courseEnrollmentStatus(request: $request) {
       enrollmentCount
       isEnrolled

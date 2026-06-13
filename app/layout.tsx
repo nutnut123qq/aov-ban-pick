@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 const Layout = ({ children }: PropsWithChildren) => {
     return (
         <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
-            <body className={`${figtree.className} antialiased`}>
+            <body suppressHydrationWarning className={`${figtree.className} antialiased`}>
                 <NextIntlClientProvider>
                     <InnerLayout>
                         {children}

@@ -1,14 +1,12 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 import { Carousel, defaultBannerSlides } from "@/components/ui/carousel"
-import {
-    getCategories,
-    getPrograms,
-} from "@/mocks"
-import { queryCourses, defaultCoursesSorts } from "@/modules/api"
+import { queryTrainingPrograms } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import { useQueryCoursesSwr } from "@/hooks/singleton/swr"
 import type { CourseEntity, CourseCategoryEntity, TrainingProgramEntity } from "@/modules/types"
 
 import {
@@ -26,55 +24,84 @@ const fadeInUp = {
 }
 
 const HomePage = () => {
-    const [featuredCourses, setFeaturedCourses] = useState<CourseEntity[]>([])
-    const [popularCourses, setPopularCourses] = useState<CourseEntity[]>([])
-    const [newestCourses, setNewestCourses] = useState<CourseEntity[]>([])
-    const [categories, setCategories] = useState<CourseCategoryEntity[]>([])
+    const token = useKeycloak().token
+    const { data: coursesData, isLoading: isCoursesLoading } = useQueryCoursesSwr()
+    const allCourses = useMemo(
+        () => (coursesData?.courses.data ?? []) as CourseEntity[],
+        [coursesData]
+    )
+
+    const featuredCourses = useMemo(
+        () => allCourses.filter((c) => c.isFeatured).slice(0, 8),
+        [allCourses]
+    )
+
+    const popularCourses = useMemo(() => {
+        const sortedByEnrollment = [...allCourses].sort((a, b) => b.enrollmentCount - a.enrollmentCount)
+        return sortedByEnrollment.slice(0, 8)
+    }, [allCourses])
+
+    const newestCourses = useMemo(() => {
+        const sortedByNewest = [...allCourses].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0).getTime()
+            const dateB = new Date(b.createdAt || 0).getTime()
+            return dateB - dateA
+        })
+        return sortedByNewest.slice(0, 8)
+    }, [allCourses])
+
+    const categories = useMemo<CourseCategoryEntity[]>(() => {
+        const categoryMap = new Map<string, CourseCategoryEntity>()
+
+        allCourses.forEach((course) => {
+            const category = course.category
+            if (!category?.id) return
+
+            const current = categoryMap.get(category.id)
+            categoryMap.set(category.id, {
+                id: category.id,
+                name: category.name,
+                slug: null,
+                parentId: null,
+                order: current?.order ?? categoryMap.size,
+                isActive: true,
+                courseCount: (current?.courseCount ?? 0) + 1,
+                createdAt: course.createdAt ?? "",
+                updatedAt: course.updatedAt ?? "",
+            })
+        })
+
+        return Array.from(categoryMap.values())
+            .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
+            .slice(0, 6)
+    }, [allCourses])
+
     const [programs, setPrograms] = useState<TrainingProgramEntity[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isProgramsLoading, setIsProgramsLoading] = useState(true)
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadPrograms = async () => {
             try {
-                const [allCoursesRes, categoriesData, programsData] = await Promise.all([
-                    queryCourses({
-                        variables: {
-                            request: {
-                                filters: {
-                                    sorts: [...defaultCoursesSorts],
-                                    pageNumber: 0,
-                                    limit: 100,
-                                },
-                            },
-                        },
-                    }),
-                    getCategories(),
-                    getPrograms({ limit: 3 }),
-                ])
+                if (!token) {
+                    setPrograms([])
+                    return
+                }
 
-                const allCourses = allCoursesRes.data?.courses.data ?? []
-                setFeaturedCourses(allCourses.filter((c) => c.isFeatured).slice(0, 8))
-
-                const sortedByEnrollment = [...allCourses].sort((a, b) => b.enrollmentCount - a.enrollmentCount)
-                setPopularCourses(sortedByEnrollment.slice(0, 8))
-
-                const sortedByNewest = [...allCourses].sort((a, b) => {
-                    const dateA = new Date(a.createdAt || 0).getTime()
-                    const dateB = new Date(b.createdAt || 0).getTime()
-                    return dateB - dateA
+                const programsData = await queryTrainingPrograms({
+                    token,
+                    size: 3,
                 })
-                setNewestCourses(sortedByNewest.slice(0, 8))
-
-                setCategories(categoriesData.slice(0, 6))
-                setPrograms(programsData.data as unknown as TrainingProgramEntity[])
+                setPrograms(programsData as TrainingProgramEntity[])
             } catch (error) {
-                console.error("Error loading home data:", error)
+                console.error("Error loading home programs:", error)
             } finally {
-                setIsLoading(false)
+                setIsProgramsLoading(false)
             }
         }
-        loadData()
-    }, [])
+        loadPrograms()
+    }, [token])
+
+    const isLoading = isCoursesLoading || isProgramsLoading
 
     return (
         <div className="space-y-20">
@@ -92,7 +119,7 @@ const HomePage = () => {
             {/* Categories */}
             <CategoriesSection
                 categories={categories}
-                isLoading={isLoading}
+                isLoading={isCoursesLoading}
             />
 
             <Separator />
@@ -102,7 +129,7 @@ const HomePage = () => {
                 title="Khóa học nổi bật"
                 subtitle="Những khóa học được yêu thích nhất"
                 courses={featuredCourses}
-                isLoading={isLoading}
+                isLoading={isCoursesLoading}
             />
 
             {/* Most Popular Courses */}
@@ -110,7 +137,7 @@ const HomePage = () => {
                 title="Khóa học nhiều người mua"
                 subtitle="Top khóa học được đăng ký nhiều nhất"
                 courses={popularCourses}
-                isLoading={isLoading}
+                isLoading={isCoursesLoading}
             />
 
             {/* Newest Courses */}
@@ -118,7 +145,7 @@ const HomePage = () => {
                 title="Khóa học mới nhất"
                 subtitle="Những khóa học vừa được cập nhật"
                 courses={newestCourses}
-                isLoading={isLoading}
+                isLoading={isCoursesLoading}
             />
 
             {/* Programs */}

@@ -1,4 +1,4 @@
-import { queryCourses } from "@/modules/api"
+import { defaultCoursesSorts, queryCourses } from "@/modules/api"
 import { useAppDispatch } from "@/redux"
 import { setCourses } from "@/redux/slices"
 import useSWR from "swr"
@@ -21,7 +21,9 @@ export const useQueryCoursesSwrCore = () => {
                     variables: {
                         request: {
                             filters: {
-                                sorts: [],
+                                pageNumber: 0,
+                                limit: 100,
+                                sorts: [...defaultCoursesSorts],
                             },
                         },
                     }

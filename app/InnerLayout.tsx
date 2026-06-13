@@ -16,9 +16,7 @@ export const InnerLayout = ({ children }: PropsWithChildren) => {
     return (
         <Suspense>
             <NextThemesProvider
-                attribute="class"
                 defaultTheme="dark"
-                enableSystem={true}
                 storageKey="tedo-theme"
             >
                 <HeroUIProvider>

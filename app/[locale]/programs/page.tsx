@@ -6,9 +6,10 @@ import { Award, BookOpen } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
-    getPrograms,
-    getLearningPaths,
-} from "@/mocks"
+    queryTrainingLearningPaths,
+    queryTrainingPrograms,
+} from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
 import type { TrainingProgramEntity, LearningPathEntity } from "@/modules/types"
 
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/features/programs"
 
 const ProgramsPage = () => {
+    const token = useKeycloak().token
     const [programs, setPrograms] = useState<TrainingProgramEntity[]>([])
     const [learningPaths, setLearningPaths] = useState<LearningPathEntity[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -26,12 +28,24 @@ const ProgramsPage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
+                if (!token) {
+                    setPrograms([])
+                    setLearningPaths([])
+                    return
+                }
+
                 const [programsData, pathsData] = await Promise.all([
-                    getPrograms({ limit: 20 }),
-                    getLearningPaths(),
+                    queryTrainingPrograms({
+                        token,
+                        size: 20,
+                    }),
+                    queryTrainingLearningPaths({
+                        token,
+                        size: 20,
+                    }),
                 ])
-                setPrograms(programsData.data)
-                setLearningPaths(pathsData as unknown as LearningPathEntity[])
+                setPrograms(programsData)
+                setLearningPaths(pathsData as LearningPathEntity[])
             } catch (error) {
                 console.error("Error loading programs:", error)
             } finally {
@@ -39,7 +53,7 @@ const ProgramsPage = () => {
             }
         }
         loadData()
-    }, [])
+    }, [token])
 
     return (
         <div className="min-h-screen">
