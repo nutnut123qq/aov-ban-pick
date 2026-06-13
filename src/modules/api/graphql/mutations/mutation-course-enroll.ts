@@ -14,16 +14,11 @@ export interface CourseEnrollData {
 const mutation1 = gql`
   mutation CourseEnroll($request: CourseEnrollRequestInput!) {
     courseEnroll(request: $request) {
-      success
-      message
-      error
-      data {
-        checkoutUrl
-        orderCode
-        preflightTransactionId
-        paymentLinkId
-        amount
-      }
+      checkoutUrl
+      orderCode
+      preflightTransactionId
+      paymentLinkId
+      amount
     }
   }
 `
@@ -57,15 +52,6 @@ export interface MutateCourseEnrollResponse {
     courseEnroll: CourseEnrollData
 }
 
-interface MutateCourseEnrollRawResponse {
-    courseEnroll: {
-        success: boolean
-        message: string
-        error?: string | null
-        data?: CourseEnrollData | null
-    }
-}
-
 /**
  * Starts course checkout (PayOS or Sepay): creates preflight row and returns checkout URL / ids.
  */
@@ -80,19 +66,8 @@ export const mutateCourseEnroll = async ({
         token,
     })
 
-    const result = await apollo.mutate<MutateCourseEnrollRawResponse>({
+    return apollo.mutate<MutateCourseEnrollResponse>({
         mutation: mutationMap[mutation],
         variables,
     })
-
-    const data = result.data?.courseEnroll.data
-
-    return {
-        ...result,
-        data: data
-            ? {
-                courseEnroll: data,
-            }
-            : undefined,
-    }
 }
