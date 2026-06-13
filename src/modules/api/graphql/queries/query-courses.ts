@@ -14,7 +14,7 @@ export interface QueryCoursesPayload {
 }
 
 const query1 = gql`
-  query Courses($request: CoursesRequest!) {
+  query Courses($request: CoursesRequestInput!) {
     courses(request: $request) {
       count
       data {

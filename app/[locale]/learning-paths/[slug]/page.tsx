@@ -11,8 +11,9 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
-import { getLearningPathBySlug } from "@/mocks"
-import type { LearningPathEntity } from "@/mocks"
+import { queryTrainingLearningPath } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { LearningPathEntity } from "@/modules/types"
 
 
 const formatDuration = (seconds: number) => {
@@ -24,6 +25,7 @@ const formatDuration = (seconds: number) => {
 const LearningPathDetailPage = () => {
     const params = useParams()
     const slug = params.slug as string
+    const token = useKeycloak().token
     
     const [path, setPath] = useState<LearningPathEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -31,7 +33,15 @@ const LearningPathDetailPage = () => {
     useEffect(() => {
         const loadPath = async () => {
             try {
-                const data = await getLearningPathBySlug(slug)
+                if (!token) {
+                    setPath(null)
+                    return
+                }
+
+                const data = await queryTrainingLearningPath({
+                    id: slug,
+                    token,
+                })
                 setPath(data)
             } catch (error) {
                 console.error("Error loading learning path:", error)
@@ -40,7 +50,7 @@ const LearningPathDetailPage = () => {
             }
         }
         loadPath()
-    }, [slug])
+    }, [slug, token])
 
     if (isLoading) {
         return (
@@ -74,12 +84,12 @@ const LearningPathDetailPage = () => {
         )
     }
 
-    const totalDuration = path.courses.reduce(
-        (acc, c) => acc + (c.course?.duration || 0),
+    const courses = path.courses ?? []
+    const totalDuration = courses.reduce(
+        (acc, c) => acc + (c.duration || 0),
         0
     )
     const hours = Math.floor(totalDuration / 3600)
-    const requiredCourses = path.courses.filter(c => c.isRequired).length
 
     return (
         <div className="min-h-screen">
@@ -101,7 +111,7 @@ const LearningPathDetailPage = () => {
                     <div className="flex flex-wrap gap-6 text-sm text-muted-foreground mb-8">
                         <span className="flex items-center gap-1">
                             <BookOpen className="w-4 h-4" />
-                            {path.courses.length} khóa học
+                            {courses.length} khóa học
                         </span>
                         <span className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
@@ -120,7 +130,7 @@ const LearningPathDetailPage = () => {
                     <Card>
                         <CardContent className="p-4 text-center">
                             <BookOpen className="w-8 h-8 mx-auto mb-2 text-primary" />
-                            <div className="text-2xl font-bold">{path.courses.length}</div>
+                            <div className="text-2xl font-bold">{courses.length}</div>
                             <div className="text-xs text-muted-foreground">Khóa học</div>
                         </CardContent>
                     </Card>
@@ -136,8 +146,8 @@ const LearningPathDetailPage = () => {
                     <Card>
                         <CardContent className="p-4 text-center">
                             <CheckCircle className="w-8 h-8 mx-auto mb-2 text-primary" />
-                            <div className="text-2xl font-bold">{requiredCourses}</div>
-                            <div className="text-xs text-muted-foreground">Bắt buộc</div>
+                            <div className="text-2xl font-bold">{path.courseCount}</div>
+                            <div className="text-xs text-muted-foreground">Trong lộ trình</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -146,11 +156,10 @@ const LearningPathDetailPage = () => {
                     <CardContent className="p-6">
                         <h2 className="text-xl font-semibold mb-4">Lộ trình khóa học</h2>
                         <p className="text-sm text-muted-foreground mb-6">
-                            Lộ trình bao gồm {path.courses.length} khóa học
+                            Lộ trình bao gồm {courses.length} khóa học
                         </p>
                         <div className="space-y-3">
-                            {path.courses
-                                .sort((a, b) => a.order - b.order)
+                            {courses
                                 .map((item, index) => (
                                     <div
                                         key={item.id}
@@ -160,18 +169,15 @@ const LearningPathDetailPage = () => {
                                             <span className="text-primary font-bold">{index + 1}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-semibold line-clamp-1">{item.course?.title}</h4>
+                                            <h4 className="font-semibold line-clamp-1">{item.title}</h4>
                                             <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
                                                 <span className="flex items-center gap-1">
                                                     <Clock className="w-3 h-3" />
-                                                    {formatDuration(item.course?.duration || 0)}
+                                                    {formatDuration(item.duration || 0)}
                                                 </span>
-                                                {item.isRequired && (
-                                                    <Badge variant="secondary" className="text-xs">Bắt buộc</Badge>
-                                                )}
                                             </div>
                                         </div>
-                                        <Link href={`/courses/${item.course?.slug}`}>
+                                        <Link href={`/courses/${item.slug}`}>
                                             <Button size="sm" variant="outline">Xem khóa học</Button>
                                         </Link>
                                     </div>

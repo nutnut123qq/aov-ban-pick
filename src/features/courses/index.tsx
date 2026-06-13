@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search, Filter, Grid3X3, List, SlidersHorizontal, X, Star } from "lucide-react"
 
@@ -39,9 +40,6 @@ import {
 } from "@/components/ui/pagination"
 import { CourseCard, CourseCardSkeleton } from "@/components/common"
 
-import {
-    getCategories,
-} from "@/mocks"
 import type { CourseCategoryEntity } from "@/modules/types"
 import type { CourseEntity } from "@/modules/types"
 import {
@@ -68,10 +66,14 @@ interface FilterState {
 }
 
 const CoursesPage = () => {
+    const searchParams = useSearchParams()
+    const initialCategoryId = searchParams.get("categoryId") ?? "all"
     const { data: coursesData, isLoading } = useQueryCoursesSwr()
-    const courses = (coursesData?.courses.data ?? []) as CourseEntity[]
+    const courses = useMemo(
+        () => (coursesData?.courses.data ?? []) as CourseEntity[],
+        [coursesData]
+    )
 
-    const [categories, setCategories] = useState<CourseCategoryEntity[]>([])
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
     const [showMobileFilters, setShowMobileFilters] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
@@ -79,23 +81,35 @@ const CoursesPage = () => {
 
     const [filters, setFilters] = useState<FilterState>({
         search: "",
-        categoryId: "all",
+        categoryId: initialCategoryId,
         level: "all",
         priceRange: "all",
         sortBy: "popular",
     })
 
-    useEffect(() => {
-        const loadCategories = async () => {
-            try {
-                const categoriesData = await getCategories()
-                setCategories(categoriesData)
-            } catch (error) {
-                console.error("Error loading categories:", error)
-            }
-        }
-        loadCategories()
-    }, [])
+    const categories = useMemo<CourseCategoryEntity[]>(() => {
+        const counts = new Map<string, CourseCategoryEntity>()
+
+        courses.forEach((course) => {
+            const category = course.category
+            if (!category?.id) return
+
+            const current = counts.get(category.id)
+            counts.set(category.id, {
+                id: category.id,
+                name: category.name,
+                slug: null,
+                parentId: null,
+                order: current?.order ?? counts.size,
+                isActive: true,
+                courseCount: (current?.courseCount ?? 0) + 1,
+                createdAt: course.createdAt ?? "",
+                updatedAt: course.updatedAt ?? "",
+            })
+        })
+
+        return Array.from(counts.values()).sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
+    }, [courses])
 
     const filteredCourses = courses.filter((course) => {
         if (filters.search && !course.title.toLowerCase().includes(filters.search.toLowerCase())) {

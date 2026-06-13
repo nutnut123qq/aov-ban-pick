@@ -1,15 +1,24 @@
 "use client"
-import React from "react"
-import dynamic from "next/dynamic"
+import React, { PropsWithChildren, useEffect } from "react"
 
-import { type ThemeProviderProps } from "next-themes"
-const ThemeProvider = dynamic(
-    () => import("next-themes").then((e) => e.ThemeProvider),
-    {
-        ssr: false,
-    }
-)
+interface NextThemesProviderProps extends PropsWithChildren {
+    defaultTheme?: "dark" | "light" | "system"
+    storageKey?: string
+}
 
-export const NextThemesProvider = ({ children, ...props }: ThemeProviderProps) => {
-    return <ThemeProvider {...props}>{children}</ThemeProvider>
+export const NextThemesProvider = ({
+    children,
+    defaultTheme = "dark",
+    storageKey = "tedo-theme",
+}: NextThemesProviderProps) => {
+    useEffect(() => {
+        const storedTheme = localStorage.getItem(storageKey)
+        const theme = storedTheme ?? defaultTheme
+        const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches
+        const shouldUseDark = theme === "dark" || (theme === "system" && prefersDark)
+
+        document.documentElement.classList.toggle("dark", shouldUseDark)
+    }, [defaultTheme, storageKey])
+
+    return <>{children}</>
 }

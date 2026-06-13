@@ -8,10 +8,15 @@ export interface CourseEnrollmentStatusData {
 }
 
 const query1 = gql`
-  query CourseEnrollmentStatus($request: CourseEnrollmentStatusRequest!) {
+  query CourseEnrollmentStatus($request: CourseEnrollmentStatusRequestInput!) {
     courseEnrollmentStatus(request: $request) {
-      enrollmentCount
-      isEnrolled
+      success
+      message
+      error
+      data {
+        enrollmentCount
+        isEnrolled
+      }
     }
   }
 `
@@ -42,6 +47,15 @@ export interface QueryCourseEnrollmentStatusResponse {
     courseEnrollmentStatus: CourseEnrollmentStatusData
 }
 
+interface QueryCourseEnrollmentStatusRawResponse {
+    courseEnrollmentStatus: {
+        success: boolean
+        message: string
+        error?: string | null
+        data?: CourseEnrollmentStatusData | null
+    }
+}
+
 /**
  * Enrollment summary for a course: total count and optional `isEnrolled` when a Bearer token is sent.
  */
@@ -56,8 +70,18 @@ export const queryCourseEnrollmentStatus = async ({
         token,
     })
 
-    return apollo.query<QueryCourseEnrollmentStatusResponse>({
+    const result = await apollo.query<QueryCourseEnrollmentStatusRawResponse>({
         query: queryMap[query],
         variables,
     })
+
+    return {
+        ...result,
+        data: {
+            courseEnrollmentStatus: result.data?.courseEnrollmentStatus.data ?? {
+                enrollmentCount: 0,
+                isEnrolled: false,
+            },
+        },
+    }
 }

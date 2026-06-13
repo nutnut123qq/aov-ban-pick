@@ -10,10 +10,16 @@ export interface QueryMePayload {
 const query1 = gql`
   query Me {
     me {
-      id
-      email
-      fullName
-      avatar
+      success
+      message
+      error
+      data {
+        data {
+          id
+          email
+          avatar
+        }
+      }
     }
   }
 `
@@ -34,6 +40,19 @@ export interface QueryMeResponse {
     me: UserEntity | null
 }
 
+interface QueryMeRawResponse {
+    me: {
+        success: boolean
+        message: string
+        error?: string | null
+        data?: {
+            data?: Pick<UserEntity, "id" | "email"> & {
+                avatar?: string | null
+            }
+        } | null
+    }
+}
+
 /**
  * Fetches the current user via Apollo.
  *
@@ -50,7 +69,25 @@ export const queryMe = async ({
         token,
     })
 
-    return apollo.query<QueryMeResponse>({
+    const result = await apollo.query<QueryMeRawResponse>({
         query: queryMap[query],
     })
+
+    const user = result.data?.me.data?.data
+
+    return {
+        ...result,
+        data: {
+            me: user
+                ? {
+                    ...user,
+                    createdAt: "",
+                    updatedAt: "",
+                    username: user.email ?? user.id,
+                    keycloakId: user.id,
+                    isDeleted: false,
+                }
+                : null,
+        },
+    }
 }

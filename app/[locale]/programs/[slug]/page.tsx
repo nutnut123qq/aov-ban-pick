@@ -20,8 +20,9 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
-import { getProgramBySlug } from "@/mocks"
-import type { TrainingProgramEntity } from "@/mocks"
+import { queryTrainingProgram } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { TrainingProgramEntity } from "@/modules/types"
 
 
 const formatPrice = (price: number, currency: string = "VND") => {
@@ -42,6 +43,7 @@ const formatDuration = (seconds: number) => {
 const ProgramDetailPage = () => {
     const params = useParams()
     const slug = params.slug as string
+    const token = useKeycloak().token
     
     const [program, setProgram] = useState<TrainingProgramEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -49,7 +51,15 @@ const ProgramDetailPage = () => {
     useEffect(() => {
         const loadProgram = async () => {
             try {
-                const data = await getProgramBySlug(slug)
+                if (!token) {
+                    setProgram(null)
+                    return
+                }
+
+                const data = await queryTrainingProgram({
+                    id: slug,
+                    token,
+                })
                 setProgram(data)
             } catch (error) {
                 console.error("Error loading program:", error)
@@ -58,7 +68,7 @@ const ProgramDetailPage = () => {
             }
         }
         loadProgram()
-    }, [slug])
+    }, [slug, token])
 
     if (isLoading) {
         return (
@@ -106,11 +116,12 @@ const ProgramDetailPage = () => {
         )
     }
 
-    const totalDuration = program.curriculumItems.reduce(
+    const curriculumItems = program.curriculumItems ?? []
+    const totalDuration = curriculumItems.reduce(
         (acc, item) => acc + (item.estimatedDuration || item.course?.duration || 0),
         0
     )
-    const requiredCourses = program.curriculumItems.filter(item => item.isRequired).length
+    const requiredCourses = curriculumItems.filter(item => item.isRequired).length
 
     return (
         <div className="min-h-screen">
@@ -210,7 +221,7 @@ const ProgramDetailPage = () => {
                                     Chương trình bao gồm {program.courseCount} khóa học, trong đó {requiredCourses} khóa bắt buộc
                                 </p>
                                 <div className="space-y-3">
-                                    {program.curriculumItems
+                                    {curriculumItems
                                         .sort((a, b) => a.order - b.order)
                                         .map((item, index) => (
                                             <div

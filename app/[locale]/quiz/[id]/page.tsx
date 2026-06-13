@@ -24,8 +24,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { getQuizById } from "@/mocks"
-import type { QuizEntity, QuizQuestionEntity } from "@/mocks"
+import { queryTrainingQuiz } from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
+import type { QuizEntity, QuizQuestionEntity } from "@/modules/api"
 
 const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -130,6 +131,7 @@ const QuizPage = () => {
     const params = useParams()
     const router = useRouter()
     const quizId = params.id as string
+    const token = useKeycloak().token
     
     const [quiz, setQuiz] = useState<QuizEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -142,7 +144,15 @@ const QuizPage = () => {
     useEffect(() => {
         const loadQuiz = async () => {
             try {
-                const quizData = await getQuizById(quizId)
+                if (!token) {
+                    setQuiz(null)
+                    return
+                }
+
+                const quizData = await queryTrainingQuiz({
+                    id: quizId,
+                    token,
+                })
                 setQuiz(quizData)
                 if (quizData) {
                     setTimeLeft(quizData.duration)
@@ -154,7 +164,7 @@ const QuizPage = () => {
             }
         }
         loadQuiz()
-    }, [quizId])
+    }, [quizId, token])
 
     useEffect(() => {
         if (!quizStarted || timeLeft <= 0) return

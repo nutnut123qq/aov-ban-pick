@@ -5,10 +5,11 @@ import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 import { Carousel, defaultBannerSlides } from "@/components/ui/carousel"
 import {
-    getCategories,
-    getPrograms,
-} from "@/mocks"
-import { queryCourses, defaultCoursesSorts } from "@/modules/api"
+    defaultCoursesSorts,
+    queryCourses,
+    queryTrainingPrograms,
+} from "@/modules/api"
+import { useKeycloak } from "@/hooks/singleton"
 import type { CourseEntity, CourseCategoryEntity, TrainingProgramEntity } from "@/modules/types"
 
 import {
@@ -26,6 +27,7 @@ const fadeInUp = {
 }
 
 const HomePage = () => {
+    const token = useKeycloak().token
     const [featuredCourses, setFeaturedCourses] = useState<CourseEntity[]>([])
     const [popularCourses, setPopularCourses] = useState<CourseEntity[]>([])
     const [newestCourses, setNewestCourses] = useState<CourseEntity[]>([])
@@ -36,7 +38,7 @@ const HomePage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [allCoursesRes, categoriesData, programsData] = await Promise.all([
+                const [allCoursesRes, programsData] = await Promise.all([
                     queryCourses({
                         variables: {
                             request: {
@@ -48,8 +50,12 @@ const HomePage = () => {
                             },
                         },
                     }),
-                    getCategories(),
-                    getPrograms({ limit: 3 }),
+                    token
+                        ? queryTrainingPrograms({
+                            token,
+                            size: 3,
+                        })
+                        : Promise.resolve([]),
                 ])
 
                 const allCourses = allCoursesRes.data?.courses.data ?? []
@@ -65,8 +71,30 @@ const HomePage = () => {
                 })
                 setNewestCourses(sortedByNewest.slice(0, 8))
 
-                setCategories(categoriesData.slice(0, 6))
-                setPrograms(programsData.data as unknown as TrainingProgramEntity[])
+                const categoryMap = new Map<string, CourseCategoryEntity>()
+                allCourses.forEach((course) => {
+                    const category = course.category
+                    if (!category?.id) return
+
+                    const current = categoryMap.get(category.id)
+                    categoryMap.set(category.id, {
+                        id: category.id,
+                        name: category.name,
+                        slug: null,
+                        parentId: null,
+                        order: current?.order ?? categoryMap.size,
+                        isActive: true,
+                        courseCount: (current?.courseCount ?? 0) + 1,
+                        createdAt: course.createdAt ?? "",
+                        updatedAt: course.updatedAt ?? "",
+                    })
+                })
+                setCategories(
+                    Array.from(categoryMap.values())
+                        .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
+                        .slice(0, 6)
+                )
+                setPrograms(programsData as TrainingProgramEntity[])
             } catch (error) {
                 console.error("Error loading home data:", error)
             } finally {
@@ -74,7 +102,7 @@ const HomePage = () => {
             }
         }
         loadData()
-    }, [])
+    }, [token])
 
     return (
         <div className="space-y-20">

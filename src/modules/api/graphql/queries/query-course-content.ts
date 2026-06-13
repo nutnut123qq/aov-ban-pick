@@ -3,7 +3,7 @@ import { DocumentNode, gql } from "@apollo/client"
 import type { CourseSectionEntity } from "@/modules/types"
 
 const query1 = gql`
-  query CourseContent($request: CourseBySlugRequest!) {
+  query CourseContent($request: CourseBySlugRequestInput!) {
     courseContent(request: $request) {
       id
       title
