@@ -3,10 +3,20 @@ import type { LoginResponse } from "./loginWithKeycloak"
 export const AUTH_TOKEN_KEY = "access_token"
 export const AUTH_REFRESH_TOKEN_KEY = "refresh_token"
 
+/** Fired whenever the stored access token changes (login, refresh, logout). */
+export const AUTH_TOKEN_CHANGED_EVENT = "tedo:auth-token-changed"
+
+const notifyTokenChanged = () => {
+    if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event(AUTH_TOKEN_CHANGED_EVENT))
+    }
+}
+
 /**
  * Get the access token from localStorage.
  */
 export const getAccessToken = (): string | null => {
+    if (typeof window === "undefined") return null
     return localStorage.getItem(AUTH_TOKEN_KEY)
 }
 
@@ -14,6 +24,7 @@ export const getAccessToken = (): string | null => {
  * Get the refresh token from localStorage.
  */
 export const getRefreshToken = (): string | null => {
+    if (typeof window === "undefined") return null
     return localStorage.getItem(AUTH_REFRESH_TOKEN_KEY)
 }
 
@@ -25,6 +36,7 @@ export const saveTokens = (data: LoginResponse): void => {
     if (data.refresh_token) {
         localStorage.setItem(AUTH_REFRESH_TOKEN_KEY, data.refresh_token)
     }
+    notifyTokenChanged()
 }
 
 /**
@@ -33,4 +45,5 @@ export const saveTokens = (data: LoginResponse): void => {
 export const clearTokens = (): void => {
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(AUTH_REFRESH_TOKEN_KEY)
+    notifyTokenChanged()
 }

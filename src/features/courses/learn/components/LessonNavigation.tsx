@@ -5,10 +5,8 @@ import {
     ChevronLeft,
     ChevronRight,
     CheckCircle,
-    MessageSquare,
-    Flag,
-    Bookmark,
     Share2,
+    Check,
 } from "lucide-react"
 
 interface LessonNavigationProps {
@@ -34,6 +32,19 @@ export const LessonNavigation: React.FC<LessonNavigationProps> = ({
     onPrev,
     onNext,
 }) => {
+    const [shared, setShared] = React.useState(false)
+
+    const handleShare = async () => {
+        if (typeof window === "undefined") return
+        try {
+            await navigator.clipboard.writeText(window.location.href)
+            setShared(true)
+            setTimeout(() => setShared(false), 1500)
+        } catch {
+            // clipboard blocked — ignore
+        }
+    }
+
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-muted/50 rounded-lg">
             {/* Prev Button */}
@@ -61,14 +72,17 @@ export const LessonNavigation: React.FC<LessonNavigationProps> = ({
                         <CheckCircle className="w-5 h-5" />
                     )}
                 </Button>
-                <Button variant="ghost" size="icon" title="Bình luận">
-                    <MessageSquare className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="icon" title="Đánh dấu">
-                    <Bookmark className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="icon" title="Chia sẻ">
-                    <Share2 className="w-5 h-5" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    title={shared ? "Đã sao chép liên kết" : "Chia sẻ"}
+                    onClick={handleShare}
+                >
+                    {shared ? (
+                        <Check className="w-5 h-5 text-green-500" />
+                    ) : (
+                        <Share2 className="w-5 h-5" />
+                    )}
                 </Button>
             </div>
 

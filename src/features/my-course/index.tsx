@@ -30,7 +30,7 @@ const EnrolledCourseCard = ({ enrollment, index }: { enrollment: EnrollmentEntit
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
                         >
-            <Link href={`/courses/${course?.slug}`}>
+            <Link href={`/learn/${course?.slug}`}>
                 <div className="h-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer border border-gray-100 dark:border-gray-800">
                     {/* Image - Same as CourseCard */}
                     <div className="relative aspect-[4/3] overflow-hidden">

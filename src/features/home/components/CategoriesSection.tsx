@@ -38,8 +38,10 @@ export function CategoriesSection({
                         <h2 className="text-2xl font-bold">{title}</h2>
                         <p className="text-muted-foreground mt-1">{subtitle}</p>
                     </div>
-                    <Button variant="ghost" className="gap-1">
-                        Xem tất cả <ArrowRight className="w-4 h-4" />
+                    <Button asChild variant="ghost" className="gap-1">
+                        <Link href="/courses">
+                            Xem tất cả <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </Button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">

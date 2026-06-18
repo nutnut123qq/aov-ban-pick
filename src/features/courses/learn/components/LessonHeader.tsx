@@ -10,12 +10,19 @@ import { formatPrice, formatDurationLong, levelLabels } from "../utils"
 interface LessonHeaderProps {
     course: CourseEntity
     currentLessonTitle?: string
+    completedLessons?: number
+    totalLessons?: number
 }
 
 export const LessonHeader: React.FC<LessonHeaderProps> = ({
     course,
     currentLessonTitle,
+    completedLessons = 0,
+    totalLessons = 0,
 }) => {
+    const percent = totalLessons > 0
+        ? Math.round((completedLessons / totalLessons) * 100)
+        : 0
     return (
         <div className="bg-white dark:bg-gray-900 border-b">
             <div className="container mx-auto px-4 py-3">
@@ -58,13 +65,15 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
                         </div>
 
                         {/* Quick Stats */}
-                        <div className="hidden lg:flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                                <CheckCircle className="w-4 h-4 text-green-500" />
-                                12/50
-                            </span>
-                            <span>60% hoàn thành</span>
-                        </div>
+                        {totalLessons > 0 && (
+                            <div className="hidden lg:flex items-center gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                    <CheckCircle className="w-4 h-4 text-green-500" />
+                                    {completedLessons}/{totalLessons}
+                                </span>
+                                <span>{percent}% hoàn thành</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

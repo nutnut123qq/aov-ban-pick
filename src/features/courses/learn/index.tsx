@@ -5,11 +5,21 @@ import { Menu, ChevronRight, ChevronLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { queryCourse, QueryCourse, queryCourseContent } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import {
+    queryCourse,
+    QueryCourse,
+    queryCourseContent,
+    queryMyEnrollments,
+    listLessonProgress,
+    upsertLessonProgress,
+    getVideoQualities,
+    resolveLessonHls,
+} from "@/modules/api"
+import { HlsPlayer } from "./components/HlsPlayer"
+import { AiLearningPanel } from "./components/AiLearningPanel"
+import { useAuthToken } from "@/hooks"
 import type { CourseEntity, CourseSectionEntity, LessonEntity } from "@/modules/types"
 import {
-    VideoPlayer,
     DesktopCourseSidebar,
     MobileCourseSidebar,
     LessonNavigation,
@@ -28,16 +38,42 @@ const CourseLearnPage = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [currentLesson, setCurrentLesson] = useState<LessonEntity | null>(null)
     const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set())
+    const [enrollmentId, setEnrollmentId] = useState<string | null>(null)
+    const [savingProgress, setSavingProgress] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-    const keycloak = useKeycloak()
+    const { token: authToken } = useAuthToken()
+    const [hlsSrc, setHlsSrc] = useState<string | null>(null)
+
+    // Resolve the adaptive HLS source for the current VIDEO lesson (via BE → upload.ftes.vn).
+    useEffect(() => {
+        if (!currentLesson || currentLesson.type !== "VIDEO" || !authToken) return
+        let cancelled = false
+        const run = async () => {
+            setHlsSrc(null)
+            try {
+                const q = await getVideoQualities({
+                    token: authToken,
+                    lessonId: currentLesson.id,
+                })
+                if (!cancelled) setHlsSrc(resolveLessonHls(q))
+            } catch {
+                if (!cancelled) setHlsSrc(null)
+            }
+        }
+        run()
+        return () => {
+            cancelled = true
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentLesson?.id, currentLesson?.type, authToken])
 
     // Load course data
     useEffect(() => {
         let cancelled = false
         const loadData = async () => {
             try {
-                const token = keycloak.data?.token
+                const token = authToken ?? undefined
                 const [courseRes, contentRes] = await Promise.all([
                     queryCourse({
                         query: QueryCourse.QueryBySlug,
@@ -57,6 +93,34 @@ const CourseLearnPage = () => {
                 if (cancelled) return
 
                 setCourse(courseData as CourseEntity | null)
+
+                // Resolve enrollment + persisted lesson progress for the signed-in learner.
+                if (token && courseData?.id) {
+                    try {
+                        const enrollRes = await queryMyEnrollments({ token })
+                        const match = enrollRes.data?.myEnrollments?.data?.find(
+                            (e) => e.courseId === courseData.id,
+                        )
+                        if (!cancelled && match?.id) {
+                            setEnrollmentId(match.id)
+                            const progress = await listLessonProgress({
+                                enrollmentId: match.id,
+                                token,
+                            })
+                            if (!cancelled) {
+                                setCompletedLessons(
+                                    new Set(
+                                        progress
+                                            .filter((p) => p.status === "completed")
+                                            .map((p) => p.lessonId),
+                                    ),
+                                )
+                            }
+                        }
+                    } catch (progressErr) {
+                        console.error("Error loading lesson progress:", progressErr)
+                    }
+                }
 
                 const rawSections = contentRes.data?.courseContent ?? []
                 const mappedSections: CourseSectionEntity[] = rawSections.map((section: any) => ({
@@ -127,7 +191,7 @@ const CourseLearnPage = () => {
         return () => {
             cancelled = true
         }
-    }, [slug, keycloak.data?.token])
+    }, [slug, authToken])
 
     // Get all lessons in order
     const allLessons = useMemo(() => {
@@ -157,16 +221,49 @@ const CourseLearnPage = () => {
         window.history.pushState({}, "", `/learn/${slug}/${lesson.id}`)
     }
 
-    // Handle mark complete
-    const handleMarkComplete = () => {
-        if (currentLesson) {
-            const newCompleted = new Set(completedLessons)
-            if (newCompleted.has(currentLesson.id)) {
-                newCompleted.delete(currentLesson.id)
+    // Handle mark complete (optimistic UI + persist to backend when enrolled)
+    const handleMarkComplete = async () => {
+        if (!currentLesson || savingProgress) return
+
+        const willComplete = !completedLessons.has(currentLesson.id)
+        const lessonId = currentLesson.id
+
+        // Optimistic update
+        setCompletedLessons((prev) => {
+            const next = new Set(prev)
+            if (willComplete) {
+                next.add(lessonId)
             } else {
-                newCompleted.add(currentLesson.id)
+                next.delete(lessonId)
             }
-            setCompletedLessons(newCompleted)
+            return next
+        })
+
+        const token = authToken ?? undefined
+        if (!token || !enrollmentId) return
+
+        setSavingProgress(true)
+        try {
+            await upsertLessonProgress({
+                enrollmentId,
+                lessonId,
+                status: willComplete ? "completed" : "in_progress",
+                token,
+            })
+        } catch (error) {
+            console.error("Error saving lesson progress:", error)
+            // Roll back optimistic update on failure
+            setCompletedLessons((prev) => {
+                const next = new Set(prev)
+                if (willComplete) {
+                    next.delete(lessonId)
+                } else {
+                    next.add(lessonId)
+                }
+                return next
+            })
+        } finally {
+            setSavingProgress(false)
         }
     }
 
@@ -200,7 +297,12 @@ const CourseLearnPage = () => {
     return (
         <div className="h-screen flex flex-col bg-background">
             {/* Top Header */}
-            <LessonHeader course={course} currentLessonTitle={currentLesson.title} />
+            <LessonHeader
+                course={course}
+                currentLessonTitle={currentLesson.title}
+                completedLessons={completedLessons.size}
+                totalLessons={allLessons.length}
+            />
 
             {/* Main Content */}
             <div className="flex-1 flex overflow-hidden">
@@ -250,11 +352,20 @@ const CourseLearnPage = () => {
                         {currentLesson.type === "VIDEO" ? (
                             <div className="h-full max-h-[calc(100vh-180px)]">
                                 <div className="h-full px-4 pt-4">
-                                    <VideoPlayer
-                                        videoUrl={currentLesson.content?.videoUrl}
-                                        title={currentLesson.title}
-                                        onEnded={handleVideoEnded}
-                                    />
+                                    {(() => {
+                                        const videoSrc = hlsSrc ?? currentLesson.content?.videoUrl
+                                        return videoSrc ? (
+                                            <HlsPlayer
+                                                key={videoSrc}
+                                                src={videoSrc}
+                                                onEnded={handleVideoEnded}
+                                            />
+                                        ) : (
+                                            <div className="h-full flex items-center justify-center bg-black/90 rounded-lg text-white/70 text-sm">
+                                                Video đang được xử lý, vui lòng quay lại sau…
+                                            </div>
+                                        )
+                                    })()}
                                 </div>
                             </div>
                         ) : (
@@ -319,6 +430,9 @@ const CourseLearnPage = () => {
                     />
                     <div className="mt-6">
                         <LessonMaterials materials={currentLesson.materials} />
+                    </div>
+                    <div className="mt-6">
+                        <AiLearningPanel lessonId={currentLesson.id} token={authToken} />
                     </div>
                 </aside>
             </div>

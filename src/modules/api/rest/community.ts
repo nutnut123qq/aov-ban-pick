@@ -32,10 +32,13 @@ export interface Paginated<T> {
     meta: PaginationMeta
 }
 
-export type CommunityVisibility = "PUBLIC" | "PRIVATE" | "RESTRICTED"
-export type CommunityJoinPolicy = "OPEN" | "REQUEST" | "INVITE"
-export type CommunityMemberStatus = "ACTIVE" | "PENDING" | "BANNED" | null
-export type CommunityRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER" | null
+// NOTE: backend enum values are lowercase (see CommunityVisibility etc. in
+// tedo-containers community.entity.ts). Keep these in sync to make status
+// checks (e.g. myStatus === "active") match real API payloads.
+export type CommunityVisibility = "public" | "private" | "restricted"
+export type CommunityJoinPolicy = "open" | "approval" | "invite"
+export type CommunityMemberStatus = "active" | "pending" | "banned" | null
+export type CommunityRole = "owner" | "admin" | "moderator" | "member" | null
 
 export interface Community {
     id: string
@@ -208,7 +211,7 @@ export const listPosts = async (
         `/training/communities/${communityId}/posts`,
         {
             params: {
-                page: options.page ?? 1,
+                page: options.page ?? 0,
                 size: options.size ?? 10,
             },
         },

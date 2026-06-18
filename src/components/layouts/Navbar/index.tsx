@@ -36,8 +36,16 @@ import {
     GraduationCap,
     Menu,
     X,
+    Award,
+    CalendarDays,
+    Library,
+    LayoutDashboard,
+    ClipboardList,
+    UserCog,
+    Users,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { NotificationBell } from "./NotificationBell"
 
 const languages = [
     { code: "vi" as const, label: "Tiếng Việt", flag: "VN" },
@@ -68,7 +76,7 @@ const NavLink = ({ href, children, onClick }: NavLinkProps) => {
             href={href}
             onClick={onClick}
             className={cn(
-                "relative text-sm font-medium transition-colors hover:text-foreground py-2 px-3 rounded-lg",
+                "relative whitespace-nowrap text-sm font-medium transition-colors hover:text-foreground py-2 px-2.5 rounded-lg",
                 active
                     ? "text-foreground bg-primary/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -164,7 +172,7 @@ export const Navbar = () => {
                 </Link>
 
                 {/* Center Nav Links - Desktop */}
-                <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+                <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
                     <NavLink href="/">
                         {t("nav.home")}
                     </NavLink>
@@ -176,6 +184,20 @@ export const Navbar = () => {
                     </NavLink>
                     <NavLink href="/my-learning">
                         Khóa học của tôi
+                    </NavLink>
+                    {sessionActive && (
+                        <NavLink href="/assigned">
+                            Được giao
+                        </NavLink>
+                    )}
+                    <NavLink href="/calendar">
+                        Lịch
+                    </NavLink>
+                    <NavLink href="/library">
+                        Thư viện
+                    </NavLink>
+                    <NavLink href="/communities">
+                        Cộng đồng
                     </NavLink>
                 </nav>
 
@@ -227,6 +249,9 @@ export const Navbar = () => {
                         </Button>
                     )}
 
+                    {/* Notifications */}
+                    {sessionActive && <NotificationBell />}
+
                     {sessionActive ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -253,6 +278,12 @@ export const Navbar = () => {
                                 </div>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/dashboard" className="flex items-center gap-2">
+                                        <LayoutDashboard className="size-4" />
+                                        Bảng điều khiển
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
                                     <Link href="/profile" className="flex items-center gap-2">
                                         <User className="size-4" />
                                         Hồ sơ
@@ -262,6 +293,18 @@ export const Navbar = () => {
                                     <Link href="/my-learning" className="flex items-center gap-2">
                                         <BookOpen className="size-4" />
                                         Khóa học của tôi
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/certificates" className="flex items-center gap-2">
+                                        <Award className="size-4" />
+                                        Chứng chỉ
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild className="cursor-pointer">
+                                    <Link href="/team" className="flex items-center gap-2">
+                                        <UserCog className="size-4" />
+                                        Nhóm của tôi
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild className="cursor-pointer">
@@ -302,7 +345,7 @@ export const Navbar = () => {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="md:hidden h-9 w-9"
+                        className="lg:hidden h-9 w-9"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? (
@@ -316,8 +359,16 @@ export const Navbar = () => {
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden border-t border-border/50 bg-background">
+                <div className="lg:hidden border-t border-border/50 bg-background">
                     <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
+                        {sessionActive && (
+                            <NavLink href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                                <span className="inline-flex items-center gap-2">
+                                    <LayoutDashboard className="size-4" />
+                                    Bảng điều khiển
+                                </span>
+                            </NavLink>
+                        )}
                         <NavLink href="/" onClick={() => setMobileMenuOpen(false)}>
                             {t("nav.home")}
                         </NavLink>
@@ -329,6 +380,38 @@ export const Navbar = () => {
                         </NavLink>
                         <NavLink href="/my-learning" onClick={() => setMobileMenuOpen(false)}>
                             Khóa học của tôi
+                        </NavLink>
+                        {sessionActive && (
+                            <NavLink href="/assigned" onClick={() => setMobileMenuOpen(false)}>
+                                <span className="inline-flex items-center gap-2">
+                                    <ClipboardList className="size-4" />
+                                    Được giao
+                                </span>
+                            </NavLink>
+                        )}
+                        <NavLink href="/calendar" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <CalendarDays className="size-4" />
+                                Lịch sự kiện
+                            </span>
+                        </NavLink>
+                        <NavLink href="/library" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <Library className="size-4" />
+                                Thư viện
+                            </span>
+                        </NavLink>
+                        <NavLink href="/certificates" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <Award className="size-4" />
+                                Chứng chỉ
+                            </span>
+                        </NavLink>
+                        <NavLink href="/communities" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <Users className="size-4" />
+                                Cộng đồng
+                            </span>
                         </NavLink>
                     </nav>
                 </div>

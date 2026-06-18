@@ -1,5 +1,6 @@
 import { queryCourseEnrollmentStatus } from "@/modules/api"
 import { useKeycloak } from "@/hooks/singleton"
+import { getAccessToken } from "@/services/auth"
 import { useAppSelector } from "@/redux"
 import useSWR from "swr"
 
@@ -23,9 +24,7 @@ export const useQueryCourseEnrollmentStatusSwrCore = () => {
             if (!courseId) {
                 throw new Error("Course id not found")
             }
-            const token = keycloak.data?.authenticated
-                ? keycloak.data?.token
-                : undefined
+            const token = keycloak.data?.token ?? getAccessToken() ?? undefined
             const data = await queryCourseEnrollmentStatus({
                 variables: {
                     request: { courseId },

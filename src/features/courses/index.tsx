@@ -111,24 +111,45 @@ const CoursesPage = () => {
         return Array.from(counts.values()).sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
     }, [courses])
 
-    const filteredCourses = courses.filter((course) => {
-        if (filters.search && !course.title.toLowerCase().includes(filters.search.toLowerCase())) {
-            return false
-        }
-        if (filters.categoryId !== "all" && course.category?.id !== filters.categoryId) {
-            return false
-        }
-        if (filters.level !== "all" && course.level !== filters.level) {
-            return false
-        }
-        if (filters.priceRange !== "all") {
-            const price = course.originalPrice ?? 0
-            if (filters.priceRange === "free" && price > 0) return false
-            if (filters.priceRange === "paid" && price === 0) return false
-            if (filters.priceRange === "discount" && !course.discountPrice) return false
-        }
-        return true
-    })
+    const priceOf = (c: typeof courses[number]) => c.discountPrice ?? c.originalPrice ?? 0
+
+    const filteredCourses = courses
+        .filter((course) => {
+            if (filters.search && !course.title.toLowerCase().includes(filters.search.toLowerCase())) {
+                return false
+            }
+            if (filters.categoryId !== "all" && course.category?.id !== filters.categoryId) {
+                return false
+            }
+            if (filters.level !== "all" && course.level !== filters.level) {
+                return false
+            }
+            if (filters.priceRange !== "all") {
+                const price = course.originalPrice ?? 0
+                if (filters.priceRange === "free" && price > 0) return false
+                if (filters.priceRange === "paid" && price === 0) return false
+                if (filters.priceRange === "discount" && !course.discountPrice) return false
+            }
+            return true
+        })
+        .sort((a, b) => {
+            switch (filters.sortBy) {
+                case "newest":
+                    return (
+                        new Date(b.createdAt ?? 0).getTime() -
+                        new Date(a.createdAt ?? 0).getTime()
+                    )
+                case "price-asc":
+                    return priceOf(a) - priceOf(b)
+                case "price-desc":
+                    return priceOf(b) - priceOf(a)
+                case "rating":
+                    return (b.rating ?? 0) - (a.rating ?? 0)
+                case "popular":
+                default:
+                    return (b.enrollmentCount ?? 0) - (a.enrollmentCount ?? 0)
+            }
+        })
 
     // Reset page when filters change
     useEffect(() => {

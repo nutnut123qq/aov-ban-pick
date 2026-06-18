@@ -13,6 +13,7 @@ import {
     Subtitles,
     ChevronLeft,
     RotateCcw,
+    Film,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
@@ -217,6 +218,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2]
 
+    if (!videoUrl) {
+        return (
+            <div className="relative bg-black rounded-lg overflow-hidden aspect-video flex flex-col items-center justify-center text-white/70 gap-3">
+                <Film className="w-12 h-12" />
+                <p className="text-sm">Bài học này chưa có video</p>
+            </div>
+        )
+    }
+
     return (
         <TooltipProvider delayDuration={0}>
             <div
@@ -229,7 +239,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 <video
                     ref={videoRef}
                     className="w-full h-full object-contain"
-                    src={videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
+                    src={videoUrl}
                     onClick={togglePlay}
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}

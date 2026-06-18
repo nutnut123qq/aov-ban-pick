@@ -1,10 +1,19 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Play, Bookmark, CheckCircle2 } from "lucide-react"
 import type { CourseEntity } from "@/modules/types"
-import { useQueryCourseEnrollmentStatusSwr } from "@/hooks/singleton/swr"
+import { PaymentType } from "@/modules/types"
+import { listMyFavorites, addFavorite, removeFavorite } from "@/modules/api"
+import { toastSuccess, toastError } from "@/modules/toast"
+import { useAuthToken } from "@/hooks"
+import {
+    useQueryCourseEnrollmentStatusSwr,
+    useMutateCourseEnrollSwr,
+} from "@/hooks/singleton/swr"
+import { useKeycloak } from "@/hooks/singleton"
 import { formatPrice } from "./utils"
 
 interface CoursePriceCardProps {
@@ -16,10 +25,89 @@ export const CoursePriceCard: React.FC<CoursePriceCardProps> = ({
     course,
     totalLessons,
 }) => {
+    const router = useRouter()
+    const { isAuthenticated, login } = useKeycloak()
+    const { token } = useAuthToken()
     const { data: enrollmentStatus, isLoading: enrollmentLoading } = useQueryCourseEnrollmentStatusSwr()
+    const enrollSwr = useMutateCourseEnrollSwr()
+    const [saved, setSaved] = useState(false)
+    const [savingFav, setSavingFav] = useState(false)
     const displayPrice = course.discountPrice ?? course.originalPrice ?? 0
     const originalPrice = course.originalPrice ?? 0
+
+    // Load bookmark state from the server.
+    useEffect(() => {
+        if (!token) return
+        let active = true
+        listMyFavorites({ token })
+            .then((ids) => {
+                if (active) setSaved(ids.includes(course.id))
+            })
+            .catch(() => undefined)
+        return () => {
+            active = false
+        }
+    }, [token, course.id])
+
+    const handleToggleSave = async () => {
+        if (!token) {
+            await login()
+            return
+        }
+        if (savingFav) return
+        const next = !saved
+        setSaved(next) // optimistic
+        setSavingFav(true)
+        try {
+            if (next) {
+                await addFavorite({ token, courseId: course.id })
+                toastSuccess("Đã lưu khóa học.")
+            } else {
+                await removeFavorite({ token, courseId: course.id })
+                toastSuccess("Đã bỏ lưu khóa học.")
+            }
+        } catch (err) {
+            console.error("Toggle favorite error:", err)
+            setSaved(!next) // rollback
+            toastError("Không cập nhật được. Vui lòng thử lại.")
+        } finally {
+            setSavingFav(false)
+        }
+    }
     const isEnrolled = enrollmentStatus?.isEnrolled ?? false
+    const isEnrolling = enrollSwr.isMutating
+
+    const handlePrimaryClick = async () => {
+        // Already enrolled → straight to the learning experience.
+        if (isEnrolled) {
+            router.push(`/learn/${course.slug}`)
+            return
+        }
+        // Require sign-in before starting checkout.
+        if (!isAuthenticated) {
+            await login()
+            return
+        }
+        try {
+            const origin =
+                typeof window !== "undefined" ? window.location.origin : ""
+            const returnUrl = `${origin}/courses/${course.slug}`
+            const res = await enrollSwr.trigger({
+                request: {
+                    courseId: course.id,
+                    paymentType: PaymentType.PayOS,
+                    payosReturnUrl: returnUrl,
+                    payosCancelUrl: returnUrl,
+                },
+            })
+            const checkoutUrl = res?.data?.courseEnroll?.checkoutUrl
+            if (checkoutUrl && typeof window !== "undefined") {
+                window.location.href = checkoutUrl
+            }
+        } catch (error) {
+            console.error("Error starting course enrollment:", error)
+        }
+    }
 
     return (
         <div className="sticky top-4">
@@ -55,17 +143,32 @@ export const CoursePriceCard: React.FC<CoursePriceCardProps> = ({
                         </div>
                     )}
 
-                    <Button size="lg" className="w-full gap-2" disabled={enrollmentLoading}>
+                    <Button
+                        size="lg"
+                        className="w-full gap-2"
+                        disabled={enrollmentLoading || isEnrolling}
+                        onClick={handlePrimaryClick}
+                    >
                         {enrollmentLoading
                             ? "Đang kiểm tra..."
-                            : isEnrolled
-                                ? "Tiếp tục học"
-                                : "Đăng ký khóa học"}
+                            : isEnrolling
+                                ? "Đang xử lý..."
+                                : isEnrolled
+                                    ? "Tiếp tục học"
+                                    : "Đăng ký khóa học"}
                     </Button>
 
-                    <Button size="lg" variant="outline" className="w-full gap-2">
-                        <Bookmark className="w-4 h-4" />
-                        Lưu khóa học
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className="w-full gap-2"
+                        disabled={savingFav}
+                        onClick={handleToggleSave}
+                    >
+                        <Bookmark
+                            className={`w-4 h-4 ${saved ? "fill-current" : ""}`}
+                        />
+                        {saved ? "Đã lưu" : "Lưu khóa học"}
                     </Button>
 
                     <Separator />

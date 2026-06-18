@@ -28,7 +28,8 @@ import {
     queryTrainingSurvey,
     submitTrainingSurvey,
 } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
+import { toastSuccess, toastError } from "@/modules/toast"
 import type { SurveyEntity, SurveyQuestionEntity } from "@/modules/api"
 
 const RatingStars = ({ 
@@ -76,7 +77,7 @@ const SurveyQuestionCard = ({
             case "RATING":
                 return (
                     <div className="space-y-4">
-                        <p className="text-muted-foreground text-center">Click on the stars to rate</p>
+                        <p className="text-muted-foreground text-center">Chạm vào sao để đánh giá</p>
                         <div className="flex justify-center">
                             <RatingStars
                                 value={(answer as number) || 0}
@@ -141,7 +142,7 @@ const SurveyQuestionCard = ({
             case "TEXT":
                 return (
                     <Textarea
-                        placeholder="Enter your response..."
+                        placeholder="Nhập câu trả lời của bạn..."
                         value={(answer as string) || ""}
                         onChange={(e) => onAnswerChange(question.id, e.target.value)}
                         className="min-h-[120px]"
@@ -149,7 +150,7 @@ const SurveyQuestionCard = ({
                 )
 
             default:
-                return <p className="text-muted-foreground">Unsupported question type</p>
+                return <p className="text-muted-foreground">Loại câu hỏi không hỗ trợ</p>
         }
     }
 
@@ -159,7 +160,7 @@ const SurveyQuestionCard = ({
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                         <Badge variant="outline" className="mb-2">
-                            Question {index + 1}
+                            Câu {index + 1}
                             {question.isRequired && <span className="text-red-500 ml-1">*</span>}
                         </Badge>
                         <CardTitle className="text-lg leading-relaxed">{question.text}</CardTitle>
@@ -176,7 +177,7 @@ const SurveyQuestionCard = ({
 const SurveyPage = () => {
     const params = useParams()
     const surveyId = params.id as string
-    const token = useKeycloak().token
+    const token = useAuthToken().token
     
     const [survey, setSurvey] = useState<SurveyEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -234,6 +235,10 @@ const SurveyPage = () => {
                 })),
             })
             setIsSubmitted(true)
+            toastSuccess("Đã gửi khảo sát. Cảm ơn bạn!")
+        } catch (error) {
+            console.error("Error submitting survey:", error)
+            toastError("Không gửi được khảo sát. Vui lòng thử lại.")
         } finally {
             setIsSubmitting(false)
         }
@@ -260,11 +265,11 @@ const SurveyPage = () => {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                    <h1 className="text-2xl font-bold mb-2">Survey not found</h1>
+                    <h1 className="text-2xl font-bold mb-2">Không tìm thấy khảo sát</h1>
                     <Link href="/">
                         <Button variant="outline" className="gap-2">
                             <ArrowLeft className="w-4 h-4" />
-                            Go back home
+                            Về trang chủ
                         </Button>
                     </Link>
                 </div>
@@ -283,12 +288,12 @@ const SurveyPage = () => {
                     <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                         <CheckCircle className="w-12 h-12 text-green-500" />
                     </div>
-                    <h1 className="text-2xl font-bold mb-2">Thank you!</h1>
+                    <h1 className="text-2xl font-bold mb-2">Cảm ơn bạn!</h1>
                     <p className="text-muted-foreground mb-6">
-                        Your response has been submitted successfully.
+                        Phản hồi của bạn đã được gửi thành công.
                     </p>
                     <Link href="/">
-                        <Button className="gap-2">Back to Home</Button>
+                        <Button className="gap-2">Về trang chủ</Button>
                     </Link>
                 </motion.div>
             </div>
@@ -312,11 +317,11 @@ const SurveyPage = () => {
                         <div className="grid grid-cols-2 gap-4 text-center">
                             <div className="p-4 bg-muted rounded-lg">
                                 <div className="text-2xl font-bold">{totalQuestions}</div>
-                                <div className="text-sm text-muted-foreground">Questions</div>
+                                <div className="text-sm text-muted-foreground">Câu hỏi</div>
                             </div>
                             <div className="p-4 bg-muted rounded-lg">
                                 <div className="text-2xl font-bold">{survey.responseCount || 0}</div>
-                                <div className="text-sm text-muted-foreground">Responses</div>
+                                <div className="text-sm text-muted-foreground">Phản hồi</div>
                             </div>
                         </div>
 
@@ -324,7 +329,7 @@ const SurveyPage = () => {
                             {survey.isAnonymous && (
                                 <p className="flex items-center gap-2">
                                     <CheckCircle className="w-4 h-4 text-green-500" />
-                                    This survey is anonymous
+                                    Khảo sát này ẩn danh
                                 </p>
                             )}
                         </div>
@@ -336,12 +341,12 @@ const SurveyPage = () => {
                                 <Link href={`/courses/${survey.course.slug}`} className="flex-1">
                                     <Button variant="outline" className="w-full gap-2">
                                         <ArrowLeft className="w-4 h-4" />
-                                        Back to Course
+                                        Quay lại khóa học
                                     </Button>
                                 </Link>
                             )}
                             <Button onClick={() => setSurveyStarted(true)} className="flex-1 gap-2">
-                                Start Survey
+                                Bắt đầu khảo sát
                                 <ChevronRight className="w-4 h-4" />
                             </Button>
                         </div>
@@ -368,14 +373,14 @@ const SurveyPage = () => {
                             <div>
                                 <h1 className="font-semibold line-clamp-1">{survey.title}</h1>
                                 <div className="text-sm text-muted-foreground">
-                                    Question {currentQuestion + 1} of {totalQuestions}
+                                    Câu {currentQuestion + 1} / {totalQuestions}
                                 </div>
                             </div>
                         </div>
                         
                         <Button onClick={handleSubmit} disabled={isSubmitting} className="gap-2">
                             <Send className="w-4 h-4" />
-                            Submit
+                            Nộp
                         </Button>
                     </div>
                     <Progress value={progress} className="mt-3" />
@@ -406,7 +411,7 @@ const SurveyPage = () => {
 
                     {isLastQuestion ? (
                         <Button onClick={handleSubmit} disabled={isSubmitting} className="gap-2">
-                            {isSubmitting ? "Submitting..." : "Submit Survey"}
+                            {isSubmitting ? "Đang nộp..." : "Nộp khảo sát"}
                             <Send className="w-4 h-4" />
                         </Button>
                     ) : (
@@ -422,7 +427,7 @@ const SurveyPage = () => {
 
                 <Card className="mt-8">
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Question Navigator</CardTitle>
+                        <CardTitle className="text-base">Điều hướng câu hỏi</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-6 md:grid-cols-10 gap-2">

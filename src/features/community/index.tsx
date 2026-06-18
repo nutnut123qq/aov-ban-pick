@@ -24,7 +24,7 @@ import {
     TedoModalBody,
     TedoModalFooter,
 } from "@/components/atomic"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
 import {
     listCommunities,
     createCommunity,
@@ -32,13 +32,14 @@ import {
     type Community,
     type CommunityVisibility,
 } from "@/modules/api/rest/community"
+import { toastError } from "@/modules/toast"
 
 const PAGE_SIZE = 12
 
 const visibilityOptions: { key: CommunityVisibility; label: string }[] = [
-    { key: "PUBLIC", label: "Công khai" },
-    { key: "PRIVATE", label: "Riêng tư" },
-    { key: "RESTRICTED", label: "Hạn chế" },
+    { key: "public", label: "Công khai" },
+    { key: "private", label: "Riêng tư" },
+    { key: "restricted", label: "Hạn chế" },
 ]
 
 const CommunityCard = ({
@@ -53,8 +54,8 @@ const CommunityCard = ({
     onOpen: () => void
 }) => {
     const [joining, setJoining] = useState(false)
-    const isActive = community.myStatus === "ACTIVE"
-    const isPending = community.myStatus === "PENDING"
+    const isActive = community.myStatus === "active"
+    const isPending = community.myStatus === "pending"
 
     const handleJoin = async () => {
         if (!token || joining || isActive) return
@@ -64,6 +65,7 @@ const CommunityCard = ({
             onChanged()
         } catch (err) {
             console.error("join community error", err)
+            toastError("Không tham gia được cộng đồng.")
         } finally {
             setJoining(false)
         }
@@ -130,7 +132,7 @@ const CommunityCard = ({
 
 const CommunityFeature = () => {
     const router = useRouter()
-    const { token } = useKeycloak()
+    const { token } = useAuthToken()
     const [page, setPage] = useState(1)
     const [searchInput, setSearchInput] = useState("")
     const [search, setSearch] = useState("")
@@ -140,12 +142,13 @@ const CommunityFeature = () => {
         name: string
         description: string
         visibility: CommunityVisibility
-    }>({ name: "", description: "", visibility: "PUBLIC" })
+    }>({ name: "", description: "", visibility: "public" })
     const [creating, setCreating] = useState(false)
 
     const { data, error, isLoading, mutate } = useSWR(
         ["communities", page, search, token],
-        () => listCommunities(page, PAGE_SIZE, { search }, token),
+        // UI page is 1-based for display; backend pagination is 0-based.
+        () => listCommunities(page - 1, PAGE_SIZE, { search }, token),
     )
 
     const communities = data?.items ?? []
@@ -169,11 +172,12 @@ const CommunityFeature = () => {
                 token,
             )
             onClose()
-            setForm({ name: "", description: "", visibility: "PUBLIC" })
+            setForm({ name: "", description: "", visibility: "public" })
             mutate()
             router.push(`/communities/${created.id}`)
         } catch (err) {
             console.error("create community error", err)
+            toastError("Không tạo được cộng đồng.")
         } finally {
             setCreating(false)
         }

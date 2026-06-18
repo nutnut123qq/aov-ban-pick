@@ -1,9 +1,9 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowLeft, CheckCircle, XCircle, Trophy, RotateCcw, Home } from "lucide-react"
+import { ArrowLeft, CheckCircle, XCircle, Trophy, RotateCcw, Home, Circle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,40 +11,86 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { queryTrainingQuiz } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import {
+    queryTrainingQuiz,
+    getTrainingQuizAttempt,
+    quizResultStorageKey,
+    type QuizResultSummary,
+    type QuizAttemptEnvelope,
+} from "@/modules/api"
+import { useAuthToken } from "@/hooks"
 import type { QuizEntity } from "@/modules/api"
 
 
 const QuizResultPage = () => {
     const params = useParams()
+    const searchParams = useSearchParams()
     const quizId = params.id as string
-    const token = useKeycloak().token
-    
+    const attemptId = searchParams.get("attempt")
+    const token = useAuthToken().token
+
     const [quiz, setQuiz] = useState<QuizEntity | null>(null)
+    const [summary, setSummary] = useState<QuizResultSummary | null>(null)
+    const [envelope, setEnvelope] = useState<QuizAttemptEnvelope | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
+    // sessionStorage fallback (immediate display when no attemptId / offline).
     useEffect(() => {
-        const loadQuiz = async () => {
+        if (typeof window === "undefined") return
+        const raw = sessionStorage.getItem(quizResultStorageKey(quizId))
+        if (raw) {
             try {
-                if (!token) {
-                    setQuiz(null)
-                    return
-                }
-
-                const quizData = await queryTrainingQuiz({
-                    id: quizId,
-                    token,
-                })
-                setQuiz(quizData)
-            } catch (error) {
-                console.error("Error loading quiz:", error)
-            } finally {
-                setIsLoading(false)
+                setSummary(JSON.parse(raw) as QuizResultSummary)
+            } catch {
+                setSummary(null)
             }
         }
-        loadQuiz()
-    }, [quizId, token])
+    }, [quizId])
+
+    useEffect(() => {
+        if (!token) {
+            setIsLoading(false)
+            return
+        }
+        let cancelled = false
+        const load = async () => {
+            try {
+                const [quizData, attemptData] = await Promise.all([
+                    queryTrainingQuiz({ id: quizId, token }),
+                    attemptId
+                        ? getTrainingQuizAttempt({ attemptId, token }).catch(() => null)
+                        : Promise.resolve(null),
+                ])
+                if (cancelled) return
+                setQuiz(quizData)
+                setEnvelope(attemptData)
+            } catch (error) {
+                console.error("Error loading quiz result:", error)
+            } finally {
+                if (!cancelled) setIsLoading(false)
+            }
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [quizId, token, attemptId])
+
+    // Map of questionId → the learner's answer for the review section.
+    const answersByQuestion = useMemo(() => {
+        const map = new Map<
+            string,
+            { selectedOptionIds: string[]; answerText: string | null; autoScore: number }
+        >()
+        for (const a of envelope?.answers ?? []) {
+            map.set(a.questionId, {
+                selectedOptionIds: a.selectedOptionIds ?? [],
+                answerText: a.answerText ?? null,
+                autoScore: Number(a.autoScore ?? 0),
+            })
+        }
+        return map
+    }, [envelope])
 
     if (isLoading) {
         return (
@@ -74,13 +120,23 @@ const QuizResultPage = () => {
         )
     }
 
-    // Mock result data
-    const percentage = 0
     const totalPoints = quiz.questions.reduce((acc, q) => acc + q.points, 0)
-    const earnedPoints = 0
-    const passed = false
-    const correctAnswers = 0
     const totalQuestions = quiz.questions.length
+
+    // Prefer server-verified values from the attempt; fall back to sessionStorage.
+    const attempt = envelope?.attempt
+    const percentage = attempt
+        ? Math.round(Number(attempt.percentage ?? 0))
+        : summary?.percentage ?? 0
+    const earnedPoints = attempt ? Number(attempt.score ?? 0) : summary?.earnedPoints ?? 0
+    const passed = attempt
+        ? attempt.passed ?? percentage >= quiz.passingScore
+        : summary?.passed ?? false
+    const correctAnswers = envelope
+        ? (envelope.answers ?? []).filter((a) => Number(a.autoScore ?? 0) > 0).length
+        : summary?.correctAnswers ?? 0
+
+    const canReview = !!envelope && quiz.questions.length > 0
 
     return (
         <div className="min-h-screen bg-muted/30">
@@ -100,16 +156,16 @@ const QuizResultPage = () => {
                             <XCircle className="w-12 h-12 text-red-500" />
                         )}
                     </div>
-                    
+
                     <Badge variant={passed ? "default" : "destructive"} className="mb-4">
                         {passed ? "Đạt yêu cầu" : "Chưa đạt"}
                     </Badge>
-                    
+
                     <h1 className="text-3xl font-bold mb-2">
                         {passed ? "Chúc mừng bạn!" : "Rất tiếc!"}
                     </h1>
                     <p className="text-muted-foreground">
-                        {passed 
+                        {passed
                             ? "Bạn đã hoàn thành bài kiểm tra với kết quả tốt."
                             : `Bạn cần đạt tối thiểu ${quiz.passingScore}% để vượt qua bài kiểm tra này.`
                         }
@@ -156,6 +212,101 @@ const QuizResultPage = () => {
                         </CardContent>
                     </Card>
                 </motion.div>
+
+                {/* Per-question review (only when we have the server attempt) */}
+                {canReview && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
+                        className="mb-6"
+                    >
+                        <h2 className="text-lg font-semibold mb-3">Xem lại bài làm</h2>
+                        <div className="space-y-4">
+                            {quiz.questions.map((q, qi) => {
+                                const mine = answersByQuestion.get(q.id)
+                                const isText = q.type === "ESSAY" || q.type === "FILL_BLANK"
+                                const earned = mine?.autoScore ?? 0
+                                const correct = earned > 0
+                                return (
+                                    <Card key={q.id}>
+                                        <CardContent className="p-4">
+                                            <div className="flex items-start justify-between gap-3 mb-3">
+                                                <p className="font-medium">
+                                                    <span className="text-muted-foreground">Câu {qi + 1}. </span>
+                                                    {q.text}
+                                                </p>
+                                                {isText ? (
+                                                    <Badge variant="secondary" className="shrink-0">
+                                                        {earned}/{q.points} điểm
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge
+                                                        className={`shrink-0 border-0 ${
+                                                            correct
+                                                                ? "bg-green-500/10 text-green-600"
+                                                                : "bg-red-500/10 text-red-600"
+                                                        }`}
+                                                    >
+                                                        {correct ? "Đúng" : "Sai"}
+                                                    </Badge>
+                                                )}
+                                            </div>
+
+                                            {isText ? (
+                                                <div className="text-sm">
+                                                    <p className="text-muted-foreground mb-1">Câu trả lời của bạn:</p>
+                                                    <p className="rounded-lg bg-muted p-3 whitespace-pre-line">
+                                                        {mine?.answerText || "(Bỏ trống)"}
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {q.options?.map((opt) => {
+                                                        const chosen = mine?.selectedOptionIds.includes(opt.id)
+                                                        const isCorrect = opt.isCorrect
+                                                        return (
+                                                            <div
+                                                                key={opt.id}
+                                                                className={`flex items-center gap-2 rounded-lg border p-2.5 text-sm ${
+                                                                    isCorrect
+                                                                        ? "border-green-300 bg-green-500/5"
+                                                                        : chosen
+                                                                            ? "border-red-300 bg-red-500/5"
+                                                                            : ""
+                                                                }`}
+                                                            >
+                                                                {isCorrect ? (
+                                                                    <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+                                                                ) : chosen ? (
+                                                                    <XCircle className="w-4 h-4 text-red-600 shrink-0" />
+                                                                ) : (
+                                                                    <Circle className="w-4 h-4 text-muted-foreground/40 shrink-0" />
+                                                                )}
+                                                                <span className="flex-1">{opt.text}</span>
+                                                                {chosen && (
+                                                                    <span className="text-xs text-muted-foreground">
+                                                                        Bạn chọn
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )}
+
+                                            {q.explanation && (
+                                                <p className="text-xs text-muted-foreground mt-3">
+                                                    💡 {q.explanation}
+                                                </p>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                    </motion.div>
+                )}
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

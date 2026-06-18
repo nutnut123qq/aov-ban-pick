@@ -41,6 +41,68 @@ const queryLearningPathCourses = gql`
   }
 `
 
+/** Lightweight course list used to enrich curriculum/path items (which only carry courseId). */
+const queryCoursesLite = gql`
+  query CoursesLite($request: CoursesRequestInput!) {
+    courses(request: $request) {
+      data {
+        id
+        title
+        slug
+        thumbnailUrl
+        estimatedMinutes
+      }
+    }
+  }
+`
+
+interface CourseLite {
+    id: string
+    title: string | null
+    slug: string | null
+    thumbnailUrl: string | null
+    estimatedMinutes: number | null
+}
+
+interface CoursesLiteData {
+    courses: { data: CourseLite[] }
+}
+
+type EnrichedCourse = {
+    id: string
+    title: string
+    slug: string
+    thumbnail?: string | null
+    duration: number
+    instructorIds: string[]
+}
+
+/** Fetches all courses once and returns a `courseId → course` lookup for enrichment. */
+const fetchCourseMap = async (
+    apollo: ReturnType<typeof createApolloClient>,
+): Promise<Map<string, EnrichedCourse>> => {
+    try {
+        const res = await apollo.query<CoursesLiteData>({
+            query: queryCoursesLite,
+            variables: { request: { page: 0, size: 500, filters: {} } },
+        })
+        const map = new Map<string, EnrichedCourse>()
+        for (const c of res.data?.courses?.data ?? []) {
+            map.set(c.id, {
+                id: c.id,
+                title: c.title ?? "Khóa học",
+                slug: c.slug ?? c.id,
+                thumbnail: c.thumbnailUrl,
+                duration: c.estimatedMinutes ?? 0,
+                instructorIds: [],
+            })
+        }
+        return map
+    } catch {
+        return new Map()
+    }
+}
+
 export enum QueryTrainingPrograms {
     ProgramsList = "programsList",
     ProgramGet = "programGet",
@@ -168,13 +230,18 @@ const mapLearningPath = (
     updatedAt: path.updatedAt ?? "",
 })
 
-const mapCurriculum = (items: RawCurriculumCourse[]): TrainingProgramEntity["curriculumItems"] =>
+const mapCurriculum = (
+    items: RawCurriculumCourse[],
+    courseMap: Map<string, EnrichedCourse> = new Map(),
+): TrainingProgramEntity["curriculumItems"] =>
     items.map((item) => ({
         id: item.id,
         programId: item.programId,
         courseId: item.courseId,
+        course: courseMap.get(item.courseId),
         order: item.sequenceNo ?? 0,
         isRequired: item.isRequired ?? false,
+        estimatedDuration: courseMap.get(item.courseId)?.duration ?? 0,
     }))
 
 export interface QueryTrainingProgramsParams {
@@ -220,7 +287,7 @@ export const queryTrainingProgram = async ({
         token,
     })
 
-    const [programRes, curriculumRes] = await Promise.all([
+    const [programRes, curriculumRes, courseMap] = await Promise.all([
         apollo.query<TrainingProgramGetData>({
             query: queryMap[QueryTrainingPrograms.ProgramGet],
             variables: { id },
@@ -229,6 +296,7 @@ export const queryTrainingProgram = async ({
             query: queryMap[QueryTrainingPrograms.ProgramCurriculum],
             variables: { programId: id },
         }),
+        fetchCourseMap(apollo),
     ])
 
     const program = programRes.data?.trainingProgramGet
@@ -236,7 +304,10 @@ export const queryTrainingProgram = async ({
 
     return mapProgram(
         program,
-        mapCurriculum(curriculumRes.data?.trainingProgramCurriculumList.items ?? [])
+        mapCurriculum(
+            curriculumRes.data?.trainingProgramCurriculumList.items ?? [],
+            courseMap,
+        )
     )
 }
 
@@ -277,7 +348,7 @@ export const queryTrainingLearningPath = async ({
         token,
     })
 
-    const [pathRes, coursesRes] = await Promise.all([
+    const [pathRes, coursesRes, courseMap] = await Promise.all([
         apollo.query<TrainingLearningPathGetData>({
             query: queryMap[QueryTrainingPrograms.LearningPathGet],
             variables: { id },
@@ -286,17 +357,21 @@ export const queryTrainingLearningPath = async ({
             query: queryMap[QueryTrainingPrograms.LearningPathCourses],
             variables: { pathId: id },
         }),
+        fetchCourseMap(apollo),
     ])
 
     const path = pathRes.data?.trainingLearningPathGet
     if (!path) return null
 
-    const courses = (coursesRes.data?.trainingLearningPathCoursesList.items ?? []).map((item) => ({
-        id: item.courseId,
-        title: "Khóa học",
-        slug: item.courseId,
-        duration: 0,
-    }))
+    const courses = (coursesRes.data?.trainingLearningPathCoursesList.items ?? []).map((item) => {
+        const c = courseMap.get(item.courseId)
+        return {
+            id: item.courseId,
+            title: c?.title ?? "Khóa học",
+            slug: c?.slug ?? item.courseId,
+            duration: c?.duration ?? 0,
+        }
+    })
 
     return mapLearningPath(path, courses)
 }

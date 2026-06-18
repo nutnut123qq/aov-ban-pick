@@ -29,7 +29,8 @@ import {
     TedoDivider,
 } from "@/components/atomic"
 import { Textarea } from "@heroui/react"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
+import { uploadImage } from "@/modules/api"
 import {
     getCommunity,
     listPosts,
@@ -44,6 +45,7 @@ import {
     type CommunityPost,
     type CommunityComment,
 } from "@/modules/api/rest/community"
+import { toastError } from "@/modules/toast"
 
 dayjs.extend(relativeTime)
 dayjs.locale("vi")
@@ -256,7 +258,7 @@ const CommentsSection = ({
 }) => {
     const { data, isLoading, mutate } = useSWR(
         ["comments", communityId, postId, token],
-        () => listComments(communityId, postId, 1, 100, token),
+        () => listComments(communityId, postId, 0, 100, token),
     )
     const [text, setText] = useState("")
     const [posting, setPosting] = useState(false)
@@ -280,6 +282,7 @@ const CommentsSection = ({
             mutate()
         } catch (err) {
             console.error("comment error", err)
+            toastError("Không gửi được bình luận.")
         } finally {
             setPosting(false)
         }
@@ -476,6 +479,21 @@ const PostComposer = ({
     const [imageUrl, setImageUrl] = useState("")
     const [showImage, setShowImage] = useState(false)
     const [posting, setPosting] = useState(false)
+    const [uploading, setUploading] = useState(false)
+
+    const handlePickImage = async (file: File) => {
+        if (!token) return
+        setUploading(true)
+        try {
+            const { cdnUrl } = await uploadImage({ token, file, fileName: "post" })
+            setImageUrl(cdnUrl)
+            setShowImage(true)
+        } catch {
+            toastError("Tải ảnh thất bại.")
+        } finally {
+            setUploading(false)
+        }
+    }
 
     const handlePost = async () => {
         if (!token || !content.trim() || posting) return
@@ -495,6 +513,7 @@ const PostComposer = ({
             onPosted()
         } catch (err) {
             console.error("create post error", err)
+            toastError("Không đăng được bài. Vui lòng thử lại.")
         } finally {
             setPosting(false)
         }
@@ -509,6 +528,14 @@ const PostComposer = ({
                     placeholder="Bạn đang nghĩ gì?"
                     minRows={2}
                 />
+                {showImage && imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                        src={imageUrl}
+                        alt=""
+                        className="rounded-lg w-full max-h-72 object-cover"
+                    />
+                )}
                 {showImage && (
                     <TedoInput
                         size="sm"
@@ -520,14 +547,30 @@ const PostComposer = ({
                         }
                     />
                 )}
+                <input
+                    id={`post-image-${communityId}`}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                        const f = e.target.files?.[0]
+                        if (f) handlePickImage(f)
+                        e.target.value = ""
+                    }}
+                />
                 <div className="flex items-center justify-between">
                     <TedoButton
                         size="sm"
                         variant="light"
+                        isLoading={uploading}
                         startContent={<ImageIcon className="w-4 h-4" />}
-                        onPress={() => setShowImage((s) => !s)}
+                        onPress={() =>
+                            document
+                                .getElementById(`post-image-${communityId}`)
+                                ?.click()
+                        }
                     >
-                        Ảnh
+                        {uploading ? "Đang tải…" : "Tải ảnh"}
                     </TedoButton>
                     <TedoButton
                         color="primary"
@@ -548,7 +591,7 @@ const CommunityDetailFeature = ({ id: idProp }: { id?: string } = {}) => {
     const router = useRouter()
     const params = useParams()
     const id = idProp ?? (params.id as string)
-    const { token } = useKeycloak()
+    const { token } = useAuthToken()
     const [membershipBusy, setMembershipBusy] = useState(false)
 
     const {
@@ -562,10 +605,10 @@ const CommunityDetailFeature = ({ id: idProp }: { id?: string } = {}) => {
         data: postsData,
         isLoading: loadingPosts,
         mutate: mutatePosts,
-    } = useSWR(["posts", id, token], () => listPosts(id, { page: 1, size: 20 }, token))
+    } = useSWR(["posts", id, token], () => listPosts(id, { page: 0, size: 20 }, token))
 
-    const isMember = community?.myStatus === "ACTIVE"
-    const isPending = community?.myStatus === "PENDING"
+    const isMember = community?.myStatus === "active"
+    const isPending = community?.myStatus === "pending"
     const posts = postsData?.items ?? []
 
     const handleMembership = async () => {
@@ -580,6 +623,7 @@ const CommunityDetailFeature = ({ id: idProp }: { id?: string } = {}) => {
             mutateCommunity()
         } catch (err) {
             console.error("membership error", err)
+            toastError("Thao tác không thành công. Vui lòng thử lại.")
         } finally {
             setMembershipBusy(false)
         }

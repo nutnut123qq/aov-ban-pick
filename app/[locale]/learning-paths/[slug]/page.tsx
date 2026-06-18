@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
 import { queryTrainingLearningPath } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
 import type { LearningPathEntity } from "@/modules/types"
 
 
@@ -25,7 +25,7 @@ const formatDuration = (seconds: number) => {
 const LearningPathDetailPage = () => {
     const params = useParams()
     const slug = params.slug as string
-    const token = useKeycloak().token
+    const token = useAuthToken().token
     
     const [path, setPath] = useState<LearningPathEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)

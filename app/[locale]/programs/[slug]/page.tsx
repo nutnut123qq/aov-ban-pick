@@ -11,7 +11,6 @@ import {
     Users, 
     CheckCircle, 
     Award,
-    DollarSign,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -21,7 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
 import { queryTrainingProgram } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
 import type { TrainingProgramEntity } from "@/modules/types"
 
 
@@ -43,7 +42,7 @@ const formatDuration = (seconds: number) => {
 const ProgramDetailPage = () => {
     const params = useParams()
     const slug = params.slug as string
-    const token = useKeycloak().token
+    const token = useAuthToken().token
     
     const [program, setProgram] = useState<TrainingProgramEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -291,14 +290,23 @@ const ProgramDetailPage = () => {
                                         )}
                                     </div>
                                     
-                                    <Button className="w-full mb-4" size="lg">
-                                        Đăng ký ngay
-                                    </Button>
-                                    
-                                    <Button variant="outline" className="w-full mb-4">
-                                        <DollarSign className="w-4 h-4 mr-2" />
-                                        Mua làm quà
-                                    </Button>
+                                    {(() => {
+                                        const firstSlug = [...curriculumItems]
+                                            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                                            .map((i) => i.course?.slug)
+                                            .find(Boolean)
+                                        return firstSlug ? (
+                                            <Button asChild className="w-full mb-4" size="lg">
+                                                <Link href={`/courses/${firstSlug}`}>
+                                                    Bắt đầu học
+                                                </Link>
+                                            </Button>
+                                        ) : (
+                                            <Button className="w-full mb-4" size="lg" disabled>
+                                                Sắp ra mắt
+                                            </Button>
+                                        )
+                                    })()}
 
                                     <Separator className="my-4" />
 

@@ -9,7 +9,7 @@ import {
     queryTrainingLearningPaths,
     queryTrainingPrograms,
 } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import { useAuthToken } from "@/hooks"
 import type { TrainingProgramEntity, LearningPathEntity } from "@/modules/types"
 
 import {
@@ -20,7 +20,7 @@ import {
 } from "@/features/programs"
 
 const ProgramsPage = () => {
-    const token = useKeycloak().token
+    const token = useAuthToken().token
     const [programs, setPrograms] = useState<TrainingProgramEntity[]>([])
     const [learningPaths, setLearningPaths] = useState<LearningPathEntity[]>([])
     const [isLoading, setIsLoading] = useState(true)

@@ -24,8 +24,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { queryTrainingQuiz } from "@/modules/api"
-import { useKeycloak } from "@/hooks/singleton"
+import {
+    queryTrainingQuiz,
+    queryMyEnrollments,
+    startTrainingQuizAttempt,
+    submitTrainingQuizAttempt,
+    quizResultStorageKey,
+    type QuizAnswerInput,
+    type QuizResultSummary,
+} from "@/modules/api"
+import { useAuthToken } from "@/hooks"
+import { toastError } from "@/modules/toast"
 import type { QuizEntity, QuizQuestionEntity } from "@/modules/api"
 
 const formatTime = (seconds: number) => {
@@ -131,7 +140,7 @@ const QuizPage = () => {
     const params = useParams()
     const router = useRouter()
     const quizId = params.id as string
-    const token = useKeycloak().token
+    const token = useAuthToken().token
     
     const [quiz, setQuiz] = useState<QuizEntity | null>(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -140,6 +149,10 @@ const QuizPage = () => {
     const [timeLeft, setTimeLeft] = useState(0)
     const [quizStarted, setQuizStarted] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [enrollmentId, setEnrollmentId] = useState<string | null>(null)
+    const [attemptId, setAttemptId] = useState<string | null>(null)
+    const [isStarting, setIsStarting] = useState(false)
+    const [actionError, setActionError] = useState<string | null>(null)
 
     useEffect(() => {
         const loadQuiz = async () => {
@@ -156,6 +169,19 @@ const QuizPage = () => {
                 setQuiz(quizData)
                 if (quizData) {
                     setTimeLeft(quizData.duration)
+                }
+
+                // Resolve the learner's enrollment for this quiz's course (required to attempt).
+                if (quizData?.courseId) {
+                    try {
+                        const res = await queryMyEnrollments({ token })
+                        const match = res.data?.myEnrollments?.data?.find(
+                            (e) => e.courseId === quizData.courseId,
+                        )
+                        setEnrollmentId(match?.id ?? null)
+                    } catch (enrollErr) {
+                        console.error("Error loading enrollments:", enrollErr)
+                    }
                 }
             } catch (error) {
                 console.error("Error loading quiz:", error)
@@ -187,10 +213,96 @@ const QuizPage = () => {
         setAnswers((prev) => ({ ...prev, [questionId]: answer }))
     }, [])
 
+    const handleStart = async () => {
+        if (!token || !quiz) return
+        if (!enrollmentId) {
+            setActionError("Bạn cần ghi danh khóa học này trước khi làm bài kiểm tra.")
+            return
+        }
+        setActionError(null)
+        setIsStarting(true)
+        try {
+            const attempt = await startTrainingQuizAttempt({
+                quizId,
+                enrollmentId,
+                token,
+            })
+            if (!attempt?.id) {
+                setActionError("Không thể bắt đầu bài kiểm tra. Vui lòng thử lại.")
+                return
+            }
+            setAttemptId(attempt.id)
+            setQuizStarted(true)
+        } catch (error) {
+            console.error("Error starting quiz attempt:", error)
+            setActionError(
+                error instanceof Error && error.message.includes("Max attempts")
+                    ? "Bạn đã hết số lần làm bài cho phép."
+                    : "Không thể bắt đầu bài kiểm tra. Vui lòng thử lại.",
+            )
+        } finally {
+            setIsStarting(false)
+        }
+    }
+
     const handleSubmit = async () => {
+        if (!token || !quiz || !attemptId || isSubmitting) return
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        router.push(`/quiz/${quizId}/result`)
+        try {
+            const payload: QuizAnswerInput[] = quiz.questions
+                .map((q): QuizAnswerInput | null => {
+                    const value = answers[q.id]
+                    if (value === undefined) return null
+                    if (q.type === "ESSAY" || q.type === "FILL_BLANK") {
+                        const text = typeof value === "string" ? value.trim() : ""
+                        if (!text) return null
+                        return { questionId: q.id, answerText: text }
+                    }
+                    const ids = Array.isArray(value) ? value : value ? [value] : []
+                    if (ids.length === 0) return null
+                    return { questionId: q.id, selectedOptionIds: ids }
+                })
+                .filter((item): item is QuizAnswerInput => item !== null)
+
+            const result = await submitTrainingQuizAttempt({
+                attemptId,
+                answers: payload,
+                token,
+            })
+
+            const totalPoints = quiz.questions.reduce((acc, q) => acc + q.points, 0)
+            const earnedPoints = Number(result?.attempt.score ?? 0)
+            const percentage = Math.round(Number(result?.attempt.percentage ?? 0))
+            const correctAnswers = (result?.answers ?? []).filter(
+                (a) => Number(a.autoScore ?? 0) > 0,
+            ).length
+
+            const summary: QuizResultSummary = {
+                percentage,
+                earnedPoints,
+                totalPoints,
+                passed: result?.attempt.passed ?? percentage >= quiz.passingScore,
+                correctAnswers,
+                totalQuestions: quiz.questions.length,
+                passingScore: quiz.passingScore,
+            }
+
+            if (typeof window !== "undefined") {
+                sessionStorage.setItem(
+                    quizResultStorageKey(quizId),
+                    JSON.stringify(summary),
+                )
+            }
+            // Pass attemptId so the result page can verify the score from the server.
+            router.push(
+                `/quiz/${quizId}/result${attemptId ? `?attempt=${attemptId}` : ""}`,
+            )
+        } catch (error) {
+            console.error("Error submitting quiz:", error)
+            setActionError("Không thể nộp bài. Vui lòng thử lại.")
+            toastError("Không thể nộp bài. Vui lòng thử lại.")
+            setIsSubmitting(false)
+        }
     }
 
     const answeredCount = Object.keys(answers).length
@@ -262,10 +374,17 @@ const QuizPage = () => {
                         <Alert>
                             <AlertCircle className="w-4 h-4" />
                             <AlertDescription>
-                                <strong>Lưu ý:</strong> Bạn sẽ có {formatTime(quiz.duration)} để hoàn thành bài kiểm tra. 
+                                <strong>Lưu ý:</strong> Bạn sẽ có {formatTime(quiz.duration)} để hoàn thành bài kiểm tra.
                                 Hệ thống sẽ tự động nộp bài khi hết thời gian.
                             </AlertDescription>
                         </Alert>
+
+                        {actionError && (
+                            <Alert variant="destructive">
+                                <AlertCircle className="w-4 h-4" />
+                                <AlertDescription>{actionError}</AlertDescription>
+                            </Alert>
+                        )}
 
                         <div className="flex gap-3">
                             <Link href={`/courses/${quiz.course?.slug}`} className="flex-1">
@@ -274,8 +393,12 @@ const QuizPage = () => {
                                     Quay lại
                                 </Button>
                             </Link>
-                            <Button onClick={() => setQuizStarted(true)} className="flex-1 gap-2">
-                                Bắt đầu làm bài
+                            <Button
+                                onClick={handleStart}
+                                disabled={isStarting}
+                                className="flex-1 gap-2"
+                            >
+                                {isStarting ? "Đang chuẩn bị..." : "Bắt đầu làm bài"}
                                 <ChevronRight className="w-4 h-4" />
                             </Button>
                         </div>

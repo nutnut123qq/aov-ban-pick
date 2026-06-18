@@ -26,6 +26,19 @@ const nextConfig: NextConfig = {
                 protocol: "https",
                 hostname: "picsum.photos",
             },
+            {
+                protocol: "https",
+                hostname: "cdn.jsdelivr.net",
+            },
+            // Cho phép mọi host ảnh khác (nội bộ/dev) để tránh lỗi unconfigured host.
+            {
+                protocol: "https",
+                hostname: "**",
+            },
+            {
+                protocol: "http",
+                hostname: "**",
+            },
         ],
     },
 };

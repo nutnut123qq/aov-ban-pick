@@ -1,5 +1,6 @@
 
 import { useKeycloak } from "@/hooks/singleton/keycloak"
+import { getAccessToken } from "@/services/auth"
 import {
     mutateCourseEnroll,
     type MutateCourseEnrollVariables,
@@ -23,7 +24,7 @@ export const useMutateCourseEnrollSwrCore = () => {
     >(
         "MUTATE_COURSE_ENROLL_SWR",
         async (_key, { arg }) => {
-            const token = keycloak.data?.token
+            const token = keycloak.data?.token ?? getAccessToken()
             if (!token) {
                 throw new Error("Not authenticated")
             }

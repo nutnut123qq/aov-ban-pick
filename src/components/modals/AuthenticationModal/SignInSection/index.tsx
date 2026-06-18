@@ -9,6 +9,7 @@ import {
     setAuthenticationModalTab,
 } from "@/redux/slices"
 import { useKeycloak, useAuthenticationDisclosure } from "@/hooks/singleton"
+import { publicEnv } from "@/resources/env"
 import { Eye, EyeOff } from "lucide-react"
 import { LogIn, ArrowRight, Mail, Lock } from "lucide-react"
 import { AuthModalBody } from "../AuthModalBody"
@@ -190,8 +191,19 @@ export const SignInSection = () => {
                                     type="button"
                                     variant="link"
                                     className="h-auto p-0 text-xs text-primary hover:underline"
+                                    onClick={() => {
+                                        const { url, realm, clientId } = publicEnv().keycloak
+                                        const redirect = encodeURIComponent(
+                                            typeof window !== "undefined" ? window.location.origin : "",
+                                        )
+                                        window.open(
+                                            `${url}/realms/${realm}/login-actions/reset-credentials?client_id=${clientId}&redirect_uri=${redirect}`,
+                                            "_blank",
+                                            "noopener",
+                                        )
+                                    }}
                                 >
-                                    Forgot password?
+                                    Quên mật khẩu?
                                 </Button>
                             </div>
                             <div className="relative">
