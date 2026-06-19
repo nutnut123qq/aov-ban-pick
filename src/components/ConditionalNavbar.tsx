@@ -1,20 +1,18 @@
 "use client"
 import { usePathname } from "next/navigation"
 import { Navbar } from "@/components/layouts"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
+
+const subscribe = () => () => {}
+const getClientSnapshot = () => true
+const getServerSnapshot = () => false
 
 export const ConditionalNavbar = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
-    const [mounted, setMounted] = useState(false)
-    const [showNavbar, setShowNavbar] = useState(true)
+    const mounted = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot)
+    const showNavbar = !pathname?.includes("/learn/")
 
-    useEffect(() => {
-        setMounted(true)
-        // Hide navbar on learn pages
-        setShowNavbar(!pathname?.includes("/learn/"))
-    }, [pathname])
-
-    // Prevent hydration mismatch
+    // Prevent hydration mismatch by rendering children only on server
     if (!mounted) {
         return <>{children}</>
     }

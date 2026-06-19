@@ -1,6 +1,6 @@
 "use client"
 
-import { Alert, AlertProps, cn } from "@heroui/react"
+import { Alert, AlertProps } from "@heroui/react"
 import React from "react"
 
 export const AovAlert = (props: AlertProps) => {
