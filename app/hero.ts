@@ -1,6 +1,6 @@
 import { heroui } from "@heroui/theme";
 
-/** HeroUI + Tailwind v4 theme — TEDO primary/secondary palette. */
+/** HeroUI + Tailwind v4 theme — AOV DraftMind primary/secondary palette. */
 export default heroui({
   themes: {
     light: {

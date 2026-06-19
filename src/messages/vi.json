@@ -1,6 +1,6 @@
 {
   "nav": {
-    "brand": "Tedo Academy",
+    "brand": "AOV DraftMind",
     "signedInFallback": "Đã đăng nhập",
     "home": "Trang chủ",
     "courses": "Khóa học",
@@ -14,7 +14,7 @@
   },
   "auth": {
     "loginPage": {
-      "title": "Đăng nhập Tedo",
+      "title": "Đăng nhập AOV DraftMind",
       "desc": "Sử dụng tài khoản Keycloak được cấp để tiếp tục.",
       "submit": "Đăng nhập với Keycloak"
     },

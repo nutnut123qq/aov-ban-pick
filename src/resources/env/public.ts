@@ -40,18 +40,6 @@ export const publicEnv = () => {
                 fractionDigits: Number(process.env.NEXT_PUBLIC_COMPUTATION_PERCENTAGE_FRACTION_DIGITS || 5),
             },
         },
-        keycloak: {
-            /** The URL of the Keycloak server. */
-            url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "https://keycloak.dev.tedo.vn",
-            /** The realm of the Keycloak server. */
-            realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || "tedo",
-            /** The secret of the Keycloak server. */
-            secret: process.env.NEXT_PUBLIC_KEYCLOAK_SECRET || "MTkNr00s0UxslDfbft1y8GdcUAZCxtYR",
-            /** The client ID of the Keycloak server. */
-            clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "tedo-api-login",
-            /** The redirect URI of the Keycloak server. */
-            redirectUri: process.env.NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI || "http://localhost:3000/keycloak/google/callback",
-        },
         tenant: {
             /** The tenant ID for multi-tenancy support. */
             id: process.env.NEXT_PUBLIC_TENANT_ID || "",

@@ -1,14 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 /**
- * The tabs for the authentication modal.
- */
-export enum AuthenticationModalTab {
-    SignIn = "signIn",
-    SignUp = "signUp",
-}
-
-/**
  * The tabs for the learn page.
  */
 export enum LearnTab {
@@ -19,18 +11,16 @@ export enum LearnTab {
 }
 
 /**
- * The slice for the authentication modal.
+ * The slice for the tabs.
  */
 export interface TabsSlice {
-    authenticationModalTab: AuthenticationModalTab
     learnTab: LearnTab
 }
 
 /**
- * The initial state of the authentication modal slice.
+ * The initial state of the tabs slice.
  */
 const initialState: TabsSlice = {
-    authenticationModalTab: AuthenticationModalTab.SignIn,
     learnTab: LearnTab.LessonVideos,
 }
 
@@ -41,15 +31,6 @@ export const tabsSlice = createSlice({
     name: "tabs",
     initialState,
     reducers: {
-        setAuthenticationModalTab: (
-            state,
-            action: PayloadAction<AuthenticationModalTab>
-        ) => {
-            state.authenticationModalTab = action.payload
-        },
-        resetAuthenticationModalTab: (state) => {
-            state.authenticationModalTab = AuthenticationModalTab.SignIn
-        },
         setLearnTab: (
             state,
             action: PayloadAction<LearnTab>
@@ -71,8 +52,6 @@ export const tabsReducer = tabsSlice.reducer
  * The actions for the tabs.
  */
 export const {
-    setAuthenticationModalTab,
-    resetAuthenticationModalTab,
     setLearnTab,
     resetLearnTab,
 } = tabsSlice.actions

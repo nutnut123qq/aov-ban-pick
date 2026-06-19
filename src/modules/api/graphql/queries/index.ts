@@ -1,14 +1,2 @@
-// Course-related GraphQL operations (document + runner per query).
-export * from "./query-course"
-export * from "./query-course-content"
-export * from "./query-course-enrollment-status"
-export * from "./query-courses"
-export * from "./query-me"
-export * from "./query-my-enrollments"
-export * from "./query-training-assessments"
-export * from "./query-training-calendar"
-export * from "./query-training-certificates"
-export * from "./query-training-lesson-progress"
-export * from "./query-training-library"
-export * from "./query-training-programs"
-export * from "./query-training-quiz-attempt"
+// GraphQL operations (document + runner per query).
+export {}

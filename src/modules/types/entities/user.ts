@@ -1,6 +1,4 @@
 import type { AbstractEntity } from "./abstract"
-import type { EnrollmentEntity } from "./enrollment"
-import type { SubmissionEntity } from "./submission"
 
 /**
  * Application user; identity comes from Keycloak (keycloakId = JWT sub).
@@ -18,8 +16,4 @@ export interface UserEntity extends AbstractEntity {
     keycloakId: string
     /** Whether the user is deleted. */
     isDeleted: boolean
-    /** The submissions of the user. */
-    submissions?: Array<SubmissionEntity>
-    /** The enrollments of the user. */
-    enrollments?: Array<EnrollmentEntity>
 }

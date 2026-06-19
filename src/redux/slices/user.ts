@@ -1,9 +1,9 @@
-import { 
-    UserEntity 
+import {
+    UserEntity
 } from "@/modules/types"
-import { 
-    createSlice, 
-    PayloadAction 
+import {
+    createSlice,
+    PayloadAction
 } from "@reduxjs/toolkit"
 
 /**
@@ -12,8 +12,6 @@ import {
 export interface UserSlice {
     /** The user. */
     user: UserEntity | null
-    /** Whether the user is authenticated. */
-    authenticated: boolean
 }
 
 /**
@@ -22,8 +20,6 @@ export interface UserSlice {
 const initialState: UserSlice = {
     /** The user. */
     user: null,
-    /** Whether the user is authenticated. */
-    authenticated: false,
 }
 
 /**
@@ -39,17 +35,10 @@ export const userSlice = createSlice(
         reducers: {
             /** The action to set the user. */
             setUser: (
-                state, 
+                state,
                 action: PayloadAction<UserEntity | null>
             ) => {
                 state.user = action.payload
-            },
-            /** The action to set the authenticated state. */
-            setAuthenticated: (
-                state, 
-                action: PayloadAction<boolean>
-            ) => {
-                state.authenticated = action.payload
             },
         },
     },
@@ -59,7 +48,6 @@ export const userSlice = createSlice(
  * The reducer for the user slice.
  */
 export const userReducer = userSlice.reducer
-export const { 
+export const {
     setUser,
-    setAuthenticated,
 } = userSlice.actions

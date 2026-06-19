@@ -14,8 +14,8 @@ const figtree = Figtree({
 })
 
 export const metadata: Metadata = {
-    title: "Tedo Academy",
-    description: "Tedo Academy is a platform for learning and growing",
+    title: "AOV DraftMind",
+    description: "Trợ lý cấm/chọn Liên Quân Mobile — thống kê và gợi ý draft theo thời gian thực",
 }
 
 const Layout = ({ children }: PropsWithChildren) => {

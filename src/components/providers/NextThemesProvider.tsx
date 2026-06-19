@@ -9,7 +9,7 @@ interface NextThemesProviderProps extends PropsWithChildren {
 export const NextThemesProvider = ({
     children,
     defaultTheme = "dark",
-    storageKey = "tedo-theme",
+    storageKey = "aov-theme",
 }: NextThemesProviderProps) => {
     useEffect(() => {
         const storedTheme = localStorage.getItem(storageKey)

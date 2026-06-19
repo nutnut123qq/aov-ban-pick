@@ -1,1 +1,2 @@
-export * from "./mutation-course-enroll"
+// GraphQL mutations (document + runner per mutation).
+export {}

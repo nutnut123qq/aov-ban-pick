@@ -6,10 +6,7 @@
     } from "@/components"
 import { ToastProvider } from "@heroui/react"
 import React, { PropsWithChildren, Suspense } from "react"
-import { SingletonHookProvider } from "@/hooks/singleton"
 import { ReduxProvider } from "@/redux"
-import { UseEffects } from "@/hooks"
-import { ModalContainer } from "@/components/modals"
 import { ConditionalNavbar } from "@/components/ConditionalNavbar"
 
 export const InnerLayout = ({ children }: PropsWithChildren) => {
@@ -17,18 +14,14 @@ export const InnerLayout = ({ children }: PropsWithChildren) => {
         <Suspense>
             <NextThemesProvider
                 defaultTheme="dark"
-                storageKey="tedo-theme"
+                storageKey="aov-theme"
             >
                 <HeroUIProvider>
                     <ReduxProvider>
                         <SwrProvider>
-                            <SingletonHookProvider>
-                                <UseEffects />
-                                <ConditionalNavbar>
-                                    {children}
-                                </ConditionalNavbar>
-                                <ModalContainer />
-                            </SingletonHookProvider>
+                            <ConditionalNavbar>
+                                {children}
+                            </ConditionalNavbar>
                             <ToastProvider />
                         </SwrProvider>
                     </ReduxProvider>

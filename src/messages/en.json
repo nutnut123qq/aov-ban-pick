@@ -1,6 +1,6 @@
 {
   "nav": {
-    "brand": "Tedo Academy",
+    "brand": "AOV DraftMind",
     "signedInFallback": "Signed in",
     "home": "Home",
     "courses": "Courses",
@@ -14,7 +14,7 @@
   },
   "auth": {
     "loginPage": {
-      "title": "Sign in to Tedo",
+      "title": "Sign in to AOV DraftMind",
       "desc": "Continue with your Keycloak account.",
       "submit": "Continue with Keycloak"
     },

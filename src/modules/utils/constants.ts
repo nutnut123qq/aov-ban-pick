@@ -58,11 +58,11 @@ export const TOAST = {
  * Local storage keys
  */
 export const STORAGE_KEYS = {
-    THEME: "tedo-theme",
-    LANGUAGE: "tedo-language",
-    SIDEBAR_COLLAPSED: "tedo-sidebar-collapsed",
-    COURSE_PROGRESS: "tedo-course-progress",
-    RECENT_SEARCHES: "tedo-recent-searches",
+    THEME: "aov-theme",
+    LANGUAGE: "aov-language",
+    SIDEBAR_COLLAPSED: "aov-sidebar-collapsed",
+    COURSE_PROGRESS: "aov-course-progress",
+    RECENT_SEARCHES: "aov-recent-searches",
 } as const
 
 /**
