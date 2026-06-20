@@ -205,9 +205,14 @@
     "name": "Florentino"
   },
   {
-    "slug": "flowborn",
-    "file": "flowborn.jpg",
-    "name": "Flowborn"
+    "slug": "flowborn-ad",
+    "file": "flowborn-ad.jpg",
+    "name": "Flowborn AD"
+  },
+  {
+    "slug": "flowborn-mid",
+    "file": "flowborn-mid.jpg",
+    "name": "Flowborn Mid"
   },
   {
     "slug": "gildur",
