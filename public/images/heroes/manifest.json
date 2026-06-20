@@ -245,6 +245,11 @@
     "name": "Helen"
   },
   {
+    "slug": "iggy",
+    "file": "iggy.jpg",
+    "name": "Iggy"
+  },
+  {
     "slug": "ignis",
     "file": "ignis.jpg",
     "name": "Ignis"
