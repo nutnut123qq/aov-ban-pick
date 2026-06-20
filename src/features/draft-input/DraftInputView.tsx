@@ -196,7 +196,7 @@ export const DraftInputView = () => {
                                 </SelectContent>
                             </Select>
                         </Field>
-                        <Field label="Số ván">
+                        <Field label="Ván thứ">
                             <Input
                                 type="number"
                                 min={1}
