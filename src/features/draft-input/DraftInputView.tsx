@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Check, Copy, Download, Swords } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -23,8 +23,28 @@ import type { DraftMeta, FilledStep, HeroManifestEntry, Lane } from "./types"
 
 const EMPTY_STEP: FilledStep = { heroId: null, lane: null }
 
+/** Danh sách đội tuyển gợi ý cho input tên đội. */
+const TEAM_SUGGESTIONS: ReadonlyArray<string> = [
+    "SGP",
+    "HKA",
+    "FS",
+    "SLX",
+    "BRU",
+    "ONE",
+    "FPT",
+    "1S",
+    "DCG",
+    "KOG",
+    "FW",
+    "ANK",
+    "BMG",
+    "FPL",
+    "BAC",
+    "GAM",
+]
+
 const initialMeta: DraftMeta = {
-    tournamentName: "",
+    tournamentName: "APL 2026",
     patchId: "",
     format: "BO3",
     playedAt: "",
@@ -146,17 +166,17 @@ export const DraftInputView = () => {
                             />
                         </Field>
                         <Field label="Đội Xanh (blue)">
-                            <Input
+                            <TeamAutocomplete
                                 value={meta.teamBlueName}
-                                onChange={(e) => setMetaField("teamBlueName", e.target.value)}
-                                placeholder="Saigon Buffalo"
+                                onChange={(v) => setMetaField("teamBlueName", v)}
+                                placeholder="SGP"
                             />
                         </Field>
                         <Field label="Đội Đỏ (red)">
-                            <Input
+                            <TeamAutocomplete
                                 value={meta.teamRedName}
-                                onChange={(e) => setMetaField("teamRedName", e.target.value)}
-                                placeholder="Hanoi Spirit"
+                                onChange={(v) => setMetaField("teamRedName", v)}
+                                placeholder="HKA"
                             />
                         </Field>
                         <Field label="Thể thức">
@@ -383,6 +403,68 @@ export const DraftInputView = () => {
                     if (pickerIndex !== null) setStep(pickerIndex, { heroId })
                 }}
             />
+        </div>
+    )
+}
+
+/** Input tên đội có dropdown gợi ý, cho phép nhập tự do hoặc chọn nhanh. */
+interface TeamAutocompleteProps {
+    /** Giá trị hiện tại. */
+    value: string
+    /** Gọi khi ngườ dùng chọn hoặc nhập. */
+    onChange: (value: string) => void
+    /** Placeholder cho input. */
+    placeholder?: string
+}
+
+const TeamAutocomplete = ({ value, onChange, placeholder }: TeamAutocompleteProps) => {
+    const [open, setOpen] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+                setOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
+    const filtered = useMemo(() => {
+        const q = value.trim().toLowerCase()
+        if (!q) return [...TEAM_SUGGESTIONS]
+        return TEAM_SUGGESTIONS.filter((t) => t.toLowerCase().includes(q))
+    }, [value])
+
+    return (
+        <div ref={containerRef} className="relative">
+            <Input
+                value={value}
+                onChange={(e) => {
+                    onChange(e.target.value)
+                    setOpen(true)
+                }}
+                onFocus={() => setOpen(true)}
+                placeholder={placeholder}
+            />
+            {open && filtered.length > 0 && (
+                <div className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover shadow-md">
+                    {filtered.map((team) => (
+                        <button
+                            key={team}
+                            type="button"
+                            onClick={() => {
+                                onChange(team)
+                                setOpen(false)
+                            }}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                        >
+                            {team}
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
