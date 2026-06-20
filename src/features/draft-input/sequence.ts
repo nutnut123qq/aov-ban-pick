@@ -40,10 +40,10 @@ export const DRAFT_PHASES: ReadonlyArray<string> = [
 
 /** Lane hợp lệ + nhãn tiếng Việt (thuật ngữ chính thức). */
 export const LANES: ReadonlyArray<{ value: Lane; label: string }> = [
-    { value: "ta_than", label: "Tà thần (đường rồng/baron)" },
+    { value: "ta_than", label: "Tà thần" },
     { value: "rung", label: "Rừng" },
     { value: "giua", label: "Giữa" },
-    { value: "rong_xa", label: "Rồng (xạ thủ)" },
+    { value: "rong_xa", label: "Rồng" },
     { value: "rong_ho_tro", label: "Hỗ trợ" },
 ]
 

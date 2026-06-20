@@ -8,7 +8,7 @@ export const LANE_LABELS: Record<Lane, string> = {
     ta_than: "Tà thần",
     rung: "Rừng",
     giua: "Giữa",
-    rong_xa: "Rồng (xạ thủ)",
+    rong_xa: "Rồng",
     rong_ho_tro: "Hỗ trợ",
 }
 
