@@ -45,7 +45,7 @@ const TEAM_SUGGESTIONS: ReadonlyArray<string> = [
 
 const initialMeta: DraftMeta = {
     tournamentName: "APL 2026",
-    patchId: "",
+    patchId: "p_1",
     format: "BO3",
     playedAt: "",
     vanNumber: 1,
