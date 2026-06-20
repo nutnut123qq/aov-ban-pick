@@ -62,6 +62,7 @@ const CONFIDENCE: Record<ConfidenceLevel, { label: string; dot: string; hint: st
 export const MetaView = () => {
     const { data, error, isLoading } = useAovData()
     const [patchId, setPatchId] = useState<string>(ALL)
+    const [tournament, setTournament] = useState<string>(ALL)
     const [lane, setLane] = useState<Lane | typeof ALL>(ALL)
     const [query, setQuery] = useState("")
 
@@ -70,8 +71,9 @@ export const MetaView = () => {
         return aggregateMeta(data.series, data.heroes, {
             patchId,
             lane: lane as Lane | "all",
+            tournamentName: tournament,
         })
-    }, [data, patchId, lane])
+    }, [data, patchId, lane, tournament])
 
     const rows = useMemo(() => {
         if (!result) return []
@@ -110,7 +112,7 @@ export const MetaView = () => {
                             <CardHeader className="pb-3">
                                 <CardTitle className="text-base">Bộ lọc</CardTitle>
                             </CardHeader>
-                            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">Patch</Label>
                                     <Select value={patchId} onValueChange={setPatchId}>
@@ -122,6 +124,22 @@ export const MetaView = () => {
                                             {result.patches.map((p) => (
                                                 <SelectItem key={p} value={p}>
                                                     {p}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label className="text-xs text-muted-foreground">Giải đấu</Label>
+                                    <Select value={tournament} onValueChange={setTournament}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={ALL}>Tất cả giải</SelectItem>
+                                            {result.tournaments.map((t) => (
+                                                <SelectItem key={t} value={t}>
+                                                    {t}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

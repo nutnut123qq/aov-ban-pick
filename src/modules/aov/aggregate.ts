@@ -48,6 +48,8 @@ export interface MetaFilter {
     patchId: string
     /** Lane cần lọc, hoặc "all" cho mọi lane. */
     lane: Lane | "all"
+    /** Tên giải đấu cần lọc, hoặc "all" cho mọi giải. */
+    tournamentName: string
 }
 
 /** Kết quả tổng hợp meta. */
@@ -58,6 +60,8 @@ export interface MetaResult {
     totalMatches: number
     /** Mọi `patch_id` có trong dữ liệu (dựng dropdown), không phụ thuộc bộ lọc. */
     patches: Array<string>
+    /** Mọi tên giải đấu có trong dữ liệu (dựng dropdown), không phụ thuộc bộ lọc. */
+    tournaments: Array<string>
 }
 
 /** Bộ đếm pick/thắng cho một cặp (tướng, lane). */
@@ -87,6 +91,7 @@ export const aggregateMeta = (
 ): MetaResult => {
     const heroById = new Map(heroes.map((h) => [h.slug, h]))
     const patchSet = new Set<string>()
+    const tournamentSet = new Set<string>()
 
     // key = `${heroId}|${lane}`
     const pickAcc = new Map<string, PickAcc>()
@@ -98,7 +103,9 @@ export const aggregateMeta = (
 
     for (const s of series) {
         patchSet.add(s.patch_id)
+        tournamentSet.add(s.tournament_name)
         if (filter.patchId !== "all" && s.patch_id !== filter.patchId) continue
+        if (filter.tournamentName !== "all" && s.tournament_name !== filter.tournamentName) continue
 
         for (const m of s.matches) {
             totalMatches++
@@ -153,5 +160,10 @@ export const aggregateMeta = (
 
     rows.sort((a, b) => b.picks - a.picks || b.winRate - a.winRate)
 
-    return { rows, totalMatches, patches: [...patchSet].sort() }
+    return {
+        rows,
+        totalMatches,
+        patches: [...patchSet].sort(),
+        tournaments: [...tournamentSet].sort(),
+    }
 }
