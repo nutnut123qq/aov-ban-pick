@@ -3,16 +3,7 @@ import { Lightbulb } from "lucide-react"
 
 import type { Suggestion } from "@/modules/aov"
 import type { Lane } from "@/modules/types"
-import type { ConfidenceLevel } from "@/modules/utils/statistics"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-
-/** Màu chấm theo mức tin cậy (đồng bộ với trang Meta). */
-const DOT: Record<ConfidenceLevel, string> = {
-    low: "bg-muted-foreground/40",
-    medium: "bg-amber-500",
-    high: "bg-emerald-500",
-}
 
 interface SuggestionPanelProps {
     /** Nhãn lượt hiện tại (vd "Bên Xanh · CẤM"); null nếu đã xong draft. */
@@ -71,10 +62,6 @@ export const SuggestionPanel = ({
                         )}
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
-                                <span
-                                    className={cn("h-2 w-2 shrink-0 rounded-full", DOT[s.confidence])}
-                                    title={`n=${s.n}`}
-                                />
                                 <span className="truncate font-medium">{s.heroName}</span>
                             </div>
                             <p className="truncate text-xs text-muted-foreground">{s.reason}</p>

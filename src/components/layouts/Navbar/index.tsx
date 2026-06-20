@@ -127,16 +127,16 @@ export const Navbar = () => {
                         {t("nav.home")}
                     </NavLink>
                     <NavLink href="/dashboard">
-                        Bảng điều khiển
+                        {t("nav.dashboard")}
                     </NavLink>
                     <NavLink href="/draft">
-                        Mô phỏng Draft
+                        {t("nav.draft")}
                     </NavLink>
                     <NavLink href="/meta">
-                        Thống kê Meta
+                        {t("nav.meta")}
                     </NavLink>
                     <NavLink href="/draft-input">
-                        Nhập dữ liệu
+                        {t("nav.draftInput")}
                     </NavLink>
                 </nav>
 
@@ -148,7 +148,7 @@ export const Navbar = () => {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="gap-2 h-9 px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
+                                className="gap-2 h-11 px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
                             >
                                 <Globe className="size-4" />
                                 <span className="hidden lg:inline">{currentLang.code.toUpperCase()}</span>
@@ -176,7 +176,7 @@ export const Navbar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                            className="h-11 w-11 text-muted-foreground hover:text-foreground"
                             onClick={toggleTheme}
                             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
                         >
@@ -192,7 +192,7 @@ export const Navbar = () => {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden h-9 w-9"
+                        className="lg:hidden h-11 w-11"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? (
@@ -214,25 +214,25 @@ export const Navbar = () => {
                         <NavLink href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                             <span className="inline-flex items-center gap-2">
                                 <LayoutDashboard className="size-4" />
-                                Bảng điều khiển
+                                {t("nav.dashboard")}
                             </span>
                         </NavLink>
                         <NavLink href="/draft" onClick={() => setMobileMenuOpen(false)}>
                             <span className="inline-flex items-center gap-2">
                                 <Swords className="size-4" />
-                                Mô phỏng Draft
+                                {t("nav.draft")}
                             </span>
                         </NavLink>
                         <NavLink href="/meta" onClick={() => setMobileMenuOpen(false)}>
                             <span className="inline-flex items-center gap-2">
                                 <BarChart3 className="size-4" />
-                                Thống kê Meta
+                                {t("nav.meta")}
                             </span>
                         </NavLink>
                         <NavLink href="/draft-input" onClick={() => setMobileMenuOpen(false)}>
                             <span className="inline-flex items-center gap-2">
                                 <FilePlus2 className="size-4" />
-                                Nhập dữ liệu
+                                {t("nav.draftInput")}
                             </span>
                         </NavLink>
                     </nav>

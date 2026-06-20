@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Check, Copy, Download, Swords } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Check, Copy, Download, Swords, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
-import { HeroPickerDialog } from "./HeroPickerDialog"
+import { HeroPicker } from "./HeroPicker"
 import { buildSeries, validate } from "./export"
 import { DRAFT_PHASES, DRAFT_SEQUENCE, LANES } from "./sequence"
 import type { DraftMeta, FilledStep, HeroManifestEntry, Lane } from "./types"
@@ -58,6 +59,7 @@ const initialMeta: DraftMeta = {
 
 /** Trang nhập một ván cấm/chọn rồi export JSON đúng schema dữ liệu. */
 export const DraftInputView = () => {
+    const t = useTranslations("draftInput")
     const [heroes, setHeroes] = useState<Array<HeroManifestEntry>>([])
     const [heroesError, setHeroesError] = useState(false)
     const [meta, setMeta] = useState<DraftMeta>(initialMeta)
@@ -110,6 +112,8 @@ export const DraftInputView = () => {
     const setStep = (index: number, patch: Partial<FilledStep>) => {
         setFilled((prev) => prev.map((s, i) => (i === index ? { ...s, ...patch } : s)))
     }
+
+    const clearStep = (index: number) => setStep(index, { heroId: null, lane: null })
 
     const setMetaField = <K extends keyof DraftMeta>(key: K, value: DraftMeta[K]) => {
         setMeta((prev) => ({ ...prev, [key]: value }))
@@ -280,13 +284,13 @@ export const DraftInputView = () => {
                                             <div
                                                 key={step.index}
                                                 className={cn(
-                                                    "flex items-center gap-3 rounded-lg border p-2",
+                                                    "flex flex-wrap items-center gap-2 rounded-lg border p-2 sm:gap-3",
                                                     step.side === "blue"
                                                         ? "border-l-4 border-l-blue-500"
                                                         : "border-l-4 border-l-red-500",
                                                 )}
                                             >
-                                                <div className="w-16 shrink-0 text-xs">
+                                                <div className="w-14 shrink-0 text-xs sm:w-16">
                                                     <div className="font-semibold">
                                                         {step.action === "ban"
                                                             ? "CẤM"
@@ -301,7 +305,7 @@ export const DraftInputView = () => {
                                                     type="button"
                                                     onClick={() => setPickerIndex(step.index)}
                                                     className={cn(
-                                                        "flex flex-1 items-center gap-2 rounded-md border px-2 py-1.5 text-left text-sm transition-colors hover:border-primary",
+                                                        "flex min-w-0 flex-1 items-center gap-2 rounded-md border px-2 py-2 text-left text-sm transition-colors hover:border-primary",
                                                         !hero && "text-muted-foreground",
                                                     )}
                                                 >
@@ -313,15 +317,27 @@ export const DraftInputView = () => {
                                                                 alt={hero.name}
                                                                 className="h-8 w-8 rounded object-cover"
                                                             />
-                                                            <span>{hero.name}</span>
+                                                            <span className="truncate">{hero.name}</span>
                                                         </>
                                                     ) : (
                                                         <span>+ Chọn tướng</span>
                                                     )}
                                                 </button>
 
+                                                {hero && (
+                                                    <button
+                                                        type="button"
+                                                        aria-label={t("clearSelection")}
+                                                        title={t("clearSelection")}
+                                                        onClick={() => clearStep(step.index)}
+                                                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                )}
+
                                                 {step.action === "pick" && (
-                                                    <div className="w-44 shrink-0">
+                                                    <div className="w-full shrink-0 sm:w-44">
                                                         <Select
                                                             value={slot.lane || undefined}
                                                             onValueChange={(v) =>
@@ -367,8 +383,8 @@ export const DraftInputView = () => {
                             </ul>
                         ) : (
                             <>
-                                <div className="flex gap-2">
-                                    <Button onClick={handleCopy} variant="outline" className="gap-2">
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                    <Button onClick={handleCopy} variant="outline" className="gap-2 sm:w-auto">
                                         {copied ? (
                                             <Check className="h-4 w-4" />
                                         ) : (
@@ -376,7 +392,7 @@ export const DraftInputView = () => {
                                         )}
                                         {copied ? "Đã chép" : "Sao chép"}
                                     </Button>
-                                    <Button onClick={handleDownload} className="gap-2">
+                                    <Button onClick={handleDownload} className="gap-2 sm:w-auto">
                                         <Download className="h-4 w-4" />
                                         Tải JSON
                                     </Button>
@@ -384,7 +400,7 @@ export const DraftInputView = () => {
                                 <Textarea
                                     readOnly
                                     value={json}
-                                    className="h-72 font-mono text-xs"
+                                    className="h-48 font-mono text-xs sm:h-72"
                                 />
                             </>
                         )}
@@ -392,7 +408,7 @@ export const DraftInputView = () => {
                 </Card>
             </div>
 
-            <HeroPickerDialog
+            <HeroPicker
                 open={pickerIndex !== null}
                 onOpenChange={(open) => {
                     if (!open) setPickerIndex(null)

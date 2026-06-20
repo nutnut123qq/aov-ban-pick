@@ -3,6 +3,10 @@
     "brand": "AOV DraftMind",
     "signedInFallback": "Signed in",
     "home": "Home",
+    "dashboard": "Dashboard",
+    "draft": "Draft Simulator",
+    "meta": "Meta Stats",
+    "draftInput": "Draft Input",
     "courses": "Courses",
     "contact": "Contact",
     "logout": "Logout",
@@ -59,5 +63,12 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "retry": "Retry"
+  },
+  "draft": {
+    "undo": "Undo",
+    "clearSelection": "Clear selection"
+  },
+  "draftInput": {
+    "clearSelection": "Clear selection"
   }
 }

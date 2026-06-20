@@ -47,11 +47,12 @@
 
 ```
 app/                      # App Router — ROUTES nằm ở đây (KHÔNG phải src/app)
-  layout.tsx              # Root layout: fonts, metadata, NextIntlClientProvider
+  layout.tsx              # Root layout: fonts, metadata, <html>/<body>
   InnerLayout.tsx         # "use client" — cây provider
   hero.ts                 # HeroUI theme (primary/secondary palette)
   globals.css             # Tailwind v4 + CSS variables + theme tokens
   [locale]/               # Mọi route public lồng dưới locale
+    layout.tsx            # Locale layout: validate locale, load messages, NextIntlClientProvider → InnerLayout
     page.tsx              # Trang chủ
     dashboard/page.tsx    # Dashboard điều hướng tới các công cụ
     draft/page.tsx        # Mô phỏng draft
@@ -132,30 +133,33 @@ node scripts/download-heroes.mjs
 
 - Route nằm ở `app/` (root), **không phải `src/app`**.
 - Mọi route public nằm dưới `app/[locale]/`.
-- `middleware.ts` chạy `next-intl` middleware và canonicalize redirect URL khi đứng sau Cloudflare Tunnel.
+- `proxy.ts` chạy `next-intl` middleware và canonicalize redirect URL khi đứng sau Cloudflare Tunnel. Next.js 16 đã đổi tên `middleware.ts` thành `proxy.ts`.
 - `src/i18n/routing.ts`: `locales: ["en", "vi"]`, `defaultLocale: "vi"`.
 - `src/i18n/request.ts`: load messages từ `src/messages/{locale}.json`.
+- `app/[locale]/layout.tsx`: validate locale, gọi `setRequestLocale(locale)`, load messages qua `getMessages()` và bọc `NextIntlClientProvider` → `InnerLayout`.
 
 ### 5.2 Cây provider (`app/InnerLayout.tsx`)
 
-Thứ tự bọc:
+Thứ tự bọc (trong `app/[locale]/layout.tsx`):
 
 ```
-<Suspense>
-  <NextThemesProvider defaultTheme="dark" storageKey="aov-theme">
-    <HeroUIProvider>
-      <ReduxProvider>
-        <SwrProvider>
-          <ConditionalNavbar>{children}</ConditionalNavbar>
-          <ToastProvider />
-        </SwrProvider>
-      </ReduxProvider>
-    </HeroUIProvider>
-  </NextThemesProvider>
-</Suspense>
+<NextIntlClientProvider messages={messages}>
+  <Suspense>
+    <NextThemesProvider defaultTheme="dark" storageKey="aov-theme">
+      <HeroUIProvider>
+        <ReduxProvider>
+          <SwrProvider>
+            <ConditionalNavbar>{children}</ConditionalNavbar>
+            <ToastProvider />
+          </SwrProvider>
+        </ReduxProvider>
+      </HeroUIProvider>
+    </NextThemesProvider>
+  </Suspense>
+</NextIntlClientProvider>
 ```
 
-`app/layout.tsx` là Server Component; `InnerLayout.tsx` là client boundary chứa toàn bộ provider.
+`app/layout.tsx` là Server Component chỉ chứa `<html>`/`<body>` và fonts; `app/[locale]/layout.tsx` là Server Component validate locale + load messages; `InnerLayout.tsx` là client boundary chứa toàn bộ provider.
 
 ### 5.3 Ranh giới client/server
 

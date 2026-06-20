@@ -3,6 +3,10 @@
     "brand": "AOV DraftMind",
     "signedInFallback": "Đã đăng nhập",
     "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "draft": "Mô phỏng Draft",
+    "meta": "Thống kê Meta",
+    "draftInput": "Nhập dữ liệu",
     "courses": "Khóa học",
     "contact": "Liên hệ",
     "logout": "Đăng xuất",
@@ -59,5 +63,12 @@
     "loading": "Đang tải...",
     "error": "Đã xảy ra lỗi",
     "retry": "Thử lại"
+  },
+  "draft": {
+    "undo": "Undo",
+    "clearSelection": "Xoá lựa chọn"
+  },
+  "draftInput": {
+    "clearSelection": "Xoá lựa chọn"
   }
 }

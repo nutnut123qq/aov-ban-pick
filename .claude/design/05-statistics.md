@@ -6,22 +6,22 @@
 
 Mỗi patch vài tuần, mỗi giải vài chục–vài trăm trận; một tướng có thể chỉ pick 3–10 lần/patch. **"Thắng 3/3 = 100% WR" là vô nghĩa** và là rủi ro lớn nhất khiến gợi ý sai.
 
-### Giải pháp V1 (đơn giản mà đúng): làm mượt Bayes
+### Giải pháp V1: WR thô kèm cỡ mẫu
 
-Beta-Binomial / empirical Bayes:
+Với dữ liệu từ giải đấu, hiển thị đúng số mà giải đấu cũng tính:
 
 ```
-WR_smoothed = (thắng + α) / (tổng + α + β)
+WR = thắng / tổng pick
 ```
 
-- `α, β` lấy từ WR trung bình toàn meta (prior). Tướng ít trận bị "kéo về" mức trung bình thay vì nhảy lên 100%.
-- Hiển thị kèm **khoảng tin cậy (Wilson interval)**.
-- **Mã màu theo cỡ mẫu** (vd xám nếu `n < 10`) — người dùng phải thấy ngay "số này có đáng tin không".
+- Không làm mượt Bayes để tránh sai lệch so với thông số giải.
+- Luôn hiển thị **cỡ mẫu `n`** bên cạnh WR — ngườ dùng tự đánh giá độ tin cậy.
+- Với `n` quá nhỏ (vd `n < 5`), UI có thể ghi chú "mẫu ít" thay vì dùng màu sắc ngụ ý.
 
 ## Lộ trình thuật toán
 
 ### V1 — MVP (thống kê)
-- Đếm tần suất pick/ban/win/loss + làm mượt Bayes ở trên.
+- Đếm tần suất pick/ban/win/loss và tính **WR thô** theo lane.
 - **Xác suất điều kiện:** P(Win | pick Hero X lane Y khi đối phương đã có Hero Z).
 - **Luật kết hợp (Apriori):** "nếu địch có A và B thì mình nên có C" — cẩn thận với support thấp.
 
@@ -37,4 +37,4 @@ WR_smoothed = (thắng + α) / (tổng + α + β)
 - **Mọi phép tổng hợp lọc theo `patch_id`** trước khi tính (xem [03-data-model](03-data-model.md)).
 - Tính trên bảng tra cứu trong RAM đã build sẵn lúc load, không quét lại JSON mỗi lần.
 - Dùng `decimal.js` cho phép tính nhạy sai số (tỉ lệ, gold diff…) như các util trong `src/modules/utils/computations/`.
-- Không bao giờ trả WR "trần" mà không kèm `n` — API tính toán nên trả `{ value, n, ciLow, ciHigh, confidence }`.
+- Không bao giờ trả WR mà không kèm `n` — API tính toán nên trả `{ value, n }`.

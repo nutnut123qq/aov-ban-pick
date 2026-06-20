@@ -1,42 +1,42 @@
 "use client"
 
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from "@/components/ui/sheet"
 
 import { HeroPickerGrid } from "./HeroPickerGrid"
 import type { HeroManifestEntry } from "./types"
 
-interface HeroPickerDialogProps {
-    /** Mở/đóng dialog. */
+interface HeroPickerSheetProps {
+    /** Mở/đóng sheet. */
     open: boolean
     /** Callback đổi trạng thái mở. */
     onOpenChange: (open: boolean) => void
     /** Toàn bộ tướng. */
     heroes: Array<HeroManifestEntry>
-    /** `hero_id` đã dùng ở ô khác trong ván (làm mờ, không cho chọn lại). */
+    /** `hero_id` đã dùng ở ô khác trong ván. */
     usedHeroIds: Set<string>
     /** Ngườ dùng chọn một tướng. */
     onSelect: (heroId: string) => void
 }
 
-/** Dialog chọn tướng cho desktop. */
-export const HeroPickerDialog = ({
+/** Bottom sheet chọn tướng cho mobile. */
+export const HeroPickerSheet = ({
     open,
     onOpenChange,
     heroes,
     usedHeroIds,
     onSelect,
-}: HeroPickerDialogProps) => {
+}: HeroPickerSheetProps) => {
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>Chọn tướng</DialogTitle>
-                </DialogHeader>
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl pb-6">
+                <SheetHeader className="pb-2">
+                    <SheetTitle>Chọn tướng</SheetTitle>
+                </SheetHeader>
                 <HeroPickerGrid
                     heroes={heroes}
                     usedHeroIds={usedHeroIds}
@@ -44,8 +44,9 @@ export const HeroPickerDialog = ({
                         onSelect(heroId)
                         onOpenChange(false)
                     }}
+                    mobileCols={4}
                 />
-            </DialogContent>
-        </Dialog>
+            </SheetContent>
+        </Sheet>
     )
 }

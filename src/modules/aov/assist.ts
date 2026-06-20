@@ -1,11 +1,4 @@
 import type { HeroManifest, Lane, Series, TeamSide } from "@/modules/types"
-import {
-    bayesSmoothedRate,
-    confidenceFromSample,
-    type ConfidenceLevel,
-} from "@/modules/utils/statistics"
-
-import { PRIOR_STRENGTH } from "./aggregate"
 import { LANE_LABELS } from "./lanes"
 
 /**
@@ -39,8 +32,6 @@ export interface Suggestion {
     n: number
     /** WR đã làm mượt (0..1) khi áp dụng — chỉ với lượt pick. */
     winRate?: number
-    /** Mức tin cậy theo cỡ mẫu. */
-    confidence: ConfidenceLevel
     /** Lane gắn với gợi ý (lượt pick). */
     lane?: Lane
 }
@@ -140,7 +131,6 @@ const suggestBans = (
             heroFile: hero?.file ?? null,
             reason,
             n: c.bans + c.picks,
-            confidence: confidenceFromSample(c.bans + c.picks),
         }
     })
 }
@@ -163,7 +153,7 @@ const suggestPicks = (
         if (ctx.used.has(heroId)) continue
         if (!lanes.includes(lane)) continue
 
-        const wr = bayesSmoothedRate(cell.wins, cell.n, 0.5, PRIOR_STRENGTH)
+        const wr = cell.n > 0 ? cell.wins / cell.n : 0
         const hero = heroById.get(heroId)
         const enemy = enemyByLane.get(lane)
         const counterNote = enemy
@@ -177,7 +167,6 @@ const suggestPicks = (
                 reason: `WR ${LANE_LABELS[lane]} ${(wr * 100).toFixed(0)}% (n=${cell.n})${counterNote}`,
                 n: cell.n,
                 winRate: wr,
-                confidence: confidenceFromSample(cell.n),
                 lane,
             },
             // Ưu tiên lane có địch lộ bài (cần đối đáp), rồi WR, rồi cỡ mẫu.

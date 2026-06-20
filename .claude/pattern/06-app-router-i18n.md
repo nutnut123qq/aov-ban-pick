@@ -6,11 +6,12 @@ Route nằm ở `app/` ở root repo. `tsconfig` alias `@/*` chỉ về `src/*`,
 
 ```
 app/
-  layout.tsx        # root: <html>, fonts, metadata, NextIntlClientProvider → InnerLayout
+  layout.tsx        # root: <html>, fonts, metadata
   InnerLayout.tsx   # "use client" — toàn bộ cây provider (xem 01-architecture)
   hero.ts           # HeroUI theme
   globals.css
   [locale]/
+    layout.tsx      # validate locale, load messages, NextIntlClientProvider → InnerLayout
     page.tsx
     dashboard/page.tsx
     auth/login/page.tsx
@@ -35,14 +36,16 @@ src/i18n/
   request.ts  navigation.ts  index.ts
 src/messages/
   en.json  vi.json
-middleware.ts     # next-intl middleware (locale routing)
+proxy.ts          # next-intl middleware (locale routing); Next.js 16 đổi tên từ middleware.ts
 ```
 
 - **Locale:** `en` và `vi`, **mặc định `vi`** ([`routing.ts`](../../src/i18n/routing.ts)). Type `Locale = "en" | "vi"`.
 - Mọi route public lồng dưới `app/[locale]/`.
-- `app/layout.tsx` bọc `NextIntlClientProvider`.
+- `app/[locale]/layout.tsx` là Server Component: validate locale, gọi `setRequestLocale(locale)`, load messages qua `getMessages()` và bọc `NextIntlClientProvider` → `InnerLayout`.
+- `app/layout.tsx` chỉ chứa `<html>`/`<body>`, fonts và metadata; KHÔNG bọc `NextIntlClientProvider` ở đây.
 - **Chuỗi UI lấy từ `src/messages/{en,vi}.json`** — đừng hard-code text hiển thị; thêm key vào **cả hai** file. Domain Liên Quân nhiều thuật ngữ tiếng Việt (tên lane, vai trò) → giữ đúng thuật ngữ chính thức (xem [`../design/02-draft-format.md`](../design/02-draft-format.md)).
 - Navigation/redirect dùng helper từ `src/i18n/navigation.ts` (locale-aware), không dùng `next/link` thô cho điều hướng cross-locale.
+- `proxy.ts` thay thế `middleware.ts` từ Next.js 16; export hàm `proxy` và `config.matcher` tương tự.
 
 ## Navbar có điều kiện
 
