@@ -7,6 +7,7 @@
     "draft": "Draft Simulator",
     "meta": "Meta Stats",
     "draftInput": "Draft Input",
+    "matches": "Matches",
     "courses": "Courses",
     "contact": "Contact",
     "logout": "Logout",
@@ -70,5 +71,22 @@
   },
   "draftInput": {
     "clearSelection": "Clear selection"
+  },
+  "matches": {
+    "title": "Matches",
+    "description": "Browse series and view draft details per game.",
+    "back": "Back",
+    "matchCount": "{count} games",
+    "vanNumber": "Game {number}",
+    "winner": "Winner",
+    "ban": "Ban",
+    "pick": "Pick",
+    "blue": "Blue",
+    "red": "Red",
+    "noData": "No match data available.",
+    "error": "Failed to load data",
+    "blindPick": "Blind pick",
+    "banPhase": "Ban phase {number}",
+    "pickPhase": "Pick phase {number}"
   }
 }

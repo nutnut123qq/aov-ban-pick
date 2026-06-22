@@ -7,6 +7,7 @@
     "draft": "Mô phỏng Draft",
     "meta": "Thống kê Meta",
     "draftInput": "Nhập dữ liệu",
+    "matches": "Các cặp đấu",
     "courses": "Khóa học",
     "contact": "Liên hệ",
     "logout": "Đăng xuất",
@@ -70,5 +71,22 @@
   },
   "draftInput": {
     "clearSelection": "Xoá lựa chọn"
+  },
+  "matches": {
+    "title": "Các cặp đấu",
+    "description": "Xem lại các series và chi tiết cấm/chọn từng ván.",
+    "back": "Quay lại",
+    "matchCount": "{count} ván",
+    "vanNumber": "Ván {number}",
+    "winner": "Thắng",
+    "ban": "Cấm",
+    "pick": "Chọn",
+    "blue": "Xanh",
+    "red": "Đỏ",
+    "noData": "Chưa có dữ liệu trận đấu.",
+    "error": "Không tải được dữ liệu",
+    "blindPick": "Chọn ẩn",
+    "banPhase": "Cấm lượt {number}",
+    "pickPhase": "Chọn lượt {number}"
   }
 }

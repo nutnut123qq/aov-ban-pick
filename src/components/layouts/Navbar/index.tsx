@@ -25,6 +25,7 @@ import {
     Swords,
     BarChart3,
     FilePlus2,
+    Trophy,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -135,6 +136,9 @@ export const Navbar = () => {
                     <NavLink href="/meta">
                         {t("nav.meta")}
                     </NavLink>
+                    <NavLink href="/matches">
+                        {t("nav.matches")}
+                    </NavLink>
                     <NavLink href="/draft-input">
                         {t("nav.draftInput")}
                     </NavLink>
@@ -227,6 +231,12 @@ export const Navbar = () => {
                             <span className="inline-flex items-center gap-2">
                                 <BarChart3 className="size-4" />
                                 {t("nav.meta")}
+                            </span>
+                        </NavLink>
+                        <NavLink href="/matches" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <Trophy className="size-4" />
+                                {t("nav.matches")}
                             </span>
                         </NavLink>
                         <NavLink href="/draft-input" onClick={() => setMobileMenuOpen(false)}>
