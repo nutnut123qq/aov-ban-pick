@@ -43,12 +43,12 @@ public/data/
 ```jsonc
 // matches/<giai>.json — mỗi phần tử là 1 SERIES, chứa các ván lồng bên trong
 [{
-  "id": "s_dtdv2024_chk1_sgbvshl",
+  "id": "s_dtdv2024_chk1_hanoivssg",   // id CHUẨN HOÁ: <giai>_<team1>vs<team2>, team1/team2 sắp xếp alphabet
   "tournament_name": "ĐTDV Mùa Xuân 2024",
   "patch_id": "p_1_50",
   "format": "BO3",                       // BO3 | BO5 | BO7
-  "team_blue_id": "team_saigon",         // bên ở VÁN 1 (xem 02-draft-format §2.1)
-  "team_red_id": "team_hanoi",
+  "team_blue_id": "team_saigon",         // bên Xanh ở VÁN 1 (xem 02-draft-format §2.1)
+  "team_red_id": "team_hanoi",           // bên Đỏ ở VÁN 1
   "winner_team_id": "team_saigon",
   "played_at": "2024-03-15",
 
@@ -90,6 +90,8 @@ public/data/
 
 ## Quy tắc thiết kế dữ liệu
 
+- **`id` series phải CHUẨN HOÁ** theo tên hai đội sắp xếp alphabet, không phụ thuộc bên Xanh/Đỏ của từng ván. Lý do: luật chọn bên cho phép đội thua ván trước đổi Xanh/Đỏ ở ván sau; nếu `id` theo bên từng ván, cùng một series sẽ bị tách thành nhiều file.
+- **`team_blue_id`/`team_red_id` ở cấp series là bên ở VÁN 1**; các ván sau có thể đổi bên và lưu riêng trong `matches[].team_blue_id`/`team_red_id`.
 - **`fearless_pool` (pool cấm chọn quốc tế) là dữ liệu DẪN XUẤT — KHÔNG lưu trong JSON.** Tính trong browser từ `draft_actions` (`action_type='pick'`) của từng đội trong series. Lưu riêng → dễ lệch khi merge tay.
 - **Mọi thống kê lọc theo `patch_id`.** App có bộ lọc patch ở mọi dashboard.
 - **"Index" = bảng tra cứu trong RAM.** Lần đầu load, build sẵn map theo `hero_id`, `(patch, hero, lane)`, `(series, team_side)` rồi cache — tương đương index DB nhưng nằm ở RAM. Vài nghìn ván ≈ vài MB JSON, nằm gọn trong RAM.

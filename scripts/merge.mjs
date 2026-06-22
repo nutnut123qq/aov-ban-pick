@@ -191,6 +191,12 @@ for (const s of incoming) {
     // Series đã tồn tại → gộp từng ván theo van_number.
     const vans = new Map(existing.matches.map((m) => [m.van_number, m]))
     for (const m of s.matches) {
+        // Nếu ván 1 được merge, cập nhật bên Xanh/Đỏ ở cấp series theo đúng ván 1.
+        if (m.van_number === 1) {
+            existing.team_blue_id = m.team_blue_id
+            existing.team_red_id = m.team_red_id
+        }
+
         if (vans.has(m.van_number)) {
             if (force) {
                 existing.matches = existing.matches.map((em) =>

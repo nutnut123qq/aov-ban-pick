@@ -97,9 +97,12 @@ export const buildSeries = (meta: DraftMeta, filled: Array<FilledStep>): Record<
     }
     if (meta.durationSeconds > 0) match.duration_seconds = meta.durationSeconds
 
-    const seriesId = `s_${slugify(meta.tournamentName)}_${slugify(meta.teamBlueName)}vs${slugify(
-        meta.teamRedName,
-    )}`
+    // Series id ổn định bất kể đội nào Xanh/Đỏ ở ván đang nhập — sắp xếp tên đội theo alphabet.
+    const [firstTeam, secondTeam] = [
+        slugify(meta.teamBlueName),
+        slugify(meta.teamRedName),
+    ].sort()
+    const seriesId = `s_${slugify(meta.tournamentName)}_${firstTeam}vs${secondTeam}`
 
     return {
         id: seriesId,
