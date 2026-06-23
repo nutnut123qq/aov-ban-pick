@@ -41,9 +41,30 @@ const MAX_SUGGESTIONS = 6
 
 const ALL_LANES: Array<Lane> = ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"]
 
+/** Kẹp về [0, 1] — WR khử nhiễu phe có thể tràn nhẹ ra ngoài do tái tâm. */
+const clamp01 = (x: number): number => (x < 0 ? 0 : x > 1 ? 1 : x)
+
+/**
+ * Cận dưới khoảng tin cậy Wilson 95% cho tỉ lệ thắng — dùng để XẾP HẠNG.
+ * Kéo mẫu nhỏ về thấp (1 thắng/1 trận không còn = 100%), nên không bị ăn may đè mẫu lớn.
+ * WR hiển thị vẫn là WR thô; chỉ điểm sắp xếp dùng giá trị này.
+ */
+const wilsonLower = (wins: number, n: number): number => {
+    if (n <= 0) return 0
+    const z = 1.96
+    const z2 = z * z
+    const phat = wins / n
+    const denom = 1 + z2 / n
+    const center = phat + z2 / (2 * n)
+    const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * n)) / n)
+    return (center - margin) / denom
+}
+
 interface PickCell {
     n: number
     wins: number
+    /** Số lần pick này nằm ở bên đỏ (để khử nhiễu lợi thế phe khi xếp hạng). */
+    redN: number
 }
 
 interface Tally {
@@ -56,6 +77,10 @@ interface Tally {
     lanesByHero: Map<string, Set<Lane>>
     /** key = heroId → tổng số pick mọi lane. */
     pickTotal: Map<string, number>
+    /** Tỉ lệ thắng nền của bên xanh (first pick) — base rate để khử nhiễu phe. */
+    blueBase: number
+    /** Tỉ lệ thắng nền của bên đỏ (last pick). APL 2026: đỏ ~59% nên WR thô lệch. */
+    redBase: number
 }
 
 /** Quét toàn bộ series một lượt, dựng các bảng đếm cho engine gợi ý. */
@@ -65,10 +90,12 @@ const tally = (series: Array<Series>): Tally => {
     const lanesByHero = new Map<string, Set<Lane>>()
     const pickTotal = new Map<string, number>()
     let totalMatches = 0
+    let blueWins = 0
 
     for (const s of series) {
         for (const m of s.matches) {
             totalMatches++
+            if (m.winner_team_id === m.team_blue_id) blueWins++
             for (const a of m.draft_actions) {
                 if (a.action_type === "ban") {
                     banCount.set(a.hero_id, (banCount.get(a.hero_id) ?? 0) + 1)
@@ -80,9 +107,10 @@ const tally = (series: Array<Series>): Tally => {
                     (a.team_side === "blue" ? m.team_blue_id : m.team_red_id)
 
                 const key = `${a.hero_id}|${a.lane_position}`
-                const cell = pick.get(key) ?? { n: 0, wins: 0 }
+                const cell = pick.get(key) ?? { n: 0, wins: 0, redN: 0 }
                 cell.n++
                 if (won) cell.wins++
+                if (a.team_side === "red") cell.redN++
                 pick.set(key, cell)
 
                 pickTotal.set(a.hero_id, (pickTotal.get(a.hero_id) ?? 0) + 1)
@@ -92,7 +120,16 @@ const tally = (series: Array<Series>): Tally => {
         }
     }
 
-    return { totalMatches, banCount, pick, lanesByHero, pickTotal }
+    const blueBase = totalMatches > 0 ? blueWins / totalMatches : 0.5
+    return {
+        totalMatches,
+        banCount,
+        pick,
+        lanesByHero,
+        pickTotal,
+        blueBase,
+        redBase: 1 - blueBase,
+    }
 }
 
 /** Gợi ý cho lượt CẤM: tướng ban-rate cao + flex nhiều lane (khó đoán bài). */
@@ -114,8 +151,10 @@ const suggestBans = (
             const presence = t.totalMatches > 0 ? (bans + picks) / t.totalMatches : 0
             return { id, bans, picks, lanes, banRate, presence }
         })
-        // Ưu tiên độ hiện diện (ban+pick), rồi số lần bị cấm.
-        .sort((a, b) => b.presence - a.presence || b.bans - a.bans)
+        // Ưu tiên BAN-RATE (sở thích cấm thật của pro), rồi độ hiện diện.
+        // Presence-first cũ kéo nhầm tướng-pick mạnh (vd Flowborn pick=20) lên đầu
+        // và chôn permaban thật (vd Florentino pick=0, ban=19). Xem data APL 2026.
+        .sort((a, b) => b.banRate - a.banRate || b.presence - a.presence)
         .slice(0, MAX_SUGGESTIONS)
 
     return scored.map((c) => {
@@ -145,6 +184,12 @@ const suggestPicks = (
     const enemyByLane = new Map<Lane, string>()
     for (const e of ctx.enemyRevealed) enemyByLane.set(e.lane, e.heroId)
 
+    // Vị trí trong lượt pick của mình: lanesNeeded.length = số pick còn lại (kể cả lượt này).
+    // Pick cuối → ưu tiên counter lane địch đã lộ. Còn nhiều pick + địch lộ ít → ưu tiên
+    // tướng flex (lane mơ hồ, khó bị bắt bài ngược). Thuần lý thuyết draft, không cần thêm data.
+    const isLastPick = ctx.lanesNeeded.length <= 1
+    const earlyExposed = ctx.lanesNeeded.length >= 3 && ctx.enemyRevealed.length <= 1
+
     const rows: Array<{ suggestion: Suggestion; score: number }> = []
     for (const [key, cell] of t.pick) {
         const sep = key.indexOf("|")
@@ -154,23 +199,41 @@ const suggestPicks = (
         if (!lanes.includes(lane)) continue
 
         const wr = cell.n > 0 ? cell.wins / cell.n : 0
+        // WR khử nhiễu phe: trừ base rate của bên đã pick lịch sử rồi tái tâm về 0.5.
+        // Đỏ ~59% nên staple bên đỏ bị hạ, hero bên xanh thắng được lại được nâng.
+        const expWins = cell.redN * t.redBase + (cell.n - cell.redN) * t.blueBase
+        const adjRate = clamp01((cell.wins - expWins + 0.5 * cell.n) / cell.n)
         const hero = heroById.get(heroId)
         const enemy = enemyByLane.get(lane)
-        const counterNote = enemy
-            ? ` · khắc ${LANE_LABELS[lane]} (địch đã có ${heroById.get(enemy)?.name ?? enemy})`
+        const flexLanes = t.lanesByHero.get(heroId)?.size ?? 0
+        const isFlex = flexLanes >= 2
+        // Note trung thực: ta CHƯA tính head-to-head, chỉ biết lane này cần đối bài.
+        const laneNote = enemy
+            ? ` · cần đối ${LANE_LABELS[lane]} (địch đã có ${heroById.get(enemy)?.name ?? enemy})`
             : ""
+        // Mẫu nhỏ là chuẩn ở giải đấu (median n=3) — cảnh báo để không tin mù WR.
+        const lowSample = cell.n < 5 ? " · mẫu ít" : ""
+        const flexNote = earlyExposed && isFlex ? ` · flex ${flexLanes} lane (khó bắt bài)` : ""
+
+        // Nudge counter ở pick cuối (lúc đó mới chốt được đối lane). Giữ NHỎ vì data
+        // APL 2026 cho thấy is_counter_pick chỉ +2% WR — counter gần như không lợi thế.
+        const counterBoost = enemy ? (isLastPick ? 0.05 : 0.02) : 0
+        // Ưu tiên flex khi mình lộ bài sớm — tránh bị hard-counter ở các lượt sau.
+        const flexBoost = earlyExposed && isFlex ? 0.04 : 0
+
         rows.push({
             suggestion: {
                 heroId,
                 heroName: hero?.name ?? heroId,
                 heroFile: hero?.file ?? null,
-                reason: `WR ${LANE_LABELS[lane]} ${(wr * 100).toFixed(0)}% (n=${cell.n})${counterNote}`,
+                reason: `WR ${LANE_LABELS[lane]} ${(wr * 100).toFixed(0)}% (n=${cell.n})${lowSample}${flexNote}${laneNote}`,
                 n: cell.n,
                 winRate: wr,
                 lane,
             },
-            // Ưu tiên lane có địch lộ bài (cần đối đáp), rồi WR, rồi cỡ mẫu.
-            score: (enemy ? 1 : 0) * 1000 + wr * 100 + Math.min(cell.n, 50) / 100,
+            // Xếp hạng theo Wilson trên WR ĐÃ KHỬ NHIỄU PHE (mẫu nhỏ không ăn may lên top),
+            // cộng nudge counter/flex theo vị trí lượt — không đè bẹp WR như cú +1000 cũ.
+            score: wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost,
         })
     }
 
