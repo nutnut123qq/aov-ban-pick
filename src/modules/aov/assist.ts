@@ -81,7 +81,15 @@ interface Tally {
     blueBase: number
     /** Tỉ lệ thắng nền của bên đỏ (last pick). APL 2026: đỏ ~59% nên WR thô lệch. */
     redBase: number
+    /**
+     * key = lane → tỉ lệ lane đó được pick trong phase 1 (pick_index ≤ 6).
+     * Học quy ước thứ tự lane từ data: HT/AD/Giữa pick sớm (~0.7+), Tà thần để muộn (~0.35).
+     */
+    lanePhase1Share: Map<Lane, number>
 }
+
+/** Pick thuộc phase 1 (lượt chọn đầu) khi pick_index nằm trong 1..6. */
+const PHASE1_MAX_PICK = 6
 
 /** Quét toàn bộ series một lượt, dựng các bảng đếm cho engine gợi ý. */
 const tally = (series: Array<Series>): Tally => {
@@ -89,6 +97,8 @@ const tally = (series: Array<Series>): Tally => {
     const pick = new Map<string, PickCell>()
     const lanesByHero = new Map<string, Set<Lane>>()
     const pickTotal = new Map<string, number>()
+    const laneN = new Map<Lane, number>()
+    const lanePhase1 = new Map<Lane, number>()
     let totalMatches = 0
     let blueWins = 0
 
@@ -116,11 +126,21 @@ const tally = (series: Array<Series>): Tally => {
                 pickTotal.set(a.hero_id, (pickTotal.get(a.hero_id) ?? 0) + 1)
                 if (!lanesByHero.has(a.hero_id)) lanesByHero.set(a.hero_id, new Set())
                 lanesByHero.get(a.hero_id)!.add(a.lane_position)
+
+                laneN.set(a.lane_position, (laneN.get(a.lane_position) ?? 0) + 1)
+                if (a.pick_index != null && a.pick_index <= PHASE1_MAX_PICK) {
+                    lanePhase1.set(a.lane_position, (lanePhase1.get(a.lane_position) ?? 0) + 1)
+                }
             }
         }
     }
 
     const blueBase = totalMatches > 0 ? blueWins / totalMatches : 0.5
+    const lanePhase1Share = new Map<Lane, number>()
+    for (const lane of ALL_LANES) {
+        const n = laneN.get(lane) ?? 0
+        lanePhase1Share.set(lane, n > 0 ? (lanePhase1.get(lane) ?? 0) / n : 0.5)
+    }
     return {
         totalMatches,
         banCount,
@@ -129,6 +149,7 @@ const tally = (series: Array<Series>): Tally => {
         pickTotal,
         blueBase,
         redBase: 1 - blueBase,
+        lanePhase1Share,
     }
 }
 
@@ -189,6 +210,9 @@ const suggestPicks = (
     // tướng flex (lane mơ hồ, khó bị bắt bài ngược). Thuần lý thuyết draft, không cần thêm data.
     const isLastPick = ctx.lanesNeeded.length <= 1
     const earlyExposed = ctx.lanesNeeded.length >= 3 && ctx.enemyRevealed.length <= 1
+    // Phase 1 của mình = vẫn còn ≥3 pick (2 pick cuối là phase 2). Dùng để xếp đúng
+    // thứ tự lane như pro: phase 1 ưu tiên HT/AD/Giữa, để Tà thần cho phase 2.
+    const myPhase1 = ctx.lanesNeeded.length >= 3
 
     const rows: Array<{ suggestion: Suggestion; score: number }> = []
     for (const [key, cell] of t.pick) {
@@ -220,6 +244,12 @@ const suggestPicks = (
         const counterBoost = enemy ? (isLastPick ? 0.05 : 0.02) : 0
         // Ưu tiên flex khi mình lộ bài sớm — tránh bị hard-counter ở các lượt sau.
         const flexBoost = earlyExposed && isFlex ? 0.04 : 0
+        // Thứ tự lane theo phase (học từ data): lane hợp phase được cộng, lệch phase bị trừ.
+        // Vd Tà thần (phase1Share ~0.35) bị dìm ở phase 1, được nâng ở phase 2.
+        // Hệ số 0.4 hiệu chỉnh trên data APL 2026: nhỏ nhất ép đúng thứ tự lane như pro
+        // (phase1 = HT/AD/Giữa, phase2 = Tà thần/Rừng), ổn định tới 0.7 nên không overfit.
+        const laneShare = t.lanePhase1Share.get(lane) ?? 0.5
+        const laneBoost = (myPhase1 ? 1 : -1) * (laneShare - 0.5) * 0.4
 
         rows.push({
             suggestion: {
@@ -232,8 +262,8 @@ const suggestPicks = (
                 lane,
             },
             // Xếp hạng theo Wilson trên WR ĐÃ KHỬ NHIỄU PHE (mẫu nhỏ không ăn may lên top),
-            // cộng nudge counter/flex theo vị trí lượt — không đè bẹp WR như cú +1000 cũ.
-            score: wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost,
+            // cộng nudge counter/flex/thứ-tự-lane theo vị trí lượt — không đè bẹp WR.
+            score: wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost + laneBoost,
         })
     }
 
