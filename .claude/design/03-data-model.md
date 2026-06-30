@@ -90,12 +90,12 @@ public/data/
 
 ## Quy tắc thiết kế dữ liệu
 
-- **`id` series phải CHUẨN HOÁ** theo tên hai đội sắp xếp alphabet, không phụ thuộc bên Xanh/Đỏ của từng ván. Lý do: luật chọn bên cho phép đội thua ván trước đổi Xanh/Đỏ ở ván sau; nếu `id` theo bên từng ván, cùng một series sẽ bị tách thành nhiều file.
+- **`id` series phải CHUẨN HOÁ** theo tên giải + ngày thi đấu + tên hai đội sắp xếp alphabet, không phụ thuộc bên Xanh/Đỏ của từng ván. Lý do: (1) luật chọn bên cho phép đội thua ván trước đổi Xanh/Đỏ ở ván sau; nếu `id` theo bên từng ván, cùng một series sẽ bị tách thành nhiều file; (2) hai trận cùng hai đội ở các ngày khác nhau phải có `id` khác nhau để merge không gộp chung.
 - **`team_blue_id`/`team_red_id` ở cấp series là bên ở VÁN 1**; các ván sau có thể đổi bên và lưu riêng trong `matches[].team_blue_id`/`team_red_id`.
 - **`fearless_pool` (pool cấm chọn quốc tế) là dữ liệu DẪN XUẤT — KHÔNG lưu trong JSON.** Tính trong browser từ `draft_actions` (`action_type='pick'`) của từng đội trong series. Lưu riêng → dễ lệch khi merge tay.
 - **Mọi thống kê lọc theo `patch_id`.** App có bộ lọc patch ở mọi dashboard.
 - **"Index" = bảng tra cứu trong RAM.** Lần đầu load, build sẵn map theo `hero_id`, `(patch, hero, lane)`, `(series, team_side)` rồi cache — tương đương index DB nhưng nằm ở RAM. Vài nghìn ván ≈ vài MB JSON, nằm gọn trong RAM.
-- **`id` dùng chuỗi có nghĩa**, convention gợi ý `<giai>_<series>_<van>`.
+- **`id` dùng chuỗi có nghĩa**, convention gợi ý `s_<giai>_<ngày>_<team1>vs<team2>` (vd `s_apl_2026_2026_06_18_bacvsfpt`).
 
 ## Validation (chạy 2 nơi)
 

@@ -70,7 +70,7 @@ export interface Match {
 
 /** Một series (chứa nhiều ván) — phần tử trong `public/data/matches/<mùa>.json`. */
 export interface Series {
-    /** Id series có nghĩa (vd "s_dtdv2024_sgbvshn"). */
+    /** Id series có nghĩa (vd "s_apl_2026_2026_06_18_bacvsfpt"). */
     id: string
     /** Tên giải hiển thị. */
     tournament_name: string

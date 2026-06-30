@@ -84,9 +84,17 @@
     "blue": "Xanh",
     "red": "Đỏ",
     "noData": "Chưa có dữ liệu trận đấu.",
+    "noFilterResults": "Không có cặp đấu nào trong khoảng ngày đã chọn.",
     "error": "Không tải được dữ liệu",
     "blindPick": "Chọn ẩn",
     "banPhase": "Cấm lượt {number}",
-    "pickPhase": "Chọn lượt {number}"
+    "pickPhase": "Chọn lượt {number}",
+    "resultCount": "{count} kết quả",
+    "filter": {
+      "title": "Lọc theo ngày",
+      "dateFrom": "Từ ngày",
+      "dateTo": "Đến ngày",
+      "reset": "Đặt lại"
+    }
   }
 }

@@ -84,9 +84,17 @@
     "blue": "Blue",
     "red": "Red",
     "noData": "No match data available.",
+    "noFilterResults": "No matches found in the selected date range.",
     "error": "Failed to load data",
     "blindPick": "Blind pick",
     "banPhase": "Ban phase {number}",
-    "pickPhase": "Pick phase {number}"
+    "pickPhase": "Pick phase {number}",
+    "resultCount": "{count} results",
+    "filter": {
+      "title": "Filter by date",
+      "dateFrom": "From date",
+      "dateTo": "To date",
+      "reset": "Reset"
+    }
   }
 }

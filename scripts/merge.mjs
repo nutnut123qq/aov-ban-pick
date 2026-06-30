@@ -91,6 +91,7 @@ function validateSeries(s) {
     if (!s || typeof s !== "object") return ["Series không phải object."]
     if (!s.id) errs.push("Thiếu series.id.")
     if (!s.patch_id) errs.push("Thiếu patch_id.")
+    if (!s.played_at) errs.push("Thiếu played_at (ngày thi đấu).")
     if (!s.team_blue_id || !s.team_red_id) errs.push("Thiếu team_blue_id / team_red_id.")
     if (!Array.isArray(s.matches) || s.matches.length === 0) {
         errs.push("Series không có ván nào (matches rỗng).")

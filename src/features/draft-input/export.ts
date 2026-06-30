@@ -20,6 +20,7 @@ export const validate = (meta: DraftMeta, filled: Array<FilledStep>): Array<stri
 
     if (!meta.tournamentName.trim()) errors.push("Thiếu tên giải.")
     if (!meta.patchId.trim()) errors.push("Thiếu patch_id (vd p_1_50).")
+    if (!meta.playedAt.trim()) errors.push("Thiếu ngày thi đấu.")
     if (!meta.teamBlueName.trim()) errors.push("Thiếu tên đội Xanh.")
     if (!meta.teamRedName.trim()) errors.push("Thiếu tên đội Đỏ.")
     if (!meta.winner) errors.push("Chưa chọn đội thắng.")
@@ -98,11 +99,13 @@ export const buildSeries = (meta: DraftMeta, filled: Array<FilledStep>): Record<
     if (meta.durationSeconds > 0) match.duration_seconds = meta.durationSeconds
 
     // Series id ổn định bất kể đội nào Xanh/Đỏ ở ván đang nhập — sắp xếp tên đội theo alphabet.
+    // Thêm ngày thi đấu để trận cùng hai đội ở các ngày khác nhau không bị gộp chung.
     const [firstTeam, secondTeam] = [
         slugify(meta.teamBlueName),
         slugify(meta.teamRedName),
     ].sort()
-    const seriesId = `s_${slugify(meta.tournamentName)}_${firstTeam}vs${secondTeam}`
+    const datePart = meta.playedAt.replace(/-/g, "_")
+    const seriesId = `s_${slugify(meta.tournamentName)}_${datePart}_${firstTeam}vs${secondTeam}`
 
     return {
         id: seriesId,

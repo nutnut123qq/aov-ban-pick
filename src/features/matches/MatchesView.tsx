@@ -1,14 +1,16 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useTranslations } from "next-intl"
-import { ArrowLeft, Swords, Trophy } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
+import { ArrowLeft, CalendarDays, Swords, Trophy, X } from "lucide-react"
 
 import { LANE_LABELS } from "@/modules/aov/lanes"
 import { useAovData } from "@/modules/aov/useAovData"
 import type { DraftAction, Match, Series, TeamSide } from "@/modules/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
@@ -22,6 +24,14 @@ export const MatchesView = () => {
     const heroBySlug = useMemo(
         () => new Map((data?.heroes ?? []).map((h) => [h.slug, h])),
         [data],
+    )
+
+    const sortedSeries = useMemo(
+        () =>
+            [...(data?.series ?? [])].sort(
+                (a, b) => new Date(b.played_at).getTime() - new Date(a.played_at).getTime(),
+            ),
+        [data?.series],
     )
 
     if (isLoading) {
@@ -46,8 +56,6 @@ export const MatchesView = () => {
         )
     }
 
-    const series = data?.series ?? []
-
     if (selectedMatch && selectedSeries) {
         return (
             <MatchDraftView
@@ -71,7 +79,7 @@ export const MatchesView = () => {
         )
     }
 
-    return <SeriesListView series={series} onSelect={setSelectedSeries} />
+    return <SeriesListView series={sortedSeries} onSelect={setSelectedSeries} />
 }
 
 interface SeriesListViewProps {
@@ -82,6 +90,29 @@ interface SeriesListViewProps {
 /** Danh sách các cặp đấu (series). */
 const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
     const t = useTranslations("matches")
+    const locale = useLocale()
+    const [dateFrom, setDateFrom] = useState("")
+    const [dateTo, setDateTo] = useState("")
+
+    const filteredSeries = useMemo(() => {
+        const from = parseDate(dateFrom)
+        const to = parseDate(dateTo)
+
+        return series.filter((s) => {
+            const d = parseDate(s.played_at)
+            if (!d) return true
+            if (from && stripTime(d) < stripTime(from)) return false
+            if (to && stripTime(d) > stripTime(to)) return false
+            return true
+        })
+    }, [series, dateFrom, dateTo])
+
+    const hasActiveFilter = dateFrom || dateTo
+
+    const resetFilters = () => {
+        setDateFrom("")
+        setDateTo("")
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
@@ -94,15 +125,63 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                     <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
                 </header>
 
-                {series.length === 0 ? (
+                <Card className="mb-6">
+                    <CardContent className="space-y-4 p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                                <CalendarDays className="h-4 w-4 text-primary" />
+                                {t("filter.title")}
+                            </div>
+                            {hasActiveFilter && (
+                                <Button variant="ghost" size="sm" onClick={resetFilters} className="h-8 gap-1">
+                                    <X className="h-3.5 w-3.5" />
+                                    {t("filter.reset")}
+                                </Button>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="date-from" className="text-xs">
+                                    {t("filter.dateFrom")}
+                                </Label>
+                                <Input
+                                    id="date-from"
+                                    type="date"
+                                    value={dateFrom}
+                                    onChange={(e) => setDateFrom(e.target.value)}
+                                    className="h-9"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="date-to" className="text-xs">
+                                    {t("filter.dateTo")}
+                                </Label>
+                                <Input
+                                    id="date-to"
+                                    type="date"
+                                    value={dateTo}
+                                    onChange={(e) => setDateTo(e.target.value)}
+                                    className="h-9"
+                                />
+                            </div>
+                        </div>
+                        {hasActiveFilter && (
+                            <p className="text-xs text-muted-foreground">
+                                {t("resultCount", { count: filteredSeries.length })}
+                            </p>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {filteredSeries.length === 0 ? (
                     <Card>
                         <CardContent className="py-12 text-center text-sm text-muted-foreground">
-                            {t("noData")}
+                            {series.length === 0 ? t("noData") : t("noFilterResults")}
                         </CardContent>
                     </Card>
                 ) : (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {series.map((s) => (
+                        {filteredSeries.map((s) => (
                             <button
                                 key={s.id}
                                 type="button"
@@ -136,7 +215,9 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                             </span>
                                         </div>
                                         {s.played_at && (
-                                            <p className="text-xs text-muted-foreground">{s.played_at}</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {formatDate(s.played_at, locale)}
+                                            </p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -158,6 +239,7 @@ interface SeriesDetailViewProps {
 /** Danh sách các ván trong một series. */
 const SeriesDetailView = ({ series, onBack, onSelectMatch }: SeriesDetailViewProps) => {
     const t = useTranslations("matches")
+    const locale = useLocale()
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
@@ -174,7 +256,7 @@ const SeriesDetailView = ({ series, onBack, onSelectMatch }: SeriesDetailViewPro
                             <span className={sideColor("red")}>{teamDisplayName(series.team_red_id)}</span>
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            {series.tournament_name} · {series.format} · {series.played_at}
+                            {series.tournament_name} · {series.format} · {formatDate(series.played_at, locale)}
                         </p>
                     </div>
                 </header>
@@ -364,6 +446,24 @@ const formatDuration = (seconds: number): string => {
     const m = Math.floor(seconds / 60)
     const s = seconds % 60
     return `${m}:${s.toString().padStart(2, "0")}`
+}
+
+/** Chuyển chuỗi YYYY-MM-DD thành Date địa phương (tránh lệch múi giờ). */
+const parseDate = (value: string): Date | null => {
+    if (!value) return null
+    const [y, m, d] = value.split("-").map(Number)
+    if (!y || !m || !d) return null
+    return new Date(y, m - 1, d)
+}
+
+/** Bỏ phần giờ phút giây để so sánh ngày chính xác. */
+const stripTime = (date: Date): number => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+
+/** Định dạng ngày theo locale hiện tại. */
+const formatDate = (value: string, locale: string): string => {
+    const d = parseDate(value)
+    if (!d) return value
+    return new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(d)
 }
 
 /** Khung chờ khi đang tải. */
