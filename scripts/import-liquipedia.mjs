@@ -504,6 +504,8 @@ for (const { page: p, tpl, names } of matchEntries) {
         }
         const dur = parseDuration(map.get("length"))
         if (dur) match.duration_seconds = dur
+        const vod = (map.get("vod") || "").trim()
+        if (vod) match.vod_url = vod
         matches.push(match)
         gamesOk++
     }
@@ -527,6 +529,7 @@ for (const { page: p, tpl, names } of matchEntries) {
         team_red_id: map1.team_red_id,
         winner_team_id: seriesWinner,
         played_at: date || "1970-01-01",
+        ...(tpl.params.get("vod")?.trim() ? { vod_url: tpl.params.get("vod").trim() } : {}),
         matches,
     })
 }

@@ -64,6 +64,8 @@ export interface Match {
     duration_seconds?: number
     /** Ván chọn ẩn (ván 7 BO7). */
     is_blind_pick: boolean
+    /** Link VOD của riêng ván này (tuỳ chọn, từ Liquipedia). */
+    vod_url?: string
     /** Trình tự cấm/chọn: đủ 8 cấm + 10 chọn. */
     draft_actions: Array<DraftAction>
 }
@@ -86,6 +88,8 @@ export interface Series {
     winner_team_id: string
     /** Ngày thi đấu (YYYY-MM-DD). */
     played_at: string
+    /** Link VOD của cả series (tuỳ chọn, từ Liquipedia). */
+    vod_url?: string
     /** Các ván trong series. */
     matches: Array<Match>
 }

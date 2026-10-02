@@ -108,6 +108,16 @@
     "banPhase": "Cấm lượt {number}",
     "pickPhase": "Chọn lượt {number}",
     "resultCount": "{count} kết quả",
+    "watchVod": "Xem lại VOD",
+    "standings": {
+      "title": "Bảng xếp hạng",
+      "team": "Đội",
+      "series": "Series",
+      "games": "Ván",
+      "diff": "HS",
+      "winRate": "WR%",
+      "h2h": "Đối đầu của {team}:"
+    },
     "filter": {
       "title": "Lọc theo ngày",
       "dateFrom": "Từ ngày",

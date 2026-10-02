@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { useLocale, useTranslations } from "next-intl"
-import { ArrowLeft, CalendarDays, Swords, Trophy, X } from "lucide-react"
+import { ArrowLeft, CalendarDays, ListOrdered, Swords, Trophy, X, MonitorPlay } from "lucide-react"
 
 import { LANE_LABELS } from "@/modules/aov/lanes"
 import { useAovData } from "@/modules/aov/useAovData"
@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 
 /** Trang duyệt các cặp đấu → ván đấu → chi tiết cấm/chọn. */
@@ -93,25 +95,59 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
     const locale = useLocale()
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
+    const [selectedTournament, setSelectedTournament] = useState("")
+    const [selectedTeam, setSelectedTeam] = useState<string | null>(null)
 
     const filteredSeries = useMemo(() => {
         const from = parseDate(dateFrom)
         const to = parseDate(dateTo)
 
         return series.filter((s) => {
+            if (selectedTeam && s.team_blue_id !== selectedTeam && s.team_red_id !== selectedTeam) {
+                return false
+            }
             const d = parseDate(s.played_at)
             if (!d) return true
             if (from && stripTime(d) < stripTime(from)) return false
             if (to && stripTime(d) > stripTime(to)) return false
             return true
         })
-    }, [series, dateFrom, dateTo])
+    }, [series, dateFrom, dateTo, selectedTeam])
 
-    const hasActiveFilter = dateFrom || dateTo
+    const tournaments = useMemo(
+        () => [...new Set(series.map((s) => s.tournament_name))],
+        [series],
+    )
+    const standingsTournament = selectedTournament || series[0]?.tournament_name || ""
+    const standings = useMemo(
+        () => computeStandings(series, standingsTournament),
+        [series, standingsTournament],
+    )
+
+    /** Thành tích đối đầu của đội đang chọn với từng đối thủ (theo series). */
+    const headToHead = useMemo(() => {
+        if (!selectedTeam) return []
+        const map = new Map<string, { w: number; l: number }>()
+        for (const s of series) {
+            const opp =
+                s.team_blue_id === selectedTeam ? s.team_red_id
+                : s.team_red_id === selectedTeam ? s.team_blue_id
+                : null
+            if (!opp) continue
+            const r = map.get(opp) ?? { w: 0, l: 0 }
+            if (s.winner_team_id === selectedTeam) r.w++
+            else r.l++
+            map.set(opp, r)
+        }
+        return [...map.entries()].sort((a, b) => b[1].w - b[1].l - (a[1].w - a[1].l))
+    }, [series, selectedTeam])
+
+    const hasActiveFilter = dateFrom || dateTo || selectedTeam
 
     const resetFilters = () => {
         setDateFrom("")
         setDateTo("")
+        setSelectedTeam(null)
     }
 
     return (
@@ -125,6 +161,93 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                     <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
                 </header>
 
+                {standings.length > 0 && (
+                    <Card className="mb-6">
+                        <CardHeader className="flex-row items-center justify-between gap-3 space-y-0 pb-3">
+                            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                                <ListOrdered className="h-4 w-4 text-primary" />
+                                {t("standings.title")}
+                            </CardTitle>
+                            {tournaments.length > 1 && (
+                                <Select value={standingsTournament} onValueChange={setSelectedTournament}>
+                                    <SelectTrigger className="h-8 w-[240px] text-xs">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {tournaments.map((name) => (
+                                            <SelectItem key={name} value={name}>
+                                                {name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        </CardHeader>
+                        <CardContent className="p-0 pb-2">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="pl-4">{t("standings.team")}</TableHead>
+                                        <TableHead className="w-20 text-center">{t("standings.series")}</TableHead>
+                                        <TableHead className="w-20 text-center">{t("standings.games")}</TableHead>
+                                        <TableHead className="w-16 text-center">{t("standings.diff")}</TableHead>
+                                        <TableHead className="w-16 pr-4 text-right">{t("standings.winRate")}</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {standings.map((r) => (
+                                        <TableRow
+                                            key={r.teamId}
+                                            onClick={() =>
+                                                setSelectedTeam(selectedTeam === r.teamId ? null : r.teamId)
+                                            }
+                                            className={cn(
+                                                "cursor-pointer",
+                                                selectedTeam === r.teamId && "bg-primary/10",
+                                            )}
+                                        >
+                                            <TableCell className="pl-4 font-medium">
+                                                {teamDisplayName(r.teamId)}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {r.seriesW}-{r.seriesL}
+                                            </TableCell>
+                                            <TableCell className="text-center text-muted-foreground">
+                                                {r.gameW}-{r.gameL}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {r.gameW - r.gameL > 0 ? "+" : ""}
+                                                {r.gameW - r.gameL}
+                                            </TableCell>
+                                            <TableCell className="pr-4 text-right">
+                                                {Math.round(
+                                                    (100 * r.seriesW) / (r.seriesW + r.seriesL || 1),
+                                                )}
+                                                %
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            {selectedTeam && headToHead.length > 0 && (
+                                <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
+                                    <span className="text-xs text-muted-foreground">
+                                        {t("standings.h2h", { team: teamDisplayName(selectedTeam) })}
+                                    </span>
+                                    {headToHead.map(([opp, r]) => (
+                                        <span
+                                            key={opp}
+                                            className="rounded-full border px-2 py-0.5 text-xs"
+                                        >
+                                            {teamDisplayName(opp)} {r.w}-{r.l}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
+
                 <Card className="mb-6">
                     <CardContent className="space-y-4 p-4">
                         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -132,6 +255,16 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                 <CalendarDays className="h-4 w-4 text-primary" />
                                 {t("filter.title")}
                             </div>
+                            {selectedTeam && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedTeam(null)}
+                                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                                >
+                                    {teamDisplayName(selectedTeam)}
+                                    <X className="h-3 w-3" />
+                                </button>
+                            )}
                             {hasActiveFilter && (
                                 <Button variant="ghost" size="sm" onClick={resetFilters} className="h-8 gap-1">
                                     <X className="h-3.5 w-3.5" />
@@ -259,6 +392,14 @@ const SeriesDetailView = ({ series, onBack, onSelectMatch }: SeriesDetailViewPro
                             {series.tournament_name} · {series.format} · {formatDate(series.played_at, locale)}
                         </p>
                     </div>
+                    {series.vod_url && (
+                        <Button variant="outline" size="sm" asChild className="ml-auto gap-1.5">
+                            <a href={series.vod_url} target="_blank" rel="noopener noreferrer">
+                                <MonitorPlay className="h-4 w-4 text-red-500" />
+                                {t("watchVod")}
+                            </a>
+                        </Button>
+                    )}
                 </header>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -275,9 +416,12 @@ const SeriesDetailView = ({ series, onBack, onSelectMatch }: SeriesDetailViewPro
                                         <span className="font-semibold">
                                             {t("vanNumber", { number: m.van_number })}
                                         </span>
-                                        {m.is_blind_pick && (
-                                            <span className="text-xs text-muted-foreground">{t("blindPick")}</span>
-                                        )}
+                                        <span className="inline-flex items-center gap-1.5">
+                                            {m.vod_url && <MonitorPlay className="h-3.5 w-3.5 text-red-500" />}
+                                            {m.is_blind_pick && (
+                                                <span className="text-xs text-muted-foreground">{t("blindPick")}</span>
+                                            )}
+                                        </span>
                                     </div>
                                     <div className="flex items-center justify-between gap-2 text-sm font-medium">
                                         <span className={cn("truncate", sideColor("blue"))}>
@@ -352,6 +496,14 @@ const MatchDraftView = ({ match, heroBySlug, onBack }: MatchDraftViewProps) => {
                             {t("winner")}: {teamDisplayName(match.winner_team_id)}
                         </p>
                     </div>
+                    {match.vod_url && (
+                        <Button variant="outline" size="sm" asChild className="ml-auto gap-1.5">
+                            <a href={match.vod_url} target="_blank" rel="noopener noreferrer">
+                                <MonitorPlay className="h-4 w-4 text-red-500" />
+                                {t("watchVod")}
+                            </a>
+                        </Button>
+                    )}
                 </header>
 
                 <div className="space-y-6">
@@ -433,10 +585,64 @@ const DraftActionCard = ({ action, heroBySlug }: DraftActionCardProps) => {
 }
 
 
-/** Hiển thị tên đội từ team_id (bỏ prefix "team_"). */
+/** Hiển thị tên đội từ team_id: slug nhiều từ → Title Case, mã ngắn → UPPER. */
 const teamDisplayName = (teamId: string): string => {
     const raw = teamId.replace(/^team_/, "")
-    return raw.toUpperCase()
+    return raw.includes("_")
+        ? raw
+              .split("_")
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" ")
+        : raw.toUpperCase()
+}
+
+interface TeamStanding {
+    teamId: string
+    seriesW: number
+    seriesL: number
+    gameW: number
+    gameL: number
+}
+
+/** Bảng xếp hạng theo giải: series thắng/thua + hiệu số ván, sắp theo W series → hiệu số ván. */
+const computeStandings = (series: Array<Series>, tournament: string): Array<TeamStanding> => {
+    const map = new Map<string, TeamStanding>()
+    const row = (id: string): TeamStanding => {
+        let r = map.get(id)
+        if (!r) {
+            r = { teamId: id, seriesW: 0, seriesL: 0, gameW: 0, gameL: 0 }
+            map.set(id, r)
+        }
+        return r
+    }
+    for (const s of series) {
+        if (s.tournament_name !== tournament) continue
+        const a = row(s.team_blue_id)
+        const b = row(s.team_red_id)
+        const aWon = s.winner_team_id === a.teamId
+        if (aWon) {
+            a.seriesW++
+            b.seriesL++
+        } else {
+            b.seriesW++
+            a.seriesL++
+        }
+        for (const m of s.matches) {
+            if (m.winner_team_id === a.teamId) {
+                a.gameW++
+                b.gameL++
+            } else if (m.winner_team_id === b.teamId) {
+                b.gameW++
+                a.gameL++
+            }
+        }
+    }
+    return [...map.values()].sort(
+        (x, y) =>
+            y.seriesW - x.seriesW ||
+            y.gameW - y.gameL - (x.gameW - x.gameL) ||
+            y.gameW - x.gameW,
+    )
 }
 
 /** Màu theo phe. */

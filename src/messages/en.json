@@ -108,6 +108,16 @@
     "banPhase": "Ban phase {number}",
     "pickPhase": "Pick phase {number}",
     "resultCount": "{count} results",
+    "watchVod": "Watch VOD",
+    "standings": {
+      "title": "Standings",
+      "team": "Team",
+      "series": "Series",
+      "games": "Games",
+      "diff": "Diff",
+      "winRate": "WR%",
+      "h2h": "Head-to-head for {team}:"
+    },
     "filter": {
       "title": "Filter by date",
       "dateFrom": "From date",

@@ -84,6 +84,7 @@ export const MatchSchema = z
         first_turret_team_id: z.string().optional(),
         duration_seconds: z.number().int().nonnegative().optional(),
         is_blind_pick: z.boolean().default(false),
+        vod_url: z.string().optional(),
         draft_actions: z.array(DraftActionSchema),
     })
     .superRefine((match, ctx) => {
@@ -126,6 +127,7 @@ export const SeriesSchema = z.object({
     team_red_id: z.string().min(1, "team_red_id không được để trống"),
     winner_team_id: z.string().min(1, "winner_team_id không được để trống"),
     played_at: z.string().min(1, "played_at không được để trống"),
+    vod_url: z.string().optional(),
     matches: z.array(MatchSchema).min(1, "Series phải có ít nhất 1 match"),
 })
 
