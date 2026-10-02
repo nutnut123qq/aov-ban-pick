@@ -2,9 +2,9 @@
 
 Khán giả/mục đích: **public cho cộng đồng Liên Quân Mobile** — bản đầu đủ tin cậy để đăng site/repo ra ngoài mà không xấu hổ.
 
-Version đang mở: **v1.0** — pro-meta analytics + draft sim dùng được, site live.
+Version đang mở: **— (v1.0 đã đóng, đang ở trạng thái bảo trì)**
 
-## Checklist v1.0
+## Checklist v1.0 — ✅ ĐÃ ĐÓNG 2026-10-02
 
 - [x] Site live trên Vercel, trả data thật: 334 series / 1295 ván / 133 tướng / 7 giải — `npm run validate:data` xanh, `https://aov-ban-pick.vercel.app/vi` render.
 - [x] `/meta`: stats theo lane + WR Xanh/Đỏ + thời lượng + phase pick + duo theo cặp lane + so sánh 2 giải — verify production (duration/phase/duo/compare đều render).
@@ -31,3 +31,4 @@ Version đang mở: **v1.0** — pro-meta analytics + draft sim dùng được, 
 
 | Version | Đích | Đóng lúc | Evidence |
 |---|---|---|---|
+| v1.0 | Public cho cộng đồng LQM — site live đủ tin cậy để đăng | 2026-10-02 | commit `f16d8a0` · 10/10 checklist verify trên production: `/about` 200, 10 og tags, 87/87 test, 7 giải/334 series/1295 ván |
