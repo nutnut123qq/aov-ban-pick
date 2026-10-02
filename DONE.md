@@ -2,7 +2,14 @@
 
 Khán giả/mục đích: **public cho cộng đồng Liên Quân Mobile** — bản đầu đủ tin cậy để đăng site/repo ra ngoài mà không xấu hổ.
 
-Version đang mở: **— (v1.0 đã đóng, đang ở trạng thái bảo trì)**
+Version đang mở: **v1.1** — độ tin cậy thuật toán/repo
+
+## Checklist v1.1
+
+- [x] `duoLaneKey` giữ đúng hero↔lane — key mới `${laneA}:${heroA}|${laneB}:${heroB}` canonical ("rung:mina|giua:zata" ≠ "rung:zata|giua:mina"); duo UI hiện badge lane dưới từng tướng, test cập nhật + case đảo chiều.
+- [x] `formatSec` không bao giờ hiện `:60` — tách ra `src/modules/aov/format.ts`, làm tròn tổng giây trước khi tách phút; `format.test.ts` cover 719.6→12′00″, 59.9→1′00″, NaN/âm→0.
+- [x] Console error Redux — `store.ts` `reducer: {}` → reducer no-op hợp lệ (chưa có slice nào); verify console sạch khi load `/vi/meta` trên dev server.
+- [x] `AGENTS.md` cập nhật — thêm `npm test`/`tsc --noEmit`/`validate:data` vào lệnh, Testing section phản ánh vitest (13 file/90 test), thêm route mới vào structure, deploy section → Vercel (bỏ VPS workflow đã xoá).
 
 ## Checklist v1.0 — ✅ ĐÃ ĐÓNG 2026-10-02
 

@@ -58,6 +58,10 @@ app/                      # App Router — ROUTES nằm ở đây (KHÔNG phải
     draft/page.tsx        # Mô phỏng draft
     draft-input/page.tsx  # Nhập liệu draft + export JSON
     meta/page.tsx         # Thống kê meta
+    matches/page.tsx      # Danh sách trận + filter
+    about/page.tsx        # Nguồn dữ liệu + coverage + giới hạn
+    heroes/[slug]/page.tsx  # Hồ sơ tướng
+    teams/[id]/page.tsx     # Hồ sơ đội
 
 src/
   components/
@@ -69,8 +73,10 @@ src/
     ConditionalNavbar.tsx # Ẩn/hiện navbar theo route
   features/               # Các màn hình/tính năng lớn
     draft-input/          # UI + logic nhập liệu draft
-    draft-sim/            # Mô phỏng draft + gợi ý
-    meta-stats/           # Thống kê meta
+    draft-sim/            # Mô phỏng draft + gợi ý + score card + history
+    meta-stats/           # Thống kê meta (+ compare 2 giải)
+    hero-detail/          # Trang hồ sơ tướng
+    team-profile/         # Trang hồ sơ đội
   hooks/                  # Custom hooks dùng chung
   modules/
     aov/                  # Load + cache dữ liệu tĩnh AOV (heroes, series)
@@ -116,6 +122,15 @@ npm run start
 # Lint — PHẢI PASS trước khi coi là xong
 npm run lint
 
+# Test — Vitest, các file *.test.ts(x) cạnh module trong src/modules/aov/__tests__/ v.v.
+npm test            # vitest run (watch: npx vitest)
+
+# Typecheck nhanh không build
+npx tsc --noEmit
+
+# Validate toàn bộ dataset tĩnh (manifest + index + matches/*.json)
+npm run validate:data
+
 # Gộp JSON export từ draft-input vào dữ liệu tĩnh
 node scripts/merge.mjs <export.json> --season <season-id> [--force]
 
@@ -123,7 +138,7 @@ node scripts/merge.mjs <export.json> --season <season-id> [--force]
 node scripts/download-heroes.mjs
 ```
 
-> **Lưu ý:** Project hiện **không có test runner** (Jest/Vitest/Playwright). Đảm bảo `npm run lint` và `npm run build` pass là yêu cầu tối thiểu trước khi commit.
+> **Lưu ý:** Gates tối thiểu trước commit: `npm run lint` + `npm test` + `npm run build` đều pass.
 
 ---
 
@@ -248,13 +263,14 @@ Thứ tự bọc (trong `app/[locale]/layout.tsx`):
 
 ## 8. Testing strategy
 
-- Hiện tại project **không có test framework**.
+- **Vitest** đã cài: `npm test` chạy toàn bộ `*.test.ts` — chủ yếu ở `src/modules/aov/__tests__/` (assist, aggregate, compScore, draftUrl, durationStats, heroStats, teamStats, format…). Viết test mới theo mẫu các file sẵn có (mock `Series`/`Match`/`DraftAction` helper trong từng file).
 - Quy trình kiểm thử thực tế:
   1. `npm run lint` — phải pass.
-  2. `npm run build` — phải pass.
-  3. Chạy `npm run dev` và kiểm tra UI trên http://localhost:3000.
-  4. Kiểm tra cả theme light/dark.
-  5. Kiểm tra routing `/vi/dashboard`, `/en/dashboard`, `/draft`, `/draft-input`, `/meta`.
+  2. `npm test` — phải pass.
+  3. `npm run build` — phải pass.
+  4. Chạy `npm run dev` và kiểm tra UI trên http://localhost:3000.
+  5. Kiểm tra cả theme light/dark.
+  6. Kiểm tra routing `/vi/dashboard`, `/vi/draft`, `/vi/draft-input`, `/vi/meta`, `/vi/matches`, `/vi/about`, `/vi/heroes/<slug>`, `/vi/teams/<id>` (tương tự `/en/...`).
 
 ---
 
@@ -283,18 +299,11 @@ node server.js   # standalone server, port 3000
 
 ### CI/CD
 
-`.github/workflows/deploy.yml`:
+Deploy production qua **Vercel** (auto-deploy từ branch `main`) — site: https://aov-ban-pick.vercel.app
 
-- Trigger: push `main` hoặc `workflow_dispatch`.
-- Runner: self-hosted `tedo-vps`.
-- Steps:
-  1. Checkout.
-  2. Docker login.
-  3. Source env file `/var/www/tedo-Front-End/.env`.
-  4. `docker build` với các build-arg trên.
-  5. Push image `sha-<hash>` và `latest`.
-  6. `k3s kubectl set image` deployment `tedo-frontend` trong namespace `tedo`.
-  7. Wait rollout với timeout 180s.
+- App là FE-only → push `main` là đủ, không cần VPS/Docker.
+- Workflow self-hosted `tedo-vps` cũ (`.github/workflows/deploy.yml`) đã bị xoá.
+- `Dockerfile` vẫn còn cho ai muốn tự host, nhưng không nằm trong đường deploy chính.
 
 ### Env production
 

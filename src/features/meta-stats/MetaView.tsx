@@ -7,6 +7,7 @@ import { BarChart3, FilePlus2, Search } from "lucide-react"
 import {
     aggregateMeta,
     clamp01,
+    formatSec,
     getDurationStats,
     getTally,
     LANE_OPTIONS,
@@ -52,7 +53,8 @@ const MAX_PAIR_ROWS = 20
 
 /**
  * Mọi cặp lane C(5,2) theo thứ tự LANE_OPTIONS (= LANE_ORDER bên stats layer).
- * `value` = `${laneA}|${laneB}` — trùng prefix của key `tally.duoLane`.
+ * `value` = `${laneA}|${laneB}` — khớp phần lane của key `tally.duoLane`
+ * (`${laneA}:${heroA}|${laneB}:${heroB}`).
  */
 const LANE_PAIRS: Array<{ value: string; a: Lane; b: Lane }> = (() => {
     const lanes = LANE_OPTIONS.map((o) => o.value)
@@ -67,13 +69,6 @@ const LANE_PAIRS: Array<{ value: string; a: Lane; b: Lane }> = (() => {
 
 /** Định dạng tỉ lệ 0..1 thành "62.5%". */
 const pct = (value: number): string => `${(value * 100).toFixed(1)}%`
-
-/** Định dạng giây thành "12′34″". */
-const formatSec = (sec: number): string => {
-    const m = Math.floor(sec / 60)
-    const s = Math.round(sec - m * 60)
-    return `${m}′${String(s).padStart(2, "0")}″`
-}
 
 /** "61% / 48%" cho WR theo bên Xanh/Đỏ; "—" khi mẫu một bên (hoặc cả hai) <5. */
 const blueRedText = (row: MetaRow): string => {
@@ -189,15 +184,16 @@ export const MetaView = () => {
         return { synergy, matchup }
     }, [metaTally])
 
-    /** Top cặp tướng cùng bên trong cặp lane đang chọn (key `laneA|laneB|heroA+heroB`). */
+    /** Top cặp tướng cùng bên trong cặp lane đang chọn (key `laneA:heroA|laneB:heroB` — hero gắn đúng lane). */
     const duoRows = useMemo(() => {
-        const prefix = `${duoPair}|`
         return [...metaTally.duoLane.entries()]
-            .filter(([k, c]) => k.startsWith(prefix) && c.n >= MIN_DUO_GAMES)
             .map(([k, c]) => {
-                const [a, b] = k.slice(prefix.length).split("+")
-                return { a, b, n: c.n, wr: clamp01(c.wins / c.n) }
+                const [pa, pb] = k.split("|")
+                const [laneA, a] = pa.split(":")
+                const [laneB, b] = (pb ?? "").split(":")
+                return { a, b, aLane: laneA, bLane: laneB, n: c.n, wr: clamp01(c.wins / c.n) }
             })
+            .filter((r) => `${r.aLane}|${r.bLane}` === duoPair && r.n >= MIN_DUO_GAMES)
             .sort((x, y) => y.wr - x.wr || y.n - x.n)
             .slice(0, MAX_PAIR_ROWS)
     }, [metaTally, duoPair])
@@ -562,6 +558,9 @@ interface PairRow {
     n: number
     /** WR của cặp (synergy) hoặc của `a` khi gặp `b` (matchup). */
     wr: number
+    /** Lane gắn với tướng a/b (chỉ bảng duo theo lane) — hiện badge nhỏ. */
+    aLane?: string
+    bLane?: string
 }
 
 /** Bảng cặp tướng: icon 2 bên + số ván + WR, scroll trong khung cố định. */
@@ -588,8 +587,9 @@ const PairTable = ({
     className?: string
 }) => {
     const t = useTranslations("meta")
+    const tLane = useTranslations("lanes")
     const locale = useLocale()
-    const heroCell = (slug: string) => {
+    const heroCell = (slug: string, lane?: string) => {
         const h = heroBySlug.get(slug)
         return (
             <Link
@@ -606,7 +606,16 @@ const PairTable = ({
                 ) : (
                     <div className="h-7 w-7 shrink-0 rounded bg-muted" />
                 )}
-                <span className="truncate text-sm font-medium">{h?.name ?? slug}</span>
+                <span className="min-w-0">
+                    <span className="block truncate text-sm font-medium">
+                        {h?.name ?? slug}
+                    </span>
+                    {lane && (
+                        <span className="block text-[10px] leading-tight text-muted-foreground">
+                            {tLane(lane)}
+                        </span>
+                    )}
+                </span>
             </Link>
         )
     }
@@ -643,11 +652,11 @@ const PairTable = ({
                                 className="flex items-center gap-2 rounded-md px-2 py-1.5 odd:bg-muted/40"
                             >
                                 <div className="grid min-w-0 flex-1 grid-cols-[1fr_auto_1fr] items-center gap-2">
-                                    {heroCell(r.a)}
+                                    {heroCell(r.a, r.aLane)}
                                     <span className="text-xs text-muted-foreground">
                                         {separator === "vs" ? "vs" : "+"}
                                     </span>
-                                    {heroCell(r.b)}
+                                    {heroCell(r.b, r.bLane)}
                                 </div>
                                 <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
                                     {r.n}

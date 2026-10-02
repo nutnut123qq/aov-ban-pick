@@ -324,16 +324,16 @@ describe("assist module", () => {
     })
 
     describe("duoLane tally", () => {
-        it("counts same-side lane pairs with canonical lane|lane|hero+hero key", () => {
+        it("counts same-side lane pairs with canonical lane:hero key", () => {
             const t = tally(createCounterSeries())
             // Blue duo rung×giua: b1(rung) + tulen(giua) — blue chỉ thắng ván 1/6
-            const duo = t.duoLane.get("rung|giua|b1+tulen")
+            const duo = t.duoLane.get("rung:b1|giua:tulen")
             expect(duo).toBeDefined()
             expect(duo?.n).toBe(6)
             expect(duo?.wins).toBe(1)
             expect(duo?.redN).toBe(0)
             // Red duo ta_than×giua: florentino(ta_than) + r1(giua) — đỏ thắng 5/6
-            const red = t.duoLane.get("ta_than|giua|florentino+r1")
+            const red = t.duoLane.get("ta_than:florentino|giua:r1")
             expect(red?.n).toBe(6)
             expect(red?.wins).toBe(5)
             expect(red?.redN).toBe(6)
@@ -378,17 +378,26 @@ describe("assist module", () => {
             const t = tally(series)
             const keys = [...t.duoLane.keys()]
             // Cặp h1×h2 trùng giua → không xuất hiện dưới bất kỳ key nào
-            expect(keys.some((k) => k.includes("h1+h2") || k.includes("h2+h1"))).toBe(false)
-            // Cặp khác lane vẫn được đếm bình thường
-            expect(t.duoLane.get("rung|giua|h1+h3")?.n).toBe(1)
+            expect(
+                keys.some((k) => k.includes("h1") && k.includes("h2")),
+            ).toBe(false)
+            // Cặp khác lane vẫn được đếm bình thường (h3 rung trước h1 giua)
+            expect(t.duoLane.get("rung:h3|giua:h1")?.n).toBe(1)
         })
 
-        it("duoLaneKey orders lanes by lane order then heroes alphabetically", () => {
+        it("duoLaneKey orders by lane order, hero bound to its own lane", () => {
             expect(duoLaneKey("giua", "rung", "tulen", "nakroth")).toBe(
-                "rung|giua|nakroth+tulen",
+                "rung:nakroth|giua:tulen",
             )
             expect(duoLaneKey("rong_ho_tro", "ta_than", "helen", "airi")).toBe(
-                "ta_than|rong_ho_tro|airi+helen",
+                "ta_than:airi|rong_ho_tro:helen",
+            )
+            // Đảo ngược thứ tự tham số vẫn ra cùng key — nhưng hero theo đúng lane
+            expect(duoLaneKey("rung", "giua", "mina", "zata")).toBe(
+                "rung:mina|giua:zata",
+            )
+            expect(duoLaneKey("giua", "rung", "mina", "zata")).toBe(
+                "rung:zata|giua:mina",
             )
             // Trùng lane (flex) → null
             expect(duoLaneKey("giua", "giua", "tulen", "liliana")).toBeNull()

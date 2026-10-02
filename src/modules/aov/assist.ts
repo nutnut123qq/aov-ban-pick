@@ -107,8 +107,9 @@ export interface Tally {
     /** key = `${a}|${b}` → số ván/thắng của phe có `a` khi gặp `b` bên kia. */
     matchup: Map<string, PickCell>
     /**
-     * key = `${laneA}|${laneB}|${heroA}+${heroB}` (cả lane lẫn hero đã sort)
-     * → synergy cùng bên giới hạn đúng 1 cặp lane (duo Giữa×Rừng, Rồng×Hỗ trợ…).
+     * key = `${laneA}:${heroA}|${laneB}:${heroB}` — 2 đoạn `lane:hero`,
+     * sắp theo thứ tự lane trong `ALL_LANES` nên hero luôn gắn đúng lane của nó
+     * ("Mina rừng + Zata giữa" khác "Zata rừng + Mina giữa").
      */
     duoLane: Map<string, PickCell>
     /**
@@ -138,8 +139,8 @@ export const pickPhaseOf = (idx: number | null): PickPhase | null => {
 
 /**
  * Key chuẩn của bảng `duoLane` cho một cặp pick cùng bên:
- * `${laneA}|${laneB}|${heroA}+${heroB}` — lane sắp theo `ALL_LANES`
- * (ta_than → rong_ho_tro), cặp hero sắp alphabet trong cùng key.
+ * `${laneA}:${heroA}|${laneB}:${heroB}` — sắp theo thứ tự lane trong
+ * `ALL_LANES` (ta_than → rong_ho_tro), hero luôn gắn với lane của nó.
  * Trả null khi 2 pick trùng lane (flex) hoặc lane lạ.
  */
 export const duoLaneKey = (
@@ -151,9 +152,9 @@ export const duoLaneKey = (
     const ia = ALL_LANES.indexOf(laneA)
     const ib = ALL_LANES.indexOf(laneB)
     if (ia < 0 || ib < 0 || ia === ib) return null
-    const [la, lb] = ia < ib ? [laneA, laneB] : [laneB, laneA]
-    const [ha, hb] = [heroA, heroB].sort()
-    return `${la}|${lb}|${ha}+${hb}`
+    return ia < ib
+        ? `${laneA}:${heroA}|${laneB}:${heroB}`
+        : `${laneB}:${heroB}|${laneA}:${heroA}`
 }
 
 /** Quét toàn bộ series một lượt, dựng các bảng đếm cho engine gợi ý. */
