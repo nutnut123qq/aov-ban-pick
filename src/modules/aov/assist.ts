@@ -14,6 +14,8 @@ export interface AssistContext {
     used: Set<string>
     /** Các lane phía mình còn thiếu (chỉ dùng cho lượt pick). */
     lanesNeeded: Array<Lane>
+    /** Tướng đồng đội đã pick kèm lane (để gợi ý combo/synergy). */
+    alliesPicked: Array<{ heroId: string; lane: Lane }>
     /** Tướng đối phương đã lộ kèm lane (để gợi ý counter). */
     enemyRevealed: Array<{ heroId: string; lane: Lane }>
 }
@@ -100,6 +102,10 @@ export interface Tally {
     redBase: number
     /** key = lane → tỉ lệ lane đó được pick trong phase 1 (pick_index ≤ 6). */
     lanePhase1Share: Map<Lane, number>
+    /** key = `${a}+${b}` (đã sort) → số ván/thắng khi 2 tướng chơi CÙNG bên. */
+    pair: Map<string, PickCell>
+    /** key = `${a}|${b}` → số ván/thắng của phe có `a` khi gặp `b` bên kia. */
+    matchup: Map<string, PickCell>
 }
 
 /** Pick thuộc phase 1 (lượt chọn đầu) khi pick_index nằm trong 1..6. */
@@ -113,6 +119,8 @@ export const tally = (series: Array<Series>): Tally => {
     const pickTotal = new Map<string, number>()
     const laneN = new Map<Lane, number>()
     const lanePhase1 = new Map<Lane, number>()
+    const pair = new Map<string, PickCell>()
+    const matchup = new Map<string, PickCell>()
     let totalMatches = 0
     let blueWins = 0
 
@@ -125,7 +133,10 @@ export const tally = (series: Array<Series>): Tally => {
         for (const m of s.matches) {
             if (!m || !Array.isArray(m.draft_actions)) continue
             totalMatches++
-            if (m.winner_team_id && m.winner_team_id === m.team_blue_id) blueWins++
+            const blueWon = m.winner_team_id && m.winner_team_id === m.team_blue_id
+            if (blueWon) blueWins++
+            const bluePicks: Array<string> = []
+            const redPicks: Array<string> = []
             for (const a of m.draft_actions) {
                 if (!a || !a.hero_id) continue
                 if (a.action_type === "ban") {
@@ -152,6 +163,35 @@ export const tally = (series: Array<Series>): Tally => {
                 if (a.pick_index != null && a.pick_index <= PHASE1_MAX_PICK) {
                     lanePhase1.set(a.lane_position, (lanePhase1.get(a.lane_position) ?? 0) + 1)
                 }
+                ;(a.team_side === "blue" ? bluePicks : redPicks).push(a.hero_id)
+            }
+
+            // Cặp cùng bên (synergy) + cặp đối đầu (matchup) — chỉ khi đủ 5 pick/bên.
+            if (bluePicks.length >= 5 && redPicks.length >= 5) {
+                for (const side of [bluePicks, redPicks]) {
+                    const sideWon = side === bluePicks ? blueWon : !blueWon
+                    for (let i = 0; i < side.length; i++) {
+                        for (let j = i + 1; j < side.length; j++) {
+                            const k = [side[i], side[j]].sort().join("+")
+                            const cell = pair.get(k) ?? { n: 0, wins: 0, redN: 0 }
+                            cell.n++
+                            if (sideWon) cell.wins++
+                            pair.set(k, cell)
+                        }
+                    }
+                }
+                for (const b of bluePicks) {
+                    for (const r of redPicks) {
+                        const fwd = matchup.get(`${b}|${r}`) ?? { n: 0, wins: 0, redN: 0 }
+                        fwd.n++
+                        if (blueWon) fwd.wins++
+                        matchup.set(`${b}|${r}`, fwd)
+                        const rev = matchup.get(`${r}|${b}`) ?? { n: 0, wins: 0, redN: 0 }
+                        rev.n++
+                        if (!blueWon) rev.wins++
+                        matchup.set(`${r}|${b}`, rev)
+                    }
+                }
             }
         }
     }
@@ -173,6 +213,8 @@ export const tally = (series: Array<Series>): Tally => {
         blueBase: safeBlueBase,
         redBase: 1 - safeBlueBase,
         lanePhase1Share,
+        pair,
+        matchup,
     }
 }
 
@@ -185,6 +227,8 @@ const createEmptyTally = (): Tally => ({
     blueBase: 0.5,
     redBase: 0.5,
     lanePhase1Share: new Map(ALL_LANES.map((l) => [l, 0.5])),
+    pair: new Map(),
+    matchup: new Map(),
 })
 
 /** Tạo fingerprint ổn định từ dataset series để làm cache key (chống mất cache khi SWR re-parse). */
@@ -308,6 +352,9 @@ const suggestBans = (
     })
 }
 
+/** Mẫu tối thiểu để dùng thống kê cặp (dưới mức này bỏ qua, tránh nhiễu). */
+const MIN_PAIR_SAMPLE = 5
+
 /** Gợi ý cho lượt CHỌN: WR cao theo lane còn thiếu + ghi chú counter khi địch đã lộ bài. */
 const suggestPicks = (
     t: Tally,
@@ -344,12 +391,50 @@ const suggestPicks = (
         const lowSample = cell.n < 5 ? " · mẫu ít" : ""
         const flexNote = earlyExposed && isFlex ? ` · flex ${flexLanes} lane (khó bắt bài)` : ""
 
+        // Synergy: WR của các cặp (candidate, đồng đội đã pick) — mẫu đủ mới tính.
+        let synergySum = 0
+        let synergyN = 0
+        let bestSynergy: { name: string; w: number; n: number } | null = null
+        for (const a of ctx.alliesPicked) {
+            const c = t.pair.get([heroId, a.heroId].sort().join("+"))
+            if (!c || c.n < MIN_PAIR_SAMPLE) continue
+            synergySum += c.wins / c.n
+            synergyN++
+            if (!bestSynergy || c.wins * bestSynergy.n > bestSynergy.w * c.n) {
+                bestSynergy = { name: heroById.get(a.heroId)?.name ?? a.heroId, w: c.wins, n: c.n }
+            }
+        }
+        // Matchup: WR của candidate khi gặp từng tướng địch đã lộ.
+        let matchupSum = 0
+        let matchupN = 0
+        let bestMatchup: { name: string; w: number; n: number } | null = null
+        for (const e of ctx.enemyRevealed) {
+            const c = t.matchup.get(`${heroId}|${e.heroId}`)
+            if (!c || c.n < MIN_PAIR_SAMPLE) continue
+            matchupSum += c.wins / c.n
+            matchupN++
+            if (!bestMatchup || c.wins * bestMatchup.n > bestMatchup.w * c.n) {
+                bestMatchup = { name: heroById.get(e.heroId)?.name ?? e.heroId, w: c.wins, n: c.n }
+            }
+        }
+        const synergyNote = bestSynergy ? ` · cùng ${bestSynergy.name} ${bestSynergy.w}/${bestSynergy.n}` : ""
+        const matchupNote = bestMatchup ? ` · thắng kèo ${bestMatchup.name} ${bestMatchup.w}/${bestMatchup.n}` : ""
+
         const counterBoost = enemy ? (isLastPick ? 0.05 : 0.02) : 0
         const flexBoost = earlyExposed && isFlex ? 0.04 : 0
         const laneShare = t.lanePhase1Share.get(lane) ?? 0.5
         const laneBoost = (myPhase1 ? 1 : -1) * (laneShare - 0.5) * 0.4
+        // Cặp: lệch 0.5 × hệ số 0.4 → tối đa ±0.2, không át WR nền của tướng.
+        const synergyBoost = synergyN > 0 ? (synergySum / synergyN - 0.5) * 0.4 : 0
+        const matchupBoost = matchupN > 0 ? (matchupSum / matchupN - 0.5) * 0.4 : 0
 
-        const rawScore = wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost + laneBoost
+        const rawScore =
+            wilsonLower(adjRate * cell.n, cell.n) +
+            counterBoost +
+            flexBoost +
+            laneBoost +
+            synergyBoost +
+            matchupBoost
         const score = Number.isFinite(rawScore) ? rawScore : 0
 
         rows.push({
@@ -357,7 +442,7 @@ const suggestPicks = (
                 heroId,
                 heroName: hero?.name ?? heroId,
                 heroFile: hero?.file ?? null,
-                reason: `WR ${LANE_LABELS[lane] ?? lane} ${(wr * 100).toFixed(0)}% (n=${cell.n})${lowSample}${flexNote}${laneNote}`,
+                reason: `WR ${LANE_LABELS[lane] ?? lane} ${(wr * 100).toFixed(0)}% (n=${cell.n})${lowSample}${flexNote}${laneNote}${synergyNote}${matchupNote}`,
                 n: cell.n,
                 winRate: wr,
                 lane,

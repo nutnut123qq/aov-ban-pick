@@ -173,12 +173,17 @@ export const useDraftEngine = (initialVan = 1) => {
         const mySide = activeStep.side
 
         const myLanes = new Set<Lane>()
+        const alliesPicked: Array<{ heroId: string; lane: Lane }> = []
         const enemyRevealed: Array<{ heroId: string; lane: Lane }> = []
         for (const step of DRAFT_SEQUENCE) {
             const f = filled[step.index]
             if (step.action !== "pick" || !f?.heroId || !f.lane) continue
-            if (step.side === mySide) myLanes.add(f.lane)
-            else enemyRevealed.push({ heroId: f.heroId, lane: f.lane })
+            if (step.side === mySide) {
+                myLanes.add(f.lane)
+                alliesPicked.push({ heroId: f.heroId, lane: f.lane })
+            } else {
+                enemyRevealed.push({ heroId: f.heroId, lane: f.lane })
+            }
         }
 
         const sideGlobalBans = new Set(
@@ -196,6 +201,7 @@ export const useDraftEngine = (initialVan = 1) => {
             side: mySide,
             used,
             lanesNeeded: ALL_LANES.filter((l) => !myLanes.has(l)),
+            alliesPicked,
             enemyRevealed,
         }
     }, [activeStep, filled, globalBansBlue, globalBansRed])

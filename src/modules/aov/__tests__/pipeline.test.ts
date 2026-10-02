@@ -80,16 +80,18 @@ describe("Data Pipeline & Draft Engine Integration", () => {
             const myLanes = mySide === "blue" ? blueLanes : redLanes
             const neededLanes = ALL_LANES.filter((l) => !myLanes.has(l))
 
-            // Build enemy revealed list
+            // Build enemy revealed + allies picked lists
             const enemyRevealed: Array<{ heroId: string; lane: Lane }> = []
+            const alliesPicked: Array<{ heroId: string; lane: Lane }> = []
             for (let j = 0; j < i; j++) {
                 const prev = DRAFT_SEQUENCE[j]
-                if (prev.action === "pick" && prev.side !== mySide && filledState[j]?.lane) {
-                    enemyRevealed.push({
-                        heroId: filledState[j].heroId,
-                        lane: filledState[j].lane as Lane,
-                    })
+                if (prev.action !== "pick" || !filledState[j]?.lane) continue
+                const entry = {
+                    heroId: filledState[j].heroId,
+                    lane: filledState[j].lane as Lane,
                 }
+                if (prev.side === mySide) alliesPicked.push(entry)
+                else enemyRevealed.push(entry)
             }
 
             const ctx: AssistContext = {
@@ -97,6 +99,7 @@ describe("Data Pipeline & Draft Engine Integration", () => {
                 side: mySide,
                 used: new Set(usedHeroes),
                 lanesNeeded: neededLanes,
+                alliesPicked,
                 enemyRevealed,
             }
 
@@ -149,6 +152,7 @@ describe("Data Pipeline & Draft Engine Integration", () => {
             side: "blue",
             used: new Set([...globalBansBlue]),
             lanesNeeded: ALL_LANES,
+            alliesPicked: [],
             enemyRevealed: [],
         }
 

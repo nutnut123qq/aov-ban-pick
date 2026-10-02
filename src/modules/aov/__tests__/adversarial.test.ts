@@ -70,6 +70,7 @@ describe("Adversarial & Zero-Propagation Defense Test Suite", () => {
                 side: "blue",
                 used: new Set(),
                 lanesNeeded: ["giua", "rung"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
 
@@ -135,6 +136,7 @@ describe("Adversarial & Zero-Propagation Defense Test Suite", () => {
                 side: "blue",
                 used: new Set(),
                 lanesNeeded: ["giua"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
 

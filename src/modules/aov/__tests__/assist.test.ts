@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+﻿import { describe, expect, it } from "vitest"
 import type { HeroManifest, Series } from "@/modules/types"
 import { getTally, suggestStep, tally, type AssistContext } from "../assist"
 
@@ -122,6 +122,7 @@ describe("assist module", () => {
                 side: "blue",
                 used: new Set(),
                 lanesNeeded: ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
             expect(suggestStep(ctx, [], mockHeroes)).toEqual([])
@@ -134,6 +135,7 @@ describe("assist module", () => {
                 side: "blue",
                 used: new Set(),
                 lanesNeeded: ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
 
@@ -161,6 +163,7 @@ describe("assist module", () => {
                 side: "red",
                 used: new Set(),
                 lanesNeeded: ["rong_xa", "rong_ho_tro"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
 
@@ -178,6 +181,7 @@ describe("assist module", () => {
                 side: "red",
                 used: new Set(["tulen"]),
                 lanesNeeded: ["giua"],
+                alliesPicked: [],
                 enemyRevealed: [{ heroId: "tulen", lane: "giua" }],
             }
 
@@ -197,6 +201,7 @@ describe("assist module", () => {
                 side: "blue",
                 used: new Set(["tulen", "hayate", "helen", "nakroth", "airi", "liliana"]),
                 lanesNeeded: ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"],
+                alliesPicked: [],
                 enemyRevealed: [],
             }
 
