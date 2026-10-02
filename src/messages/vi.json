@@ -7,7 +7,8 @@
         "draft": "Mô phỏng Draft",
         "meta": "Thống kê Meta",
         "draftInput": "Nhập dữ liệu",
-        "matches": "Các cặp đấu"
+        "matches": "Các cặp đấu",
+        "about": "Về dữ liệu"
     },
     "common": {
         "loading": "Đang tải...",
@@ -245,5 +246,23 @@
             "draftInputTitle": "Nhập dữ liệu Draft",
             "draftInputDesc": "Nhập liệu diễn biến cấm/chọn từ các trận đấu thực tế và xuất file JSON chuẩn hóa."
         }
+    },
+    "about": {
+        "title": "Về dữ liệu & cách hoạt động",
+        "subtitle": "Nguồn dữ liệu, độ phủ và giới hạn của AOV DraftMind — đọc trước khi tin vào con số.",
+        "sourceTitle": "Nguồn dữ liệu",
+        "sourceBody": "Toàn bộ trận đấu được import từ Liquipedia (arenaofvalor) — tên giải, đội, cấm/chọn, kết quả, thời lượng và link VOD theo trang Liquipedia. Không có nhập tay.",
+        "coverageTitle": "Độ phủ hiện tại",
+        "statTournaments": "giải/mùa",
+        "statSeries": "series",
+        "statMatches": "ván đấu",
+        "statHeroes": "tướng",
+        "limitsTitle": "Giới hạn cần biết",
+        "limit1": "Đây là meta giải đấu (pro-meta), KHÔNG phải meta rank. Số liệu phản ánh cách đội tuyển chơi ở giải, áp thẳng vào rank có thể sai.",
+        "limit2": "Thứ tự pick (pick_index) và cờ counter-pick là xấp xỉ — dữ liệu nguồn không ghi đúng giây pick, chỉ có vị trí lane là đáng tin tuyệt đối.",
+        "limit3": "Cặp đôi/kèo đấu chỉ hiển thị khi đạt mẫu tối thiểu (thường ≥5–8 ván) — con số từ mẫu nhỏ bị ẩn thay vì hiện số ảo.",
+        "limit4": "Chưa có thống kê cấp tuyển thủ hay sự kiện trong game (mạng đầu, mục tiêu) — Liquipedia không cung cấp cho AOV.",
+        "updateTitle": "Cập nhật dữ liệu",
+        "updateBody": "Dữ liệu là file tĩnh đóng gói cùng site — cập nhật bằng cách chạy lại importer rồi deploy lại. Số liệu trên trang này luôn phản ánh đúng dataset đang chạy."
     }
 }

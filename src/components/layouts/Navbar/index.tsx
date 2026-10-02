@@ -26,6 +26,7 @@ import {
     BarChart3,
     FilePlus2,
     Trophy,
+    Info,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -142,6 +143,9 @@ export const Navbar = () => {
                     <NavLink href="/draft-input">
                         {t("nav.draftInput")}
                     </NavLink>
+                    <NavLink href="/about">
+                        {t("nav.about")}
+                    </NavLink>
                 </nav>
 
                 {/* Right Actions */}
@@ -243,6 +247,12 @@ export const Navbar = () => {
                             <span className="inline-flex items-center gap-2">
                                 <FilePlus2 className="size-4" />
                                 {t("nav.draftInput")}
+                            </span>
+                        </NavLink>
+                        <NavLink href="/about" onClick={() => setMobileMenuOpen(false)}>
+                            <span className="inline-flex items-center gap-2">
+                                <Info className="size-4" />
+                                {t("nav.about")}
                             </span>
                         </NavLink>
                     </nav>

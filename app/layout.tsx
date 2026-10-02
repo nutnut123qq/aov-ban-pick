@@ -13,9 +13,32 @@ const figtree = Figtree({
     variable: "--font-figtree",
 })
 
+const description =
+    "Trợ lý cấm/chọn Liên Quân Mobile — thống kê meta giải đấu, mô phỏng draft và gợi ý theo dữ liệu trận thật"
+
 export const metadata: Metadata = {
-    title: "AOV DraftMind",
-    description: "Trợ lý cấm/chọn Liên Quân Mobile — thống kê và gợi ý draft theo thờigian thực",
+    metadataBase: new URL("https://aov-ban-pick.vercel.app"),
+    title: {
+        default: "AOV DraftMind",
+        template: "%s | AOV DraftMind",
+    },
+    description,
+    keywords: ["Liên Quân Mobile", "AOV", "Arena of Valor", "ban pick", "draft", "meta", "Liên Quân"],
+    openGraph: {
+        title: "AOV DraftMind",
+        description,
+        url: "https://aov-ban-pick.vercel.app",
+        siteName: "AOV DraftMind",
+        locale: "vi_VN",
+        type: "website",
+        images: [{ url: "/og.png", width: 1200, height: 630, alt: "AOV DraftMind — mô phỏng cấm chọn Liên Quân" }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "AOV DraftMind",
+        description,
+        images: ["/og.png"],
+    },
 }
 
 export const viewport = {

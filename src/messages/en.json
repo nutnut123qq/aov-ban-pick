@@ -7,7 +7,8 @@
         "draft": "Draft Simulator",
         "meta": "Meta Stats",
         "draftInput": "Draft Input",
-        "matches": "Matches"
+        "matches": "Matches",
+        "about": "About data"
     },
     "common": {
         "loading": "Loading...",
@@ -245,5 +246,23 @@
             "draftInputTitle": "Draft Data Input",
             "draftInputDesc": "Record tournament ban/pick draft actions and export validated JSON data."
         }
+    },
+    "about": {
+        "title": "About the data & how it works",
+        "subtitle": "Data source, coverage and limitations of AOV DraftMind — read before trusting the numbers.",
+        "sourceTitle": "Data source",
+        "sourceBody": "Every match is imported from Liquipedia (arenaofvalor) — tournament names, teams, drafts, results, durations and VOD links as published there. No manual entry.",
+        "coverageTitle": "Current coverage",
+        "statTournaments": "tournaments/seasons",
+        "statSeries": "series",
+        "statMatches": "games",
+        "statHeroes": "heroes",
+        "limitsTitle": "Limitations worth knowing",
+        "limit1": "This is pro-tournament meta, NOT ranked meta. Numbers reflect how pro teams draft; applying them straight to ranked can be misleading.",
+        "limit2": "Pick order (pick_index) and the counter-pick flag are approximations — the source does not record exact pick timing; only lane positions are fully reliable.",
+        "limit3": "Pair/matchup stats only appear once a minimum sample threshold is met (usually ≥5–8 games) — thin-sample numbers are hidden rather than shown misleadingly.",
+        "limit4": "No player-level or in-game event stats (first blood, objectives) — Liquipedia does not provide them for AOV.",
+        "updateTitle": "Data updates",
+        "updateBody": "Data ships as static files bundled with the site — updated by re-running the importer and redeploying. The numbers on this page always reflect the live dataset."
     }
 }
