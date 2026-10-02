@@ -9,7 +9,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
 interface TournamentMultiSelectProps {
@@ -72,7 +71,7 @@ export const TournamentMultiSelect = ({
                 </Button>
             </PopoverTrigger>
             <PopoverContent align="start" className="w-72 p-1">
-                <ScrollArea className="max-h-72">
+                <div className="max-h-72 overflow-y-auto">
                     <button
                         type="button"
                         onClick={() => onChange([])}
@@ -122,7 +121,7 @@ export const TournamentMultiSelect = ({
                             </div>
                         )
                     })}
-                </ScrollArea>
+                </div>
             </PopoverContent>
         </Popover>
     )
