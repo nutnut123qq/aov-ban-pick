@@ -70,6 +70,7 @@ const HERO_SLUG_ALIAS = {
     "wukong": "ngo-khong", // tên quốc tế của Ngộ Không
     "mortos": "arthur", // tên quốc tế của Arthur
     "jinnar": "jinna", // LP: "Jinnar"; manifest: jinna
+    "sikong": "bolt-baron", // "Sikong Zhen" = Bolt Baron
     "kil-groth": "kilgroth", // LP: "Kil'Groth" → slug có gạch; manifest: kilgroth
     // Lưu ý: "zanis"/"riktor" KHÔNG phải zephys/richter — LP có ván pick
     // cả hai cùng team. Đây là tướng riêng → importer tự kéo icon về manifest.

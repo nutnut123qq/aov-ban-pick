@@ -1792,7 +1792,7 @@
             "pick_index": 1,
             "team_side": "blue",
             "action_type": "pick",
-            "hero_id": "sikong",
+            "hero_id": "bolt-baron",
             "lane_position": "ta_than",
             "player_id": null,
             "is_counter_pick": false
