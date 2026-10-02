@@ -3,12 +3,15 @@ import { useTranslations } from "next-intl"
 import { Scale } from "lucide-react"
 
 import type { CompScore } from "@/modules/aov"
+import type { HeroManifest } from "@/modules/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 interface DraftScoreCardProps {
     /** Kết quả scoreDraft; null = chưa đủ dữ liệu trận để chấm. */
     score: CompScore | null
+    /** Map slug → hero để hiện tên tướng ở kèo theo lane. */
+    heroBySlug?: Map<string, HeroManifest>
 }
 
 interface EdgeRow {
@@ -23,9 +26,14 @@ const formatEdge = (e: number): string =>
     `${e > 0 ? "+" : ""}${Math.round(e * 100)}%`
 
 /** Card chấm điểm đội hình đang draft: bar 2 chiều Xanh/Đỏ + breakdown 3 tín hiệu. */
-export const DraftScoreCard = ({ score }: DraftScoreCardProps) => {
+export const DraftScoreCard = ({ score, heroBySlug }: DraftScoreCardProps) => {
     const t = useTranslations("draft.score")
     const tCommon = useTranslations("common")
+    const tLane = useTranslations("lanes")
+
+    /** Tên hiển thị của hero; null khi chưa pick → không render. */
+    const heroName = (id: string | null): string | null =>
+        id ? (heroBySlug?.get(id)?.name ?? id) : null
 
     const probPct = score ? Math.round(score.probBlue * 100) : 50
     const favored = probPct >= 50 ? "blueFavored" : "redFavored"
@@ -95,6 +103,51 @@ export const DraftScoreCard = ({ score }: DraftScoreCardProps) => {
                                 </div>
                             ))}
                         </div>
+                        {score.laneEdges.length > 0 && (
+                            <div className="space-y-1.5 border-t pt-2">
+                                <p className="text-xs font-medium text-muted-foreground">
+                                    {t("perLane")}
+                                </p>
+                                {score.laneEdges.map((le) => (
+                                    <div
+                                        key={le.lane}
+                                        className="flex items-center gap-1.5 text-xs"
+                                    >
+                                        <span className="w-12 shrink-0 text-muted-foreground">
+                                            {tLane(le.lane)}
+                                        </span>
+                                        <span className="w-14 shrink-0 truncate text-right text-blue-600 dark:text-blue-400">
+                                            {heroName(le.blueHero)}
+                                        </span>
+                                        <div className="h-1.5 min-w-6 flex-1 overflow-hidden rounded-full bg-rose-500/40">
+                                            <div
+                                                className="h-full rounded-full bg-blue-500 transition-all"
+                                                style={{
+                                                    width: `${Math.max(0, Math.min(100, 50 + le.edge * 50))}%`,
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="w-14 shrink-0 truncate text-rose-600 dark:text-rose-400">
+                                            {heroName(le.redHero)}
+                                        </span>
+                                        <span
+                                            className={cn(
+                                                "w-9 shrink-0 text-right font-medium tabular-nums",
+                                                le.n < 5
+                                                    ? "text-muted-foreground"
+                                                    : le.edge > 0.005
+                                                      ? "text-blue-600 dark:text-blue-400"
+                                                      : le.edge < -0.005
+                                                        ? "text-rose-600 dark:text-rose-400"
+                                                        : "text-muted-foreground",
+                                            )}
+                                        >
+                                            {le.n < 5 ? "—" : formatEdge(le.edge)}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </>
                 )}
             </CardContent>

@@ -14,6 +14,8 @@ const makeTally = (overrides: Partial<Tally> = {}): Tally => ({
     lanePhase1Share: new Map(),
     pair: new Map(),
     matchup: new Map(),
+    duoLane: new Map(),
+    phasePick: new Map(),
     ...overrides,
 })
 
@@ -58,6 +60,57 @@ describe("scoreDraft", () => {
         expect(score!.laneEdge).toBe(0)
         expect(score!.synergyEdge).toBe(0)
         expect(score!.matchupEdge).toBe(0)
+        expect(score!.laneEdges).toHaveLength(5)
+        expect(score!.laneEdges.every((le) => le.edge === 0 && le.n === 0)).toBe(true)
+    })
+
+    it("returns per-lane edges sorted by lane order with hero ids", () => {
+        const matchup = new Map<string, PickCell>([
+            // Xanh thắng kèo Tà thần 7/10 → edge (0.7-0.5)/0.5 = 0.4
+            ["b1|r1", cell(7, 10)],
+            // Đỏ thắng kèo Rừng: b2 thua r2 → cell b2|r2 có wins=2/10 → edge -0.6
+            ["b2|r2", cell(2, 10)],
+        ])
+        const t = makeTally({ matchup })
+        const score = scoreDraft(picksOf(BLUE_IDS), picksOf(RED_IDS), t)
+        expect(score).not.toBeNull()
+        const le = score!.laneEdges
+        expect(le.map((x) => x.lane)).toEqual(LANES)
+        expect(le[0]).toMatchObject({
+            lane: "ta_than",
+            blueHero: "b1",
+            redHero: "r1",
+            n: 10,
+        })
+        expect(le[0].edge).toBeCloseTo(0.4, 5)
+        expect(le[1].edge).toBeCloseTo(-0.6, 5)
+        // Lane không có cell matchup → edge 0, n 0
+        expect(le[4]).toMatchObject({ lane: "rong_ho_tro", edge: 0, n: 0 })
+    })
+
+    it("laneEdges = edge 0 when matchup cell is below min sample", () => {
+        const matchup = new Map<string, PickCell>([["b1|r1", cell(4, 4)]])
+        const t = makeTally({ matchup })
+        const score = scoreDraft(picksOf(BLUE_IDS), picksOf(RED_IDS), t)
+        expect(score).not.toBeNull()
+        const ta_than = score!.laneEdges.find((le) => le.lane === "ta_than")!
+        expect(ta_than.edge).toBe(0)
+        expect(ta_than.n).toBe(4) // cỡ mẫu vẫn được giữ để UI hiện "—"
+        expect(ta_than.blueHero).toBe("b1")
+        expect(ta_than.redHero).toBe("r1")
+    })
+
+    it("laneEdges keeps a row with null hero when a side misses the lane", () => {
+        const t = makeTally()
+        // Xanh thiếu pick lane giua; Đỏ đủ 5 lane.
+        const bluePartial = picksOf(BLUE_IDS).filter((p) => p.lane !== "giua")
+        const score = scoreDraft(bluePartial, picksOf(RED_IDS), t)
+        expect(score).not.toBeNull()
+        const giua = score!.laneEdges.find((le) => le.lane === "giua")!
+        expect(giua.blueHero).toBeNull()
+        expect(giua.redHero).toBe("r3")
+        expect(giua.edge).toBe(0)
+        expect(giua.n).toBe(0)
     })
 
     it("scores partial drafts (works before all 5 picks)", () => {

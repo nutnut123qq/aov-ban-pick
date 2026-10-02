@@ -24,6 +24,8 @@ export interface MetaRow {
     wrBlue: number | null
     /** WR của (tướng, lane) khi pick ở bên Đỏ; null khi mẫu bên đó <5. */
     wrRed: number | null
+    /** TB giây/ván khi (tướng, lane) này THẮNG; null khi thiếu mẫu hoặc data duration. */
+    avgWinSec: number | null
 }
 
 /** Bộ lọc thống kê meta. */
@@ -63,6 +65,10 @@ interface PickAcc {
     redN: number
     /** Số thắng khi pick ở bên Đỏ. */
     redWins: number
+    /** Tổng giây của các ván THẮNG có duration hợp lệ (>0). */
+    winDurSum: number
+    /** Số ván thắng có duration hợp lệ — mẫu của `avgWinSec`. */
+    winDurN: number
 }
 
 /** Bên `side` có thắng ván `m` không. */
@@ -112,7 +118,16 @@ export const aggregateMeta = (
                 const won = isPickWinner(m, a.team_side)
                 const key = `${a.hero_id}|${a.lane_position}`
                 const acc =
-                    pickAcc.get(key) ?? { picks: 0, wins: 0, blueN: 0, blueWins: 0, redN: 0, redWins: 0 }
+                    pickAcc.get(key) ?? {
+                        picks: 0,
+                        wins: 0,
+                        blueN: 0,
+                        blueWins: 0,
+                        redN: 0,
+                        redWins: 0,
+                        winDurSum: 0,
+                        winDurN: 0,
+                    }
                 acc.picks++
                 if (won) acc.wins++
                 if (a.team_side === "blue") {
@@ -121,6 +136,15 @@ export const aggregateMeta = (
                 } else {
                     acc.redN++
                     if (won) acc.redWins++
+                }
+                if (
+                    won &&
+                    typeof m.duration_seconds === "number" &&
+                    Number.isFinite(m.duration_seconds) &&
+                    m.duration_seconds > 0
+                ) {
+                    acc.winDurSum += m.duration_seconds
+                    acc.winDurN++
                 }
                 pickAcc.set(key, acc)
             }
@@ -151,6 +175,7 @@ export const aggregateMeta = (
             banRate: Number.isFinite(rawBr) ? rawBr : 0,
             wrBlue: acc.blueN >= MIN_SIDE_SAMPLE ? acc.blueWins / acc.blueN : null,
             wrRed: acc.redN >= MIN_SIDE_SAMPLE ? acc.redWins / acc.redN : null,
+            avgWinSec: acc.winDurN >= MIN_SIDE_SAMPLE ? acc.winDurSum / acc.winDurN : null,
         })
     }
 

@@ -1,18 +1,27 @@
 "use client"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Swords } from "lucide-react"
 
-import { getTally, scoreDraft, type CompPick } from "@/modules/aov"
+import {
+    decodeDraft,
+    encodeDraft,
+    getTally,
+    scoreDraft,
+    type CompPick,
+    type DraftSlot,
+} from "@/modules/aov"
 import type { TeamSide } from "@/modules/types"
 import { HeroPicker } from "@/features/draft-input/HeroPicker"
 import { DRAFT_SEQUENCE } from "@/features/draft-input/sequence"
 import { DraftControls } from "./components/DraftControls"
+import { DraftHistory } from "./components/DraftHistory"
 import { DraftScoreCard } from "./components/DraftScoreCard"
 import { GlobalBanSection } from "./components/GlobalBanSection"
 import { SideColumn } from "./components/SideColumn"
 import { SuggestionPanel } from "./SuggestionPanel"
 import { useDraftEngine, type FilledStep } from "./hooks/useDraftEngine"
+import { useDraftHistory } from "./hooks/useDraftHistory"
 
 const BLUE_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "blue")
 const RED_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "red")
@@ -31,12 +40,35 @@ const collectPicks = (
     return out
 }
 
+/** Ghi text vào clipboard; fallback execCommand khi Clipboard API bị chặn. */
+const copyToClipboard = async (text: string): Promise<void> => {
+    try {
+        await navigator.clipboard.writeText(text)
+        return
+    } catch {
+        // Clipboard API bị chặn (không secure context / quyền) — fallback.
+    }
+    const ta = document.createElement("textarea")
+    ta.value = text
+    ta.style.position = "fixed"
+    ta.style.opacity = "0"
+    document.body.appendChild(ta)
+    ta.select()
+    try {
+        document.execCommand("copy")
+    } catch {
+        // Bỏ qua — vẫn báo copied để không kẹt UI.
+    }
+    document.body.removeChild(ta)
+}
+
 /** Trang mô phỏng cấm/chọn tương tác + gợi ý real-time mỗi lượt. */
 export const DraftSimView = () => {
     const t = useTranslations("draft")
     const tCommon = useTranslations("common")
     const tLane = useTranslations("lanes")
     const [copied, setCopied] = useState(false)
+    const [linkCopied, setLinkCopied] = useState(false)
 
     const {
         data,
@@ -65,10 +97,65 @@ export const DraftSimView = () => {
         setGlobalBan,
         clearGlobalBan,
         applySuggestion,
+        loadDraft,
         setPickerIndex,
         setGlobalBanPicker,
         setTournamentNames,
     } = useDraftEngine()
+
+    const { entries: history, save: saveHistory, remove: removeHistory } =
+        useDraftHistory()
+
+    // Load draft từ query param `d` một lần khi mount — đọc window.location
+    // trong effect thay vì useSearchParams để khỏi bọc Suspense boundary.
+    const didLoadFromUrl = useRef(false)
+    useEffect(() => {
+        if (didLoadFromUrl.current) return
+        didLoadFromUrl.current = true
+        const slots = decodeDraft(
+            new URLSearchParams(window.location.search).get("d"),
+        )
+        if (slots.length > 0) loadDraft(slots)
+    }, [loadDraft])
+
+    // Draft hiện tại dạng DraftSlot[] — nguồn chung cho encode URL + history.
+    const draftSlots = useMemo<Array<DraftSlot>>(
+        () =>
+            filled.map((f, index) => ({
+                index,
+                heroId: f.heroId,
+                lane: f.lane,
+            })),
+        [filled],
+    )
+
+    // Mỗi khi filled đổi → replaceState `?d=<encoded>` (giữ các param khác).
+    useEffect(() => {
+        const url = new URL(window.location.href)
+        const encoded = encodeDraft(draftSlots)
+        if (!encoded) {
+            if (!url.searchParams.has("d")) return
+            url.searchParams.delete("d")
+        } else {
+            if (url.searchParams.get("d") === encoded) return
+            url.searchParams.set("d", encoded)
+        }
+        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`)
+    }, [draftSlots])
+
+    // Draft đủ 18 bước → lưu một lần vào history localStorage (dedupe theo encoded).
+    useEffect(() => {
+        if (!filled.every((f) => f.heroId)) return
+        const nameOf = (id: string | null) =>
+            id ? (heroBySlug.get(id)?.name ?? id) : "?"
+        const firstPick = (side: TeamSide) => {
+            const step = DRAFT_SEQUENCE.find(
+                (s) => s.action === "pick" && s.side === side,
+            )
+            return step ? nameOf(filled[step.index]?.heroId ?? null) : "?"
+        }
+        saveHistory(draftSlots, `${firstPick("blue")}·${firstPick("red")}`)
+    }, [filled, draftSlots, heroBySlug, saveHistory])
 
     const turnLabel = activeStep
         ? t("turnLabel", {
@@ -114,26 +201,16 @@ export const DraftSimView = () => {
     }, [filled, heroBySlug, t, tCommon, tLane])
 
     const handleCopyDraft = useCallback(async () => {
-        try {
-            await navigator.clipboard.writeText(draftText)
-        } catch {
-            // Clipboard API bị chặn (không secure context / quyền) — fallback.
-            const ta = document.createElement("textarea")
-            ta.value = draftText
-            ta.style.position = "fixed"
-            ta.style.opacity = "0"
-            document.body.appendChild(ta)
-            ta.select()
-            try {
-                document.execCommand("copy")
-            } catch {
-                // Bỏ qua — vẫn báo copied để không kẹt UI.
-            }
-            document.body.removeChild(ta)
-        }
+        await copyToClipboard(draftText)
         setCopied(true)
         window.setTimeout(() => setCopied(false), 2000)
     }, [draftText])
+
+    const handleCopyLink = useCallback(async () => {
+        await copyToClipboard(window.location.href)
+        setLinkCopied(true)
+        window.setTimeout(() => setLinkCopied(false), 2000)
+    }, [])
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
@@ -151,10 +228,12 @@ export const DraftSimView = () => {
                     <DraftControls
                         vanNumber={vanNumber}
                         copied={copied}
+                        linkCopied={linkCopied}
                         onVanChange={handleVanChange}
                         onUndo={undoLast}
                         onReset={reset}
                         onCopyDraft={handleCopyDraft}
+                        onCopyLink={handleCopyLink}
                     />
                 </header>
 
@@ -195,7 +274,14 @@ export const DraftSimView = () => {
                             onApply={applySuggestion}
                             onTournamentNamesChange={setTournamentNames}
                         />
-                        {canScore && <DraftScoreCard score={compScore} />}
+                        {canScore && (
+                            <DraftScoreCard score={compScore} heroBySlug={heroBySlug} />
+                        )}
+                        <DraftHistory
+                            entries={history}
+                            onLoad={loadDraft}
+                            onDelete={removeHistory}
+                        />
                     </div>
 
                     <SideColumn

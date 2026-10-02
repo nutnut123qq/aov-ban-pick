@@ -106,10 +106,55 @@ export interface Tally {
     pair: Map<string, PickCell>
     /** key = `${a}|${b}` → số ván/thắng của phe có `a` khi gặp `b` bên kia. */
     matchup: Map<string, PickCell>
+    /**
+     * key = `${laneA}|${laneB}|${heroA}+${heroB}` (cả lane lẫn hero đã sort)
+     * → synergy cùng bên giới hạn đúng 1 cặp lane (duo Giữa×Rừng, Rồng×Hỗ trợ…).
+     */
+    duoLane: Map<string, PickCell>
+    /**
+     * key = `${heroId}|${"early"|"mid"|"late"}` → pick/thắng theo phase của
+     * `pick_index` trong draft (early 1-3, mid 4-6, late 7-10).
+     */
+    phasePick: Map<string, PickCell>
 }
 
 /** Pick thuộc phase 1 (lượt chọn đầu) khi pick_index nằm trong 1..6. */
 const PHASE1_MAX_PICK = 6
+
+/** Phase của một lượt pick theo `pick_index`: early 1-3, mid 4-6, late 7-10. */
+export type PickPhase = "early" | "mid" | "late"
+
+/**
+ * Map `pick_index` (1..10) → phase draft.
+ * Trả null khi index null/NaN/ngoài khoảng 1..10.
+ */
+export const pickPhaseOf = (idx: number | null): PickPhase | null => {
+    if (idx == null || !Number.isFinite(idx)) return null
+    if (idx >= 1 && idx <= 3) return "early"
+    if (idx >= 4 && idx <= 6) return "mid"
+    if (idx >= 7 && idx <= 10) return "late"
+    return null
+}
+
+/**
+ * Key chuẩn của bảng `duoLane` cho một cặp pick cùng bên:
+ * `${laneA}|${laneB}|${heroA}+${heroB}` — lane sắp theo `ALL_LANES`
+ * (ta_than → rong_ho_tro), cặp hero sắp alphabet trong cùng key.
+ * Trả null khi 2 pick trùng lane (flex) hoặc lane lạ.
+ */
+export const duoLaneKey = (
+    laneA: Lane,
+    laneB: Lane,
+    heroA: string,
+    heroB: string,
+): string | null => {
+    const ia = ALL_LANES.indexOf(laneA)
+    const ib = ALL_LANES.indexOf(laneB)
+    if (ia < 0 || ib < 0 || ia === ib) return null
+    const [la, lb] = ia < ib ? [laneA, laneB] : [laneB, laneA]
+    const [ha, hb] = [heroA, heroB].sort()
+    return `${la}|${lb}|${ha}+${hb}`
+}
 
 /** Quét toàn bộ series một lượt, dựng các bảng đếm cho engine gợi ý. */
 export const tally = (series: Array<Series>): Tally => {
@@ -121,6 +166,8 @@ export const tally = (series: Array<Series>): Tally => {
     const lanePhase1 = new Map<Lane, number>()
     const pair = new Map<string, PickCell>()
     const matchup = new Map<string, PickCell>()
+    const duoLane = new Map<string, PickCell>()
+    const phasePick = new Map<string, PickCell>()
     let totalMatches = 0
     let blueWins = 0
 
@@ -137,11 +184,26 @@ export const tally = (series: Array<Series>): Tally => {
             if (blueWon) blueWins++
             const bluePicks: Array<string> = []
             const redPicks: Array<string> = []
+            const blueLanePicks: Array<{ heroId: string; lane: Lane }> = []
+            const redLanePicks: Array<{ heroId: string; lane: Lane }> = []
             for (const a of m.draft_actions) {
                 if (!a || !a.hero_id) continue
                 if (a.action_type === "ban") {
                     banCount.set(a.hero_id, (banCount.get(a.hero_id) ?? 0) + 1)
                     continue
+                }
+                // Phase theo thời điểm draft — đếm mọi pick kể cả thiếu lane.
+                const phase = pickPhaseOf(a.pick_index)
+                if (phase) {
+                    const phaseWon =
+                        m.winner_team_id ===
+                        (a.team_side === "blue" ? m.team_blue_id : m.team_red_id)
+                    const pk = `${a.hero_id}|${phase}`
+                    const pcell = phasePick.get(pk) ?? { n: 0, wins: 0, redN: 0 }
+                    pcell.n++
+                    if (phaseWon) pcell.wins++
+                    if (a.team_side === "red") pcell.redN++
+                    phasePick.set(pk, pcell)
                 }
                 if (!a.lane_position) continue
                 const won =
@@ -164,6 +226,10 @@ export const tally = (series: Array<Series>): Tally => {
                     lanePhase1.set(a.lane_position, (lanePhase1.get(a.lane_position) ?? 0) + 1)
                 }
                 ;(a.team_side === "blue" ? bluePicks : redPicks).push(a.hero_id)
+                ;(a.team_side === "blue" ? blueLanePicks : redLanePicks).push({
+                    heroId: a.hero_id,
+                    lane: a.lane_position,
+                })
             }
 
             // Cặp cùng bên (synergy) + cặp đối đầu (matchup) — chỉ khi đủ 5 pick/bên.
@@ -177,6 +243,27 @@ export const tally = (series: Array<Series>): Tally => {
                             cell.n++
                             if (sideWon) cell.wins++
                             pair.set(k, cell)
+                        }
+                    }
+                }
+                // Duo theo cặp lane — pick kèm lane, bỏ cặp trùng lane (flex).
+                for (const side of [blueLanePicks, redLanePicks]) {
+                    const sideWon = side === blueLanePicks ? blueWon : !blueWon
+                    const isRed = side === redLanePicks
+                    for (let i = 0; i < side.length; i++) {
+                        for (let j = i + 1; j < side.length; j++) {
+                            const k = duoLaneKey(
+                                side[i].lane,
+                                side[j].lane,
+                                side[i].heroId,
+                                side[j].heroId,
+                            )
+                            if (!k) continue
+                            const cell = duoLane.get(k) ?? { n: 0, wins: 0, redN: 0 }
+                            cell.n++
+                            if (sideWon) cell.wins++
+                            if (isRed) cell.redN++
+                            duoLane.set(k, cell)
                         }
                     }
                 }
@@ -215,6 +302,8 @@ export const tally = (series: Array<Series>): Tally => {
         lanePhase1Share,
         pair,
         matchup,
+        duoLane,
+        phasePick,
     }
 }
 
@@ -229,6 +318,8 @@ const createEmptyTally = (): Tally => ({
     lanePhase1Share: new Map(ALL_LANES.map((l) => [l, 0.5])),
     pair: new Map(),
     matchup: new Map(),
+    duoLane: new Map(),
+    phasePick: new Map(),
 })
 
 /** Tạo fingerprint ổn định từ dataset series để làm cache key (chống mất cache khi SWR re-parse). */

@@ -1,6 +1,6 @@
 ﻿import { describe, expect, it } from "vitest"
 import type { DraftAction, HeroManifest, Lane, Match, Series, TeamSide } from "@/modules/types"
-import { getTally, suggestStep, tally, type AssistContext } from "../assist"
+import { duoLaneKey, getTally, pickPhaseOf, suggestStep, tally, type AssistContext } from "../assist"
 
 const mockHeroes: Array<HeroManifest> = [
     { slug: "florentino", name: "Florentino", file: "florentino.jpg" },
@@ -320,6 +320,150 @@ describe("assist module", () => {
 
             const suggestions = suggestStep(ctx, series, mockHeroes)
             expect(suggestions.length).toBe(0)
+        })
+    })
+
+    describe("duoLane tally", () => {
+        it("counts same-side lane pairs with canonical lane|lane|hero+hero key", () => {
+            const t = tally(createCounterSeries())
+            // Blue duo rung×giua: b1(rung) + tulen(giua) — blue chỉ thắng ván 1/6
+            const duo = t.duoLane.get("rung|giua|b1+tulen")
+            expect(duo).toBeDefined()
+            expect(duo?.n).toBe(6)
+            expect(duo?.wins).toBe(1)
+            expect(duo?.redN).toBe(0)
+            // Red duo ta_than×giua: florentino(ta_than) + r1(giua) — đỏ thắng 5/6
+            const red = t.duoLane.get("ta_than|giua|florentino+r1")
+            expect(red?.n).toBe(6)
+            expect(red?.wins).toBe(5)
+            expect(red?.redN).toBe(6)
+        })
+
+        it("skips same-lane flex pairs and matches without 5 picks per side", () => {
+            // createMockSeries: nhiều nhất 3 pick/bên mỗi ván → duoLane rỗng
+            expect(tally(createMockSeries()).duoLane.size).toBe(0)
+
+            const flexMatch: Match = {
+                van_number: 1,
+                team_blue_id: "A",
+                team_red_id: "R",
+                winner_team_id: "A",
+                is_blind_pick: false,
+                draft_actions: [
+                    pickAction(1, 1, "blue", "h1", "giua"),
+                    pickAction(1, 2, "blue", "h2", "giua"), // flex: trùng lane
+                    pickAction(2, 3, "blue", "h3", "rung"),
+                    pickAction(2, 4, "blue", "h4", "ta_than"),
+                    pickAction(3, 5, "blue", "h5", "rong_xa"),
+                    pickAction(3, 6, "red", "r1", "giua"),
+                    pickAction(4, 7, "red", "r2", "rung"),
+                    pickAction(4, 8, "red", "r3", "ta_than"),
+                    pickAction(5, 9, "red", "r4", "rong_xa"),
+                    pickAction(5, 10, "red", "r5", "rong_ho_tro"),
+                ],
+            }
+            const series: Array<Series> = [
+                {
+                    id: "s-flex",
+                    tournament_name: "Flex Cup",
+                    patch_id: "1.55",
+                    format: "BO1",
+                    team_blue_id: "A",
+                    team_red_id: "R",
+                    winner_team_id: "A",
+                    played_at: "2026-01-01",
+                    matches: [flexMatch],
+                },
+            ]
+            const t = tally(series)
+            const keys = [...t.duoLane.keys()]
+            // Cặp h1×h2 trùng giua → không xuất hiện dưới bất kỳ key nào
+            expect(keys.some((k) => k.includes("h1+h2") || k.includes("h2+h1"))).toBe(false)
+            // Cặp khác lane vẫn được đếm bình thường
+            expect(t.duoLane.get("rung|giua|h1+h3")?.n).toBe(1)
+        })
+
+        it("duoLaneKey orders lanes by lane order then heroes alphabetically", () => {
+            expect(duoLaneKey("giua", "rung", "tulen", "nakroth")).toBe(
+                "rung|giua|nakroth+tulen",
+            )
+            expect(duoLaneKey("rong_ho_tro", "ta_than", "helen", "airi")).toBe(
+                "ta_than|rong_ho_tro|airi+helen",
+            )
+            // Trùng lane (flex) → null
+            expect(duoLaneKey("giua", "giua", "tulen", "liliana")).toBeNull()
+        })
+    })
+
+    describe("phasePick tally", () => {
+        it("pickPhaseOf maps pick_index ranges to early/mid/late", () => {
+            expect(pickPhaseOf(1)).toBe("early")
+            expect(pickPhaseOf(3)).toBe("early")
+            expect(pickPhaseOf(4)).toBe("mid")
+            expect(pickPhaseOf(6)).toBe("mid")
+            expect(pickPhaseOf(7)).toBe("late")
+            expect(pickPhaseOf(10)).toBe("late")
+            expect(pickPhaseOf(null)).toBeNull()
+            expect(pickPhaseOf(0)).toBeNull()
+            expect(pickPhaseOf(11)).toBeNull()
+        })
+
+        it("buckets picks by phase with wins and redN", () => {
+            const t = tally(createCounterSeries())
+            // tulen pick_index=1 bên xanh → early; xanh thắng 1/6
+            const early = t.phasePick.get("tulen|early")
+            expect(early?.n).toBe(6)
+            expect(early?.wins).toBe(1)
+            expect(early?.redN).toBe(0)
+            // florentino pick_index=6 bên đỏ → mid; đỏ thắng 5/6
+            const mid = t.phasePick.get("florentino|mid")
+            expect(mid?.n).toBe(6)
+            expect(mid?.wins).toBe(5)
+            expect(mid?.redN).toBe(6)
+            // r4 pick_index=10 bên đỏ → late
+            expect(t.phasePick.get("r4|late")?.n).toBe(6)
+        })
+
+        it("counts picks missing lane and ignores null pick_index (bans)", () => {
+            const laneless: DraftAction = {
+                ...pickAction(2, 2, "red", "redHero", "giua"),
+                lane_position: null,
+            }
+            const match: Match = {
+                van_number: 1,
+                team_blue_id: "A",
+                team_red_id: "R",
+                winner_team_id: "A",
+                is_blind_pick: false,
+                draft_actions: [
+                    banAction(1, "blue", "banHero"),
+                    pickAction(2, 1, "blue", "blueHero", "giua"),
+                    laneless,
+                ],
+            }
+            const series: Array<Series> = [
+                {
+                    id: "s-phase",
+                    tournament_name: "Phase Cup",
+                    patch_id: "1.55",
+                    format: "BO1",
+                    team_blue_id: "A",
+                    team_red_id: "R",
+                    winner_team_id: "A",
+                    played_at: "2026-01-01",
+                    matches: [match],
+                },
+            ]
+            const t = tally(series)
+            // Pick thiếu lane vẫn vào phasePick (phase theo thời điểm, không phải lane)
+            const red = t.phasePick.get("redHero|early")
+            expect(red?.n).toBe(1)
+            expect(red?.wins).toBe(0) // đỏ thua
+            expect(red?.redN).toBe(1)
+            // Ban có pick_index null → không tạo key
+            expect([...t.phasePick.keys()].some((k) => k.startsWith("banHero|"))).toBe(false)
+            // Nhưng pick thiếu lane vẫn vắng mặt khỏi bảng pick theo lane
+            expect(t.pick.has("redHero|giua")).toBe(false)
         })
     })
 })

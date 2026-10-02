@@ -192,4 +192,70 @@ describe("aggregate module", () => {
         expect(row?.wrBlue).toBeCloseTo(0.6)
         expect(row?.wrRed).toBeCloseTo(0.2)
     })
+
+    it("returns null avgWinSec when win samples with duration are under 5", () => {
+        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentNames: [] }
+        const res = aggregateMeta(mockSeries, mockHeroes, filter)
+
+        const tulenRow = res.rows.find((r) => r.heroId === "tulen" && r.lane === "giua")
+        expect(tulenRow?.avgWinSec).toBeNull()
+    })
+
+    it("computes avgWinSec from durations of wins once samples reach 5", () => {
+        const mkMatch = (van: number, blueWon: boolean, dur?: number): Match => ({
+            van_number: van,
+            team_blue_id: "A",
+            team_red_id: "B",
+            winner_team_id: blueWon ? "A" : "B",
+            duration_seconds: dur,
+            is_blind_pick: false,
+            draft_actions: [
+                {
+                    turn_number: 1,
+                    pick_index: 1,
+                    team_side: "blue",
+                    action_type: "pick",
+                    hero_id: "tulen",
+                    lane_position: "giua",
+                    player_id: null,
+                    is_counter_pick: false,
+                },
+            ],
+        })
+        const series: Array<Series> = [
+            {
+                id: "s-dur",
+                tournament_name: "Dur Cup",
+                patch_id: "1.55",
+                format: "BO7",
+                team_blue_id: "A",
+                team_red_id: "B",
+                winner_team_id: "A",
+                played_at: "2026-01-01",
+                matches: [
+                    // Tulen thắng 6 ván: 5 có duration (600..1000, TB 800), 1 thiếu duration
+                    mkMatch(1, true, 600),
+                    mkMatch(2, true, 700),
+                    mkMatch(3, true, 800),
+                    mkMatch(4, true, 900),
+                    mkMatch(5, true, 1000),
+                    mkMatch(6, true, undefined),
+                    // 2 ván thua không ảnh hưởng avgWinSec
+                    mkMatch(7, false, 300),
+                    mkMatch(8, false, 300),
+                ],
+            },
+        ]
+        const res = aggregateMeta(series, mockHeroes, {
+            patchId: "all",
+            lane: "all",
+            tournamentNames: [],
+        })
+
+        const row = res.rows.find((r) => r.heroId === "tulen" && r.lane === "giua")
+        expect(row?.picks).toBe(8)
+        expect(row?.wins).toBe(6)
+        // Chỉ 5 ván thắng có duration → mẫu = 5, TB = (600+700+800+900+1000)/5
+        expect(row?.avgWinSec).toBe(800)
+    })
 })

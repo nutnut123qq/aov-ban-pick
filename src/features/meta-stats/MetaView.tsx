@@ -7,6 +7,7 @@ import { BarChart3, FilePlus2, Search } from "lucide-react"
 import {
     aggregateMeta,
     clamp01,
+    getDurationStats,
     getTally,
     LANE_OPTIONS,
     useAovData,
@@ -35,15 +36,44 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { CompareTable, type CompareRow } from "./CompareTable"
 
 const ALL = "all"
 
 /** Mẫu tối thiểu để một cặp tướng lên bảng combo/kèo — dưới mức này quá nhiễu. */
 const MIN_PAIR_GAMES = 8
+/** Mẫu tối thiểu cho bảng duo theo cặp lane (nhỏ hơn combo vì cắt theo lane). */
+const MIN_DUO_GAMES = 5
+/** Tổng pick tối thiểu của một tướng để hiện phân bố phase — dưới mức này "—". */
+const MIN_PHASE_PICKS = 10
+/** Mẫu tối thiểu mỗi bên để tính delta WR trong chế độ so sánh. */
+const MIN_COMPARE_SAMPLE = 5
 const MAX_PAIR_ROWS = 20
+
+/**
+ * Mọi cặp lane C(5,2) theo thứ tự LANE_OPTIONS (= LANE_ORDER bên stats layer).
+ * `value` = `${laneA}|${laneB}` — trùng prefix của key `tally.duoLane`.
+ */
+const LANE_PAIRS: Array<{ value: string; a: Lane; b: Lane }> = (() => {
+    const lanes = LANE_OPTIONS.map((o) => o.value)
+    const pairs: Array<{ value: string; a: Lane; b: Lane }> = []
+    for (let i = 0; i < lanes.length; i++) {
+        for (let j = i + 1; j < lanes.length; j++) {
+            pairs.push({ value: `${lanes[i]}|${lanes[j]}`, a: lanes[i], b: lanes[j] })
+        }
+    }
+    return pairs
+})()
 
 /** Định dạng tỉ lệ 0..1 thành "62.5%". */
 const pct = (value: number): string => `${(value * 100).toFixed(1)}%`
+
+/** Định dạng giây thành "12′34″". */
+const formatSec = (sec: number): string => {
+    const m = Math.floor(sec / 60)
+    const s = Math.round(sec - m * 60)
+    return `${m}′${String(s).padStart(2, "0")}″`
+}
 
 /** "61% / 48%" cho WR theo bên Xanh/Đỏ; "—" khi mẫu một bên (hoặc cả hai) <5. */
 const blueRedText = (row: MetaRow): string => {
@@ -74,6 +104,11 @@ export const MetaView = () => {
     const [tournaments, setTournaments] = useState<Array<string>>([])
     const [lane, setLane] = useState<Lane | typeof ALL>(ALL)
     const [query, setQuery] = useState("")
+    const [compare, setCompare] = useState(false)
+    const [tournamentsA, setTournamentsA] = useState<Array<string>>([])
+    const [tournamentsB, setTournamentsB] = useState<Array<string>>([])
+    // Mặc định cặp Rừng × Giữa — duo phổ biến nhất.
+    const [duoPair, setDuoPair] = useState("rung|giua")
     const [sort, setSort] = useState<{
         column: "picks" | "winRate" | "pickRate" | "banRate" | null
         direction: "asc" | "desc"
@@ -110,13 +145,27 @@ export const MetaView = () => {
         [data],
     )
 
-    /** Bảng đếm cặp (cùng bên + đối đầu) — reuse getTally của engine gợi ý, cùng bộ lọc giải. */
-    const pairRows = useMemo(() => {
-        if (!data) return { synergy: [] as Array<PairRow>, matchup: [] as Array<PairRow> }
-        const filtered = data.series.filter(
+    /** Series sau khi lọc giải — dùng chung cho tally và thống kê duration. */
+    const filteredSeries = useMemo(() => {
+        if (!data) return []
+        return data.series.filter(
             (s) => tournaments.length === 0 || tournaments.includes(s.tournament_name),
         )
-        const tally = getTally(filtered, tournaments.join("|"))
+    }, [data, tournaments])
+
+    /** Bảng đếm của engine gợi ý trên tập đã lọc — nguồn cho combo/kèo/duo/phase. */
+    const metaTally = useMemo(
+        () => getTally(filteredSeries, tournaments.join("|")),
+        [filteredSeries, tournaments],
+    )
+
+    /** Thống kê thời lượng trên tập đã lọc — `metaAvgSec` là chuẩn nhanh/chậm. */
+    const durationStats = useMemo(() => getDurationStats(filteredSeries), [filteredSeries])
+    const metaAvgSec = durationStats.metaAvgSec
+
+    /** Bảng đếm cặp (cùng bên + đối đầu) — reuse getTally của engine gợi ý, cùng bộ lọc giải. */
+    const pairRows = useMemo(() => {
+        const tally = metaTally
 
         const synergy: Array<PairRow> = [...tally.pair.entries()]
             .filter(([, c]) => c.n >= MIN_PAIR_GAMES)
@@ -138,7 +187,94 @@ export const MetaView = () => {
             .slice(0, MAX_PAIR_ROWS)
 
         return { synergy, matchup }
-    }, [data, tournaments])
+    }, [metaTally])
+
+    /** Top cặp tướng cùng bên trong cặp lane đang chọn (key `laneA|laneB|heroA+heroB`). */
+    const duoRows = useMemo(() => {
+        const prefix = `${duoPair}|`
+        return [...metaTally.duoLane.entries()]
+            .filter(([k, c]) => k.startsWith(prefix) && c.n >= MIN_DUO_GAMES)
+            .map(([k, c]) => {
+                const [a, b] = k.slice(prefix.length).split("+")
+                return { a, b, n: c.n, wr: clamp01(c.wins / c.n) }
+            })
+            .sort((x, y) => y.wr - x.wr || y.n - x.n)
+            .slice(0, MAX_PAIR_ROWS)
+    }, [metaTally, duoPair])
+
+    /** Phân bố phase pick (early/mid/late) theo hero — dạng text "40/35/25" + tooltip. */
+    const phaseInfoByHero = useMemo(() => {
+        const totals = new Map<string, { e: number; m: number; l: number }>()
+        for (const [k, c] of metaTally.phasePick) {
+            const sep = k.lastIndexOf("|")
+            const heroId = k.slice(0, sep)
+            const phase = k.slice(sep + 1)
+            const cur = totals.get(heroId) ?? { e: 0, m: 0, l: 0 }
+            if (phase === "early") cur.e += c.n
+            else if (phase === "mid") cur.m += c.n
+            else if (phase === "late") cur.l += c.n
+            totals.set(heroId, cur)
+        }
+        const map = new Map<string, { text: string; title: string }>()
+        for (const [heroId, rec] of totals) {
+            const total = rec.e + rec.m + rec.l
+            if (total < MIN_PHASE_PICKS) continue
+            const e = Math.round((rec.e / total) * 100)
+            const m = Math.round((rec.m / total) * 100)
+            const l = Math.round((rec.l / total) * 100)
+            map.set(heroId, {
+                text: `${e}/${m}/${l}`,
+                title: `${t("phaseEarly")} ${e}% · ${t("phaseMid")} ${m}% · ${t("phaseLate")} ${l}%`,
+            })
+        }
+        return map
+    }, [metaTally, t])
+
+    /** Join meta của 2 bộ giải A/B theo `${heroId}|${lane}` — chỉ tính khi compare bật. */
+    const compareRows = useMemo((): Array<CompareRow> => {
+        if (!data || !compare) return []
+        const base = { patchId: ALL, lane: lane as Lane | "all" }
+        const resA = aggregateMeta(data.series, data.heroes, {
+            ...base,
+            tournamentNames: tournamentsA,
+        })
+        const resB = aggregateMeta(data.series, data.heroes, {
+            ...base,
+            tournamentNames: tournamentsB,
+        })
+        const mapA = new Map(resA.rows.map((r) => [`${r.heroId}|${r.lane}`, r]))
+        const mapB = new Map(resB.rows.map((r) => [`${r.heroId}|${r.lane}`, r]))
+        const keys = new Set([...mapA.keys(), ...mapB.keys()])
+        const q = query.trim().toLowerCase()
+
+        const rows: Array<CompareRow> = []
+        for (const key of keys) {
+            const a = mapA.get(key)
+            const b = mapB.get(key)
+            const heroName = a?.heroName ?? b?.heroName ?? ""
+            if (q && !heroName.toLowerCase().includes(q)) continue
+            const hasSample =
+                a != null && b != null && a.picks >= MIN_COMPARE_SAMPLE && b.picks >= MIN_COMPARE_SAMPLE
+            rows.push({
+                key,
+                heroId: a?.heroId ?? b?.heroId ?? "",
+                heroName,
+                heroFile: a?.heroFile ?? b?.heroFile ?? null,
+                lane: (a?.lane ?? b?.lane) as Lane,
+                a: a ? { n: a.picks, wr: a.winRate } : null,
+                b: b ? { n: b.picks, wr: b.winRate } : null,
+                delta: hasSample ? a.winRate - b.winRate : null,
+            })
+        }
+        // |delta| giảm dần; dòng thiếu mẫu (delta null) xếp cuối, tie-break theo tổng pick.
+        rows.sort(
+            (x, y) =>
+                (y.delta === null ? -1 : Math.abs(y.delta)) -
+                    (x.delta === null ? -1 : Math.abs(x.delta)) ||
+                (y.a?.n ?? 0) + (y.b?.n ?? 0) - ((x.a?.n ?? 0) + (x.b?.n ?? 0)),
+        )
+        return rows
+    }, [data, compare, lane, tournamentsA, tournamentsB, query])
 
     const toggleSort = (column: "picks" | "winRate" | "pickRate" | "banRate") => {
         setSort((prev) => {
@@ -179,14 +315,39 @@ export const MetaView = () => {
                                 <CardTitle className="text-base">{t("filterTitle")}</CardTitle>
                             </CardHeader>
                             <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground">{t("tournament")}</Label>
-                                    <TournamentMultiSelect
-                                        tournaments={result.tournaments}
-                                        selected={tournaments}
-                                        onChange={setTournaments}
-                                    />
-                                </div>
+                                {compare ? (
+                                    <div className="space-y-3">
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs text-muted-foreground">
+                                                {t("compareA")}
+                                            </Label>
+                                            <TournamentMultiSelect
+                                                tournaments={result.tournaments}
+                                                selected={tournamentsA}
+                                                onChange={setTournamentsA}
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label className="text-xs text-muted-foreground">
+                                                {t("compareB")}
+                                            </Label>
+                                            <TournamentMultiSelect
+                                                tournaments={result.tournaments}
+                                                selected={tournamentsB}
+                                                onChange={setTournamentsB}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs text-muted-foreground">{t("tournament")}</Label>
+                                        <TournamentMultiSelect
+                                            tournaments={result.tournaments}
+                                            selected={tournaments}
+                                            onChange={setTournaments}
+                                        />
+                                    </div>
+                                )}
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">{t("searchHero")}</Label>
                                     <div className="relative">
@@ -199,10 +360,25 @@ export const MetaView = () => {
                                         />
                                     </div>
                                 </div>
+                                <div className="space-y-1.5">
+                                    <Label className="text-xs text-muted-foreground">
+                                        {t("compareTitle")}
+                                    </Label>
+                                    <Button
+                                        type="button"
+                                        variant={compare ? "default" : "outline"}
+                                        className="w-full"
+                                        onClick={() => setCompare((v) => !v)}
+                                    >
+                                        {t("compareEnable")}
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
 
-                        {result.totalMatches === 0 ? (
+                        {compare ? (
+                            <CompareTable rows={compareRows} />
+                        ) : result.totalMatches === 0 ? (
                             <EmptyState />
                         ) : (
                             <>
@@ -295,18 +471,34 @@ export const MetaView = () => {
                                                             <TableHead className="text-right">
                                                                 {t("blueRedWr")}
                                                             </TableHead>
+                                                            <TableHead className="text-right">
+                                                                {t("durationTitle")}
+                                                            </TableHead>
+                                                            <TableHead className="text-right">
+                                                                {t("phaseTitle")}
+                                                            </TableHead>
                                                         </TableRow>
                                                     </TableHeader>
                                                     <TableBody>
                                                         {rows.map((row) => (
-                                                            <StatRow key={`${row.heroId}|${row.lane}`} row={row} />
+                                                            <StatRow
+                                                                key={`${row.heroId}|${row.lane}`}
+                                                                row={row}
+                                                                metaAvgSec={metaAvgSec}
+                                                                phase={phaseInfoByHero.get(row.heroId) ?? null}
+                                                            />
                                                         ))}
                                                     </TableBody>
                                                 </Table>
                                             </div>
                                             <div className="grid gap-3 lg:hidden">
                                                 {rows.map((row) => (
-                                                    <StatCard key={`${row.heroId}|${row.lane}`} row={row} />
+                                                    <StatCard
+                                                        key={`${row.heroId}|${row.lane}`}
+                                                        row={row}
+                                                        metaAvgSec={metaAvgSec}
+                                                        phase={phaseInfoByHero.get(row.heroId) ?? null}
+                                                    />
                                                 ))}
                                             </div>
                                         </>
@@ -328,6 +520,30 @@ export const MetaView = () => {
                                     separator="vs"
                                 />
                             </div>
+
+                            <PairTable
+                                className="mt-6"
+                                title={t("duoLanesTitle")}
+                                desc={t("duoLanesDesc")}
+                                control={
+                                    <Select value={duoPair} onValueChange={setDuoPair}>
+                                        <SelectTrigger className="h-8 w-48 text-xs">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {LANE_PAIRS.map((p) => (
+                                                <SelectItem key={p.value} value={p.value}>
+                                                    {tLane(p.a)} × {tLane(p.b)}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                }
+                                rows={duoRows}
+                                heroBySlug={heroBySlug}
+                                separator="with"
+                                minN={MIN_DUO_GAMES}
+                            />
                             </>
                         )}
                     </>
@@ -351,14 +567,25 @@ interface PairRow {
 /** Bảng cặp tướng: icon 2 bên + số ván + WR, scroll trong khung cố định. */
 const PairTable = ({
     title,
+    desc,
+    control,
     rows,
     heroBySlug,
     separator,
+    minN = MIN_PAIR_GAMES,
+    className,
 }: {
     title: string
+    /** Mô tả nhỏ dưới title (tuỳ chọn). */
+    desc?: string
+    /** Control phụ đặt cạnh title (vd select cặp lane). */
+    control?: ReactNode
     rows: Array<PairRow>
     heroBySlug: Map<string, HeroManifest>
     separator: "with" | "vs"
+    /** Ngưỡng mẫu tối thiểu để hiện trong thông báo empty. */
+    minN?: number
+    className?: string
 }) => {
     const t = useTranslations("meta")
     const locale = useLocale()
@@ -391,14 +618,22 @@ const PairTable = ({
               : "text-foreground"
 
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader className="pb-3">
-                <CardTitle className="text-base">{title}</CardTitle>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                        <CardTitle className="text-base">{title}</CardTitle>
+                        {desc && (
+                            <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+                        )}
+                    </div>
+                    {control}
+                </div>
             </CardHeader>
             <CardContent>
                 {rows.length === 0 ? (
                     <p className="py-6 text-center text-sm text-muted-foreground">
-                        {t("pairEmpty", { min: MIN_PAIR_GAMES })}
+                        {t("pairEmpty", { min: minN })}
                     </p>
                 ) : (
                     <div className="max-h-96 space-y-1 overflow-y-auto pr-1">
@@ -434,8 +669,27 @@ const PairTable = ({
     )
 }
 
+/** Phân bố phase pick đã format sẵn: text "40/35/25" + tooltip giải thích. */
+interface PhaseInfo {
+    /** Dạng "E/M/L" phần trăm. */
+    text: string
+    /** Tooltip title attr: `phaseEarly/phaseMid/phaseLate` kèm %. */
+    title: string
+}
+
 /** Một dòng tướng + lane trong bảng thống kê. */
-const StatRow = ({ row }: { row: MetaRow }) => {
+const StatRow = ({
+    row,
+    metaAvgSec,
+    phase,
+}: {
+    row: MetaRow
+    /** TB giây/ván của toàn meta (chuẩn gắn tag nhanh/chậm); 0 = chưa có data duration. */
+    metaAvgSec: number
+    /** Phân bố phase của hero; null khi tổng pick < ngưỡng. */
+    phase: PhaseInfo | null
+}) => {
+    const t = useTranslations("meta")
     const tLane = useTranslations("lanes")
     const locale = useLocale()
     const wrColor =
@@ -479,12 +733,50 @@ const StatRow = ({ row }: { row: MetaRow }) => {
             <TableCell className="text-right tabular-nums text-muted-foreground">
                 {blueRedText(row)}
             </TableCell>
+            <TableCell className="text-right tabular-nums">
+                {row.avgWinSec === null ? (
+                    <span className="text-muted-foreground">—</span>
+                ) : (
+                    <div className="flex flex-col items-end">
+                        <span>{formatSec(row.avgWinSec)}</span>
+                        {metaAvgSec > 0 && Math.abs(row.avgWinSec - metaAvgSec) > 60 && (
+                            <span className="text-xs text-muted-foreground">
+                                {row.avgWinSec < metaAvgSec
+                                    ? t("fasterThanMeta")
+                                    : t("slowerThanMeta")}
+                            </span>
+                        )}
+                    </div>
+                )}
+            </TableCell>
+            <TableCell className="text-right">
+                {phase ? (
+                    <span
+                        title={phase.title}
+                        className="text-xs tabular-nums text-muted-foreground"
+                    >
+                        {phase.text}
+                    </span>
+                ) : (
+                    <span className="text-muted-foreground">—</span>
+                )}
+            </TableCell>
         </TableRow>
     )
 }
 
 /** Một dòng tướng + lane dạng card cho mobile. */
-const StatCard = ({ row }: { row: MetaRow }) => {
+const StatCard = ({
+    row,
+    metaAvgSec,
+    phase,
+}: {
+    row: MetaRow
+    /** TB giây/ván của toàn meta (chuẩn gắn tag nhanh/chậm); 0 = chưa có data duration. */
+    metaAvgSec: number
+    /** Phân bố phase của hero; null khi tổng pick < ngưỡng. */
+    phase: PhaseInfo | null
+}) => {
     const t = useTranslations("meta")
     const tLane = useTranslations("lanes")
     const locale = useLocale()
@@ -533,6 +825,29 @@ const StatCard = ({ row }: { row: MetaRow }) => {
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
                     {t("blueRedWr")}: <span className="tabular-nums">{blueRedText(row)}</span>
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                    {t("durationTitle")}:{" "}
+                    <span className="tabular-nums">
+                        {row.avgWinSec === null ? "—" : formatSec(row.avgWinSec)}
+                    </span>
+                    {row.avgWinSec !== null &&
+                        metaAvgSec > 0 &&
+                        Math.abs(row.avgWinSec - metaAvgSec) > 60 && (
+                            <span>
+                                {" "}
+                                (
+                                {row.avgWinSec < metaAvgSec
+                                    ? t("fasterThanMeta")
+                                    : t("slowerThanMeta")}
+                                )
+                            </span>
+                        )}
+                    {" · "}
+                    <span title={phase?.title}>
+                        {t("phaseTitle")}:{" "}
+                        <span className="tabular-nums">{phase?.text ?? "—"}</span>
+                    </span>
                 </p>
             </div>
         </div>

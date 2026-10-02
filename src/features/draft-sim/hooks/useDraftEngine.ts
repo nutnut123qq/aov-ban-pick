@@ -1,7 +1,13 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from "react"
 import { DRAFT_SEQUENCE } from "@/features/draft-input/sequence"
 import type { DraftStep } from "@/features/draft-input/types"
-import { suggestStep, useAovData, type AssistContext, type Suggestion } from "@/modules/aov"
+import {
+    suggestStep,
+    useAovData,
+    type AssistContext,
+    type DraftSlot,
+    type Suggestion,
+} from "@/modules/aov"
 import type { Lane, TeamSide } from "@/modules/types"
 
 export interface FilledStep {
@@ -307,6 +313,27 @@ export const useDraftEngine = (initialVan = 1) => {
         setStep(activeIndex, { heroId, lane: lane ?? filled[activeIndex]?.lane ?? null })
     }
 
+    /**
+     * Load một draft hoàn chỉnh vào ván hiện tại: thay toàn bộ `filled` của
+     * vanNumber bằng các slot được truyền (ô không có trong slots → trống).
+     * Dùng chung cho load từ URL (?d=) và load từ history localStorage.
+     */
+    const loadDraft = useCallback(
+        (slots: Array<DraftSlot>) => {
+            setGames((prev) => {
+                const game = createEmptyGame()
+                for (const s of slots) {
+                    if (!s || s.index < 0 || s.index >= game.length || !s.heroId) continue
+                    game[s.index] = { heroId: s.heroId, lane: s.lane ?? null }
+                }
+                return { ...prev, [vanNumber]: game }
+            })
+            setPickerIndex(null)
+            setGlobalBanPicker(null)
+        },
+        [vanNumber],
+    )
+
     return {
         data,
         isLoading,
@@ -335,6 +362,7 @@ export const useDraftEngine = (initialVan = 1) => {
         setGlobalBan,
         clearGlobalBan,
         applySuggestion,
+        loadDraft,
         setPickerIndex,
         setGlobalBanPicker,
         setTournamentNames,

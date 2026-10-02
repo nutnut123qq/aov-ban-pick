@@ -52,6 +52,12 @@
         },
         "copyDraft": "Sao chép draft",
         "copied": "Đã sao chép",
+        "copyLink": "Sao chép link draft",
+        "linkCopied": "Đã chép link!",
+        "historyTitle": "Draft đã lưu",
+        "historyEmpty": "Chưa có draft nào",
+        "historyLoad": "Tải lại",
+        "historyDelete": "Xoá",
         "score": {
             "title": "Đánh giá đội hình",
             "blueFavored": "Xanh nghiêng {prob}%",
@@ -59,6 +65,7 @@
             "lane": "WR theo lane",
             "synergy": "Combo nội đội",
             "matchup": "Kèo đối đầu",
+            "perLane": "Kèo theo lane",
             "notEnough": "Chưa đủ dữ liệu để chấm điểm."
         }
     },
@@ -175,7 +182,23 @@
         "synergyTitle": "Combo đồng đội",
         "matchupTitle": "Kèo đối đầu",
         "pairEmpty": "Chưa đủ dữ liệu cặp (cần ≥{min} ván cùng nhau).",
-        "blueRedWr": "WR Xanh/Đỏ"
+        "blueRedWr": "WR Xanh/Đỏ",
+        "durationTitle": "Thời lượng trận",
+        "avgWin": "TB thắng",
+        "avgLose": "TB thua",
+        "fasterThanMeta": "nhanh hơn TB",
+        "slowerThanMeta": "chậm hơn TB",
+        "duoLanesTitle": "Duo theo cặp lane",
+        "duoLanesDesc": "Combo đồng đội theo từng cặp lane cụ thể",
+        "phaseTitle": "Theo phase pick",
+        "phaseEarly": "Sớm (pick 1-3)",
+        "phaseMid": "Giữa (pick 4-6)",
+        "phaseLate": "Muộn (pick 7-10)",
+        "compareTitle": "So sánh 2 giải",
+        "compareA": "Giải A",
+        "compareB": "Giải B",
+        "compareEnable": "So sánh",
+        "delta": "Chênh"
     },
     "hero": {
         "backToMeta": "← Quay lại Meta",
