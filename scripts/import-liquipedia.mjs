@@ -64,6 +64,10 @@ const HERO_SLUG_ALIAS = {
     "azzenka": "azzen-ka",
     "telannas": "tel-annas", // LP viết liền: "telannas" / "tel'annas"
     "flowborn-mage": "flowborn-mid", // LP: "Flowborn (Mage)" = dạng mid
+    "flowborn-mm": "flowborn-ad", // LP viết liền: "Flowborn-mm" ~ "Flowborn (mm)"
+    "diao-chan": "diaochan", // LP: "Diao Chan" / "Diaochan"
+    "lubu": "lu-bo", // RPL (RoV Thái) ghi "Lubu"; manifest: lu-bo
+    "kil-groth": "kilgroth", // LP: "Kil'Groth" → slug có gạch; manifest: kilgroth
     // Lưu ý: "zanis"/"riktor" KHÔNG phải zephys/richter — LP có ván pick
     // cả hai cùng team. Đây là tướng riêng → importer tự kéo icon về manifest.
     "teemee": "teemee",
@@ -164,7 +168,8 @@ async function fetchMissingHeroIcons(slugs) {
         const base = lpName.replace(/\s*\([^)]*\)\s*/g, "").trim()
         const stems = [...new Set([lpName, base])]
         const titles = stems.flatMap((s) => [`File:${s} Hero Icon.png`, `File:${s} Hero Icon.jpg`])
-        const j = await lpApi({ action: "query", titles: titles.join("|"), prop: "imageinfo", iiprop: "url" })
+        const j = await lpApi({ action: "query", titles: titles.join("|"), prop: "imageinfo", iiprop: "url" }, 1, true)
+        if (!j) { stillMissing.push(slug); continue }
         const found = (j.query?.pages || []).find((pg) => pg.imageinfo?.[0]?.url)
         if (!found) { stillMissing.push(slug); continue }
         const url = found.imageinfo[0].url
@@ -187,7 +192,7 @@ async function fetchMissingHeroIcons(slugs) {
 const CACHE_DIR = join(ROOT, "scripts", ".lp-cache")
 const CACHE_TTL_MS = 30 * 60 * 1000 // 30 phút; truyền --fresh để bỏ cache
 
-async function lpApi(params, attempt = 1) {
+async function lpApi(params, attempt = 1, soft = false) {
     const qs = new URLSearchParams({ ...params, format: "json", formatversion: "2" }).toString()
     const cacheFile = join(CACHE_DIR, Buffer.from(qs).toString("base64url") + ".json")
     if (!fresh && existsSync(cacheFile)) {
@@ -199,7 +204,7 @@ async function lpApi(params, attempt = 1) {
         const res = await fetch(url, { headers: { "User-Agent": UA, "Accept-Encoding": "gzip" } })
         if (res.status === 429 && attempt < 5) {
             await sleep(10000 * attempt) // bị rate-limit: nghỉ dần rồi thử lại
-            return lpApi(params, attempt + 1)
+            return lpApi(params, attempt + 1, soft)
         }
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const j = await res.json()
@@ -207,9 +212,13 @@ async function lpApi(params, attempt = 1) {
         writeFileSync(cacheFile, JSON.stringify({ t: Date.now(), j }))
         return j
     } catch (e) {
-        if (attempt >= 5) fail(`Liquipedia lỗi sau ${attempt} lần: ${e.message}`)
+        // soft=true: trả null thay vì kill cả import (dùng cho việc phụ như kéo icon)
+        if (attempt >= 5) {
+            if (soft) return null
+            fail(`Liquipedia lỗi sau ${attempt} lần: ${e.message}`)
+        }
         await sleep(FETCH_DELAY_MS * attempt)
-        return lpApi(params, attempt + 1)
+        return lpApi(params, attempt + 1, soft)
     }
 }
 
