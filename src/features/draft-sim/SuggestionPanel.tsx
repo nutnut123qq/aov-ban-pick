@@ -8,10 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { groupTournamentsByRegion } from "@/modules/aov/leagues"
 
 const ALL = "all"
 
@@ -22,20 +25,14 @@ interface SuggestionPanelProps {
     suggestions: Array<Suggestion>
     /** Đã có dữ liệu trận hay chưa (để phân biệt "hết ứng viên" vs "chưa có data"). */
     hasData: boolean
-    /** Patch đang lọc ("all" = mọi patch). */
-    patchId: string
     /** Giải đấu đang lọc ("all" = mọi giải). */
     tournamentName: string
-    /** Mọi patch có trong dữ liệu (dựng dropdown). */
-    patchOptions: Array<string>
     /** Mọi giải đấu có trong dữ liệu (dựng dropdown). */
     tournamentOptions: Array<string>
     /** Số ván sau khi lọc (cỡ mẫu đang cộng gợi ý). */
     matchCount: number
     /** Người dùng chọn áp dụng một gợi ý. */
     onApply: (heroId: string, lane?: Lane) => void
-    /** Đổi bộ lọc patch. */
-    onPatchIdChange: (v: string) => void
     /** Đổi bộ lọc giải đấu. */
     onTournamentNameChange: (v: string) => void
 }
@@ -45,17 +42,15 @@ export const SuggestionPanel = ({
     turnLabel,
     suggestions,
     hasData,
-    patchId,
     tournamentName,
-    patchOptions,
     tournamentOptions,
     matchCount,
     onApply,
-    onPatchIdChange,
     onTournamentNameChange,
 }: SuggestionPanelProps) => {
     const t = useTranslations("draft.suggestions")
     const tMeta = useTranslations("meta")
+    const tRegions = useTranslations("regions")
 
     return (
         <Card className="lg:sticky lg:top-4">
@@ -72,34 +67,24 @@ export const SuggestionPanel = ({
                         <p className="text-xs font-medium text-muted-foreground">
                             {t("source", { count: matchCount })}
                         </p>
-                        <div className="grid grid-cols-2 gap-2">
-                            <Select value={tournamentName} onValueChange={onTournamentNameChange}>
-                                <SelectTrigger className="h-8 text-xs">
-                                    <SelectValue placeholder={tMeta("tournament")} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value={ALL}>{tMeta("allTournaments")}</SelectItem>
-                                    {tournamentOptions.map((v) => (
-                                        <SelectItem key={v} value={v}>
-                                            {v}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Select value={patchId} onValueChange={onPatchIdChange}>
-                                <SelectTrigger className="h-8 text-xs">
-                                    <SelectValue placeholder={tMeta("patch")} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value={ALL}>{tMeta("allPatches")}</SelectItem>
-                                    {patchOptions.map((v) => (
-                                        <SelectItem key={v} value={v}>
-                                            {v}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        <Select value={tournamentName} onValueChange={onTournamentNameChange}>
+                            <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder={tMeta("tournament")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>{tMeta("allTournaments")}</SelectItem>
+                                {groupTournamentsByRegion(tournamentOptions).map((g) => (
+                                    <SelectGroup key={g.region}>
+                                        <SelectLabel>{tRegions(g.region)}</SelectLabel>
+                                        {g.tournaments.map((v) => (
+                                            <SelectItem key={v} value={v}>
+                                                {v}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 )}
                 {!turnLabel ? (

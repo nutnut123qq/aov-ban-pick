@@ -11,7 +11,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { groupTournamentsByRegion } from "@/modules/aov/leagues"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
@@ -93,8 +102,10 @@ interface SeriesListViewProps {
 const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
     const t = useTranslations("matches")
     const locale = useLocale()
+    const tRegions = useTranslations("regions")
     const [dateFrom, setDateFrom] = useState("")
     const [dateTo, setDateTo] = useState("")
+    const [listTournament, setListTournament] = useState("all")
     const [selectedTournament, setSelectedTournament] = useState("")
     const [selectedTeam, setSelectedTeam] = useState<string | null>(null)
 
@@ -103,6 +114,7 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
         const to = parseDate(dateTo)
 
         return series.filter((s) => {
+            if (listTournament !== "all" && s.tournament_name !== listTournament) return false
             if (selectedTeam && s.team_blue_id !== selectedTeam && s.team_red_id !== selectedTeam) {
                 return false
             }
@@ -112,7 +124,7 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
             if (to && stripTime(d) > stripTime(to)) return false
             return true
         })
-    }, [series, dateFrom, dateTo, selectedTeam])
+    }, [series, dateFrom, dateTo, selectedTeam, listTournament])
 
     const tournaments = useMemo(
         () => [...new Set(series.map((s) => s.tournament_name))],
@@ -142,11 +154,12 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
         return [...map.entries()].sort((a, b) => b[1].w - b[1].l - (a[1].w - a[1].l))
     }, [series, selectedTeam])
 
-    const hasActiveFilter = dateFrom || dateTo || selectedTeam
+    const hasActiveFilter = dateFrom || dateTo || selectedTeam || listTournament !== "all"
 
     const resetFilters = () => {
         setDateFrom("")
         setDateTo("")
+        setListTournament("all")
         setSelectedTeam(null)
     }
 
@@ -174,10 +187,15 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {tournaments.map((name) => (
-                                            <SelectItem key={name} value={name}>
-                                                {name}
-                                            </SelectItem>
+                                        {groupTournamentsByRegion(tournaments).map((g) => (
+                                            <SelectGroup key={g.region}>
+                                                <SelectLabel>{tRegions(g.region)}</SelectLabel>
+                                                {g.tournaments.map((name) => (
+                                                    <SelectItem key={name} value={name}>
+                                                        {name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -272,7 +290,28 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                 </Button>
                             )}
                         </div>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <div className="space-y-2">
+                                <Label className="text-xs">{t("filter.tournament")}</Label>
+                                <Select value={listTournament} onValueChange={setListTournament}>
+                                    <SelectTrigger className="h-9">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">{t("filter.allTournaments")}</SelectItem>
+                                        {groupTournamentsByRegion(tournaments).map((g) => (
+                                            <SelectGroup key={g.region}>
+                                                <SelectLabel>{tRegions(g.region)}</SelectLabel>
+                                                {g.tournaments.map((name) => (
+                                                    <SelectItem key={name} value={name}>
+                                                        {name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                             <div className="space-y-2">
                                 <Label htmlFor="date-from" className="text-xs">
                                     {t("filter.dateFrom")}

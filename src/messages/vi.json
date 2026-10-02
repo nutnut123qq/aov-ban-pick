@@ -119,11 +119,20 @@
       "h2h": "Đối đầu của {team}:"
     },
     "filter": {
-      "title": "Lọc theo ngày",
+      "title": "Bộ lọc",
+      "tournament": "Giải đấu",
+      "allTournaments": "Tất cả giải",
       "dateFrom": "Từ ngày",
       "dateTo": "Đến ngày",
       "reset": "Đặt lại"
     }
+  },
+  "regions": {
+    "vn": "Việt Nam",
+    "intl": "Quốc tế",
+    "th": "Thái Lan",
+    "tw": "Đài Loan",
+    "other": "Khác"
   },
   "meta": {
     "title": "Thống kê Meta",

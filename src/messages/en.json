@@ -119,11 +119,20 @@
       "h2h": "Head-to-head for {team}:"
     },
     "filter": {
-      "title": "Filter by date",
+      "title": "Filters",
+      "tournament": "Tournament",
+      "allTournaments": "All tournaments",
       "dateFrom": "From date",
       "dateTo": "To date",
       "reset": "Reset"
     }
+  },
+  "regions": {
+    "vn": "Vietnam",
+    "intl": "International",
+    "th": "Thailand",
+    "tw": "Taiwan",
+    "other": "Other"
   },
   "meta": {
     "title": "Meta Statistics",

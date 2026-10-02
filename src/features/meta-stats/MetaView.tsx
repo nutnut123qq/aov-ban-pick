@@ -56,7 +56,6 @@ export const MetaView = () => {
     const tLane = useTranslations("lanes")
 
     const { data, error, isLoading } = useAovData()
-    const [patchId, setPatchId] = useState<string>(ALL)
     const [tournament, setTournament] = useState<string>(ALL)
     const [lane, setLane] = useState<Lane | typeof ALL>(ALL)
     const [query, setQuery] = useState("")
@@ -68,11 +67,11 @@ export const MetaView = () => {
     const result = useMemo(() => {
         if (!data) return null
         return aggregateMeta(data.series, data.heroes, {
-            patchId,
+            patchId: ALL,
             lane: lane as Lane | "all",
             tournamentName: tournament,
         })
-    }, [data, patchId, lane, tournament])
+    }, [data, lane, tournament])
 
     const rows = useMemo(() => {
         if (!result) return []
@@ -130,22 +129,6 @@ export const MetaView = () => {
                                 <CardTitle className="text-base">{t("filterTitle")}</CardTitle>
                             </CardHeader>
                             <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground">{t("patch")}</Label>
-                                    <Select value={patchId} onValueChange={setPatchId}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value={ALL}>{t("allPatches")}</SelectItem>
-                                            {result.patches.map((p) => (
-                                                <SelectItem key={p} value={p}>
-                                                    {p}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">{t("tournament")}</Label>
                                     <Select value={tournament} onValueChange={setTournament}>
