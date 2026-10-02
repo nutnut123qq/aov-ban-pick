@@ -248,11 +248,13 @@ export const clearTallyCache = (): void => {
  * @param series - mảng series
  * @returns kết quả tally từ LRU cache hoặc tính mới
  */
-export const getTally = (series: Array<Series>): Tally => {
+export const getTally = (series: Array<Series>, scope = ""): Tally => {
     if (!Array.isArray(series) || series.length === 0) {
         return createEmptyTally()
     }
-    const key = computeSeriesFingerprint(series)
+    // scope = bộ lọc (patch|tournament) để tally của 2 bộ lọc khác nhau
+    // không đụng nhau khi fingerprint trùng
+    const key = `${scope}|${computeSeriesFingerprint(series)}`
     const cached = tallyLruCache.get(key)
     if (cached) return cached
 
@@ -381,9 +383,10 @@ export const suggestStep = (
     ctx: AssistContext,
     series: Array<Series>,
     heroes: Array<HeroManifest>,
+    scope = "",
 ): Array<Suggestion> => {
     if (!series || series.length === 0) return []
-    const t = getTally(series)
+    const t = getTally(series, scope)
     if (t.totalMatches === 0) return []
     const heroById = new Map((heroes || []).map((h) => [h.slug, h]))
     return ctx.action === "ban"

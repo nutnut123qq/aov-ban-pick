@@ -47,7 +47,8 @@
       "noData": "Chưa có gợi ý (chưa đủ dữ liệu trận đấu).",
       "apply": "Áp dụng",
       "sideBlue": "Xanh",
-      "sideRed": "Đỏ"
+      "sideRed": "Đỏ",
+      "source": "Nguồn gợi ý · {count} ván"
     }
   },
   "draftInput": {
@@ -154,4 +155,3 @@
     }
   }
 }
-

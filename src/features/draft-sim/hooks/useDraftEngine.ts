@@ -25,6 +25,10 @@ const createEmptyGame = (): Array<FilledStep> =>
 export const useDraftEngine = (initialVan = 1) => {
     const { data, isLoading } = useAovData()
 
+    // Bộ lọc nguồn data cho gợi ý: theo patch / giải đấu ("all" = mọi series)
+    const [patchId, setPatchId] = useState<string>("all")
+    const [tournamentName, setTournamentName] = useState<string>("all")
+
     // Lưu trữ toàn bộ lịch sử draft của từng ván (1..6) trong series
     const [games, setGames] = useState<Record<number, Array<FilledStep>>>(() => ({
         1: createEmptyGame(),
@@ -197,10 +201,28 @@ export const useDraftEngine = (initialVan = 1) => {
         }
     }, [activeStep, filled, globalBansBlue, globalBansRed])
 
+    const filteredSeries = useMemo(() => {
+        if (!data) return []
+        return data.series.filter(
+            (s) =>
+                (patchId === "all" || s.patch_id === patchId) &&
+                (tournamentName === "all" || s.tournament_name === tournamentName),
+        )
+    }, [data, patchId, tournamentName])
+
+    const patchOptions = useMemo(
+        () => [...new Set((data?.series ?? []).map((s) => s.patch_id))].sort(),
+        [data],
+    )
+    const tournamentOptions = useMemo(
+        () => [...new Set((data?.series ?? []).map((s) => s.tournament_name))].sort(),
+        [data],
+    )
+
     const suggestions: Array<Suggestion> = useMemo(() => {
         if (!ctx || !data) return []
-        return suggestStep(ctx, data.series, data.heroes)
-    }, [ctx, data])
+        return suggestStep(ctx, filteredSeries, data.heroes, `${patchId}|${tournamentName}`)
+    }, [ctx, data, filteredSeries, patchId, tournamentName])
 
     const heroBySlug = useMemo(
         () => new Map((data?.heroes ?? []).map((h) => [h.slug, h])),
@@ -302,6 +324,11 @@ export const useDraftEngine = (initialVan = 1) => {
         globalBanPickerUsedIds,
         pickerDisabledIds,
         suggestions,
+        patchId,
+        tournamentName,
+        patchOptions,
+        tournamentOptions,
+        filteredSeries,
         heroBySlug,
         setStep,
         clearStep,
@@ -313,5 +340,7 @@ export const useDraftEngine = (initialVan = 1) => {
         applySuggestion,
         setPickerIndex,
         setGlobalBanPicker,
+        setPatchId,
+        setTournamentName,
     }
 }

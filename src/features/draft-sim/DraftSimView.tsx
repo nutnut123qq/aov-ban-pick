@@ -33,6 +33,11 @@ export const DraftSimView = () => {
         globalBanPickerUsedIds,
         pickerDisabledIds,
         suggestions,
+        patchId,
+        tournamentName,
+        patchOptions,
+        tournamentOptions,
+        filteredSeries,
         heroBySlug,
         setStep,
         clearStep,
@@ -44,6 +49,8 @@ export const DraftSimView = () => {
         applySuggestion,
         setPickerIndex,
         setGlobalBanPicker,
+        setPatchId,
+        setTournamentName,
     } = useDraftEngine()
 
     const turnLabel = activeStep
@@ -108,7 +115,14 @@ export const DraftSimView = () => {
                         turnLabel={turnLabel}
                         suggestions={suggestions}
                         hasData={!isLoading && (data?.series.length ?? 0) > 0}
+                        patchId={patchId}
+                        tournamentName={tournamentName}
+                        patchOptions={patchOptions}
+                        tournamentOptions={tournamentOptions}
+                        matchCount={filteredSeries.reduce((n, s) => n + s.matches.length, 0)}
                         onApply={applySuggestion}
+                        onPatchIdChange={setPatchId}
+                        onTournamentNameChange={setTournamentName}
                     />
 
                     <SideColumn

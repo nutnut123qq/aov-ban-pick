@@ -47,7 +47,8 @@
       "noData": "No suggestions available (insufficient match data).",
       "apply": "Apply",
       "sideBlue": "Blue",
-      "sideRed": "Red"
+      "sideRed": "Red",
+      "source": "Suggestion source · {count} games"
     }
   },
   "draftInput": {
@@ -154,4 +155,3 @@
     }
   }
 }
-
