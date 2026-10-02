@@ -2,9 +2,9 @@
 
 Khán giả/mục đích: **public cho cộng đồng Liên Quân Mobile** — bản đầu đủ tin cậy để đăng site/repo ra ngoài mà không xấu hổ.
 
-Version đang mở: **v1.1** — độ tin cậy thuật toán/repo
+Version đang mở: **— (v1.1 đã đóng, đang ở trạng thái bảo trì)**
 
-## Checklist v1.1
+## Checklist v1.1 — ✅ ĐÃ ĐÓNG 2026-10-02
 
 - [x] `duoLaneKey` giữ đúng hero↔lane — key mới `${laneA}:${heroA}|${laneB}:${heroB}` canonical ("rung:mina|giua:zata" ≠ "rung:zata|giua:mina"); duo UI hiện badge lane dưới từng tướng, test cập nhật + case đảo chiều.
 - [x] `formatSec` không bao giờ hiện `:60` — tách ra `src/modules/aov/format.ts`, làm tròn tổng giây trước khi tách phút; `format.test.ts` cover 719.6→12′00″, 59.9→1′00″, NaN/âm→0.
@@ -39,3 +39,4 @@ Version đang mở: **v1.1** — độ tin cậy thuật toán/repo
 | Version | Đích | Đóng lúc | Evidence |
 |---|---|---|---|
 | v1.0 | Public cho cộng đồng LQM — site live đủ tin cậy để đăng | 2026-10-02 | commit `f16d8a0` · 10/10 checklist verify trên production: `/about` 200, 10 og tags, 87/87 test, 7 giải/334 series/1295 ván |
+| v1.1 | Độ tin cậy thuật toán/repo | 2026-10-02 | commit `4deabfd` · 4/4: duoLaneKey gắn hero↔lane (UI badge lane), formatSec không ra :60 (test), Redux console sạch, AGENTS.md cập nhật |
