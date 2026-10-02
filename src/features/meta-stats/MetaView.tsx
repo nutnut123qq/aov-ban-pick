@@ -6,11 +6,13 @@ import { BarChart3, FilePlus2, Search } from "lucide-react"
 
 import {
     aggregateMeta,
+    clamp01,
+    getTally,
     LANE_OPTIONS,
     useAovData,
     type MetaRow,
 } from "@/modules/aov"
-import type { Lane } from "@/modules/types"
+import type { HeroManifest, Lane } from "@/modules/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -35,6 +37,10 @@ import {
 import { cn } from "@/lib/utils"
 
 const ALL = "all"
+
+/** Mẫu tối thiểu để một cặp tướng lên bảng combo/kèo — dưới mức này quá nhiễu. */
+const MIN_PAIR_GAMES = 8
+const MAX_PAIR_ROWS = 20
 
 /** Định dạng tỉ lệ 0..1 thành "62.5%". */
 const pct = (value: number): string => `${(value * 100).toFixed(1)}%`
@@ -90,6 +96,41 @@ export const MetaView = () => {
         }
         return filtered
     }, [result, query, sort])
+
+    const heroBySlug = useMemo(
+        () => new Map((data?.heroes ?? []).map((h) => [h.slug, h])),
+        [data],
+    )
+
+    /** Bảng đếm cặp (cùng bên + đối đầu) — reuse getTally của engine gợi ý, cùng bộ lọc giải. */
+    const pairRows = useMemo(() => {
+        if (!data) return { synergy: [] as Array<PairRow>, matchup: [] as Array<PairRow> }
+        const filtered = data.series.filter(
+            (s) => tournaments.length === 0 || tournaments.includes(s.tournament_name),
+        )
+        const tally = getTally(filtered, tournaments.join("|"))
+
+        const synergy: Array<PairRow> = [...tally.pair.entries()]
+            .filter(([, c]) => c.n >= MIN_PAIR_GAMES)
+            .map(([k, c]) => {
+                const [a, b] = k.split("+")
+                return { a, b, n: c.n, wr: clamp01(c.wins / c.n) }
+            })
+            .sort((x, y) => y.wr - x.wr || y.n - x.n)
+            .slice(0, MAX_PAIR_ROWS)
+
+        // matchup key `a|b` lưu cả 2 chiều; chỉ giữ chiều thắng (wr ≥ 0.5) để khỏi trùng.
+        const matchup: Array<PairRow> = [...tally.matchup.entries()]
+            .filter(([, c]) => c.n >= MIN_PAIR_GAMES && c.wins * 2 > c.n)
+            .map(([k, c]) => {
+                const [a, b] = k.split("|")
+                return { a, b, n: c.n, wr: clamp01(c.wins / c.n) }
+            })
+            .sort((x, y) => y.wr - x.wr || y.n - x.n)
+            .slice(0, MAX_PAIR_ROWS)
+
+        return { synergy, matchup }
+    }, [data, tournaments])
 
     const toggleSort = (column: "picks" | "winRate" | "pickRate" | "banRate") => {
         setSort((prev) => {
@@ -156,6 +197,7 @@ export const MetaView = () => {
                         {result.totalMatches === 0 ? (
                             <EmptyState />
                         ) : (
+                            <>
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-base">
@@ -260,11 +302,120 @@ export const MetaView = () => {
                                     )}
                                 </CardContent>
                             </Card>
+
+                            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <PairTable
+                                    title={t("synergyTitle")}
+                                    rows={pairRows.synergy}
+                                    heroBySlug={heroBySlug}
+                                    separator="with"
+                                />
+                                <PairTable
+                                    title={t("matchupTitle")}
+                                    rows={pairRows.matchup}
+                                    heroBySlug={heroBySlug}
+                                    separator="vs"
+                                />
+                            </div>
+                            </>
                         )}
                     </>
                 )}
             </div>
         </div>
+    )
+}
+
+interface PairRow {
+    /** hero_id tướng thứ nhất. */
+    a: string
+    /** hero_id tướng thứ hai. */
+    b: string
+    /** Số ván cặp này xuất hiện cùng/đối nhau. */
+    n: number
+    /** WR của cặp (synergy) hoặc của `a` khi gặp `b` (matchup). */
+    wr: number
+}
+
+/** Bảng cặp tướng: icon 2 bên + số ván + WR, scroll trong khung cố định. */
+const PairTable = ({
+    title,
+    rows,
+    heroBySlug,
+    separator,
+}: {
+    title: string
+    rows: Array<PairRow>
+    heroBySlug: Map<string, HeroManifest>
+    separator: "with" | "vs"
+}) => {
+    const t = useTranslations("meta")
+    const heroCell = (slug: string) => {
+        const h = heroBySlug.get(slug)
+        return (
+            <span className="flex min-w-0 items-center gap-1.5">
+                {h?.file ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                        src={`/images/heroes/${h.file}`}
+                        alt={h.name}
+                        className="h-7 w-7 shrink-0 rounded object-cover"
+                    />
+                ) : (
+                    <div className="h-7 w-7 shrink-0 rounded bg-muted" />
+                )}
+                <span className="truncate text-sm font-medium">{h?.name ?? slug}</span>
+            </span>
+        )
+    }
+    const wrColor = (wr: number) =>
+        wr >= 0.6
+            ? "text-emerald-600 dark:text-emerald-400"
+            : wr < 0.45
+              ? "text-rose-600 dark:text-rose-400"
+              : "text-foreground"
+
+    return (
+        <Card>
+            <CardHeader className="pb-3">
+                <CardTitle className="text-base">{title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {rows.length === 0 ? (
+                    <p className="py-6 text-center text-sm text-muted-foreground">
+                        {t("pairEmpty", { min: MIN_PAIR_GAMES })}
+                    </p>
+                ) : (
+                    <div className="max-h-96 space-y-1 overflow-y-auto pr-1">
+                        {rows.map((r) => (
+                            <div
+                                key={`${r.a}|${r.b}`}
+                                className="flex items-center gap-2 rounded-md px-2 py-1.5 odd:bg-muted/40"
+                            >
+                                <div className="grid min-w-0 flex-1 grid-cols-[1fr_auto_1fr] items-center gap-2">
+                                    {heroCell(r.a)}
+                                    <span className="text-xs text-muted-foreground">
+                                        {separator === "vs" ? "vs" : "+"}
+                                    </span>
+                                    {heroCell(r.b)}
+                                </div>
+                                <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+                                    {r.n}
+                                </span>
+                                <span
+                                    className={cn(
+                                        "w-14 shrink-0 text-right text-sm font-semibold tabular-nums",
+                                        wrColor(r.wr),
+                                    )}
+                                >
+                                    {pct(r.wr)}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     )
 }
 

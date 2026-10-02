@@ -157,7 +157,10 @@
         "emptyTitle": "Chưa có dữ liệu trận đấu",
         "emptyDesc": "Nhập vài ván rồi gộp vào public/data/ để thấy thống kê.",
         "goToInput": "Đi nhập dữ liệu",
-        "tournamentsSelected": "{count} giải đã chọn"
+        "tournamentsSelected": "{count} giải đã chọn",
+        "synergyTitle": "Combo đồng đội",
+        "matchupTitle": "Kèo đối đầu",
+        "pairEmpty": "Chưa đủ dữ liệu cặp (cần ≥{min} ván cùng nhau)."
     },
     "dashboard": {
         "title": "AOV DraftMind",

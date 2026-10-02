@@ -157,7 +157,10 @@
         "emptyTitle": "No match data available",
         "emptyDesc": "Input games and merge into public/data/ to see meta statistics.",
         "goToInput": "Go to Data Input",
-        "tournamentsSelected": "{count} tournaments"
+        "tournamentsSelected": "{count} tournaments",
+        "synergyTitle": "Teammate Combos",
+        "matchupTitle": "Head-to-head Matchups",
+        "pairEmpty": "Not enough pair data (needs ≥{min} games together)."
     },
     "dashboard": {
         "title": "AOV DraftMind",
