@@ -20,6 +20,10 @@ export interface MetaRow {
     pickRate: number
     /** Ban rate toàn tướng = số lần cấm / tổng số ván (0..1). */
     banRate: number
+    /** WR của (tướng, lane) khi pick ở bên Xanh; null khi mẫu bên đó <5. */
+    wrBlue: number | null
+    /** WR của (tướng, lane) khi pick ở bên Đỏ; null khi mẫu bên đó <5. */
+    wrRed: number | null
 }
 
 /** Bộ lọc thống kê meta. */
@@ -44,10 +48,21 @@ export interface MetaResult {
     tournaments: Array<string>
 }
 
-/** Bộ đếm pick/thắng cho một cặp (tướng, lane). */
+/** Mẫu tối thiểu để báo WR tách theo bên — dưới mức này trả null (quá nhiễu). */
+const MIN_SIDE_SAMPLE = 5
+
+/** Bộ đếm pick/thắng cho một cặp (tướng, lane), tách theo bên cầm tướng. */
 interface PickAcc {
     picks: number
     wins: number
+    /** Số pick ở bên Xanh. */
+    blueN: number
+    /** Số thắng khi pick ở bên Xanh. */
+    blueWins: number
+    /** Số pick ở bên Đỏ. */
+    redN: number
+    /** Số thắng khi pick ở bên Đỏ. */
+    redWins: number
 }
 
 /** Bên `side` có thắng ván `m` không. */
@@ -96,9 +111,17 @@ export const aggregateMeta = (
                 if (!a.lane_position) continue
                 const won = isPickWinner(m, a.team_side)
                 const key = `${a.hero_id}|${a.lane_position}`
-                const acc = pickAcc.get(key) ?? { picks: 0, wins: 0 }
+                const acc =
+                    pickAcc.get(key) ?? { picks: 0, wins: 0, blueN: 0, blueWins: 0, redN: 0, redWins: 0 }
                 acc.picks++
                 if (won) acc.wins++
+                if (a.team_side === "blue") {
+                    acc.blueN++
+                    if (won) acc.blueWins++
+                } else {
+                    acc.redN++
+                    if (won) acc.redWins++
+                }
                 pickAcc.set(key, acc)
             }
         }
@@ -126,6 +149,8 @@ export const aggregateMeta = (
             winRate: Number.isFinite(rawWr) ? rawWr : 0,
             pickRate: Number.isFinite(rawPr) ? rawPr : 0,
             banRate: Number.isFinite(rawBr) ? rawBr : 0,
+            wrBlue: acc.blueN >= MIN_SIDE_SAMPLE ? acc.blueWins / acc.blueN : null,
+            wrRed: acc.redN >= MIN_SIDE_SAMPLE ? acc.redWins / acc.redN : null,
         })
     }
 

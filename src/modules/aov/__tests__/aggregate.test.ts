@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest"
-import type { HeroManifest, Series } from "@/modules/types"
+import type { HeroManifest, Match, Series, TeamSide } from "@/modules/types"
 import { aggregateMeta, type MetaFilter } from "../aggregate"
 
 const mockHeroes: Array<HeroManifest> = [
@@ -126,5 +126,70 @@ describe("aggregate module", () => {
         expect(res.rows.length).toBe(1)
         expect(res.rows[0].heroId).toBe("nakroth")
         expect(res.rows[0].lane).toBe("rung")
+    })
+
+    it("returns null wrBlue/wrRed when a side sample is under 5", () => {
+        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentNames: [] }
+        const res = aggregateMeta(mockSeries, mockHeroes, filter)
+
+        // Tulen (giua) chỉ pick 2 ván bên xanh → cả hai phía đều null
+        const tulenRow = res.rows.find((r) => r.heroId === "tulen")
+        expect(tulenRow?.wrBlue).toBeNull()
+        expect(tulenRow?.wrRed).toBeNull()
+    })
+
+    it("computes wrBlue/wrRed per side once a side reaches 5 picks", () => {
+        const mkMatch = (van: number, side: TeamSide, blueWon: boolean): Match => ({
+            van_number: van,
+            team_blue_id: "A",
+            team_red_id: "B",
+            winner_team_id: blueWon ? "A" : "B",
+            is_blind_pick: false,
+            draft_actions: [
+                {
+                    turn_number: 1,
+                    pick_index: 1,
+                    team_side: side,
+                    action_type: "pick",
+                    hero_id: "tulen",
+                    lane_position: "giua",
+                    player_id: null,
+                    is_counter_pick: false,
+                },
+            ],
+        })
+        const sideSeries: Array<Series> = [
+            {
+                id: "s-side",
+                tournament_name: "Side Cup",
+                patch_id: "1.55",
+                format: "BO1",
+                team_blue_id: "A",
+                team_red_id: "B",
+                winner_team_id: "A",
+                played_at: "2026-01-01",
+                matches: [
+                    // Tulen giua bên Xanh: thắng 3/5
+                    ...[true, true, true, false, false].map((w, i) =>
+                        mkMatch(i + 1, "blue", w),
+                    ),
+                    // Tulen giua bên Đỏ: thắng 1/5 (đỏ thắng = blueWon false)
+                    ...[true, true, true, true, false].map((w, i) =>
+                        mkMatch(i + 6, "red", w),
+                    ),
+                ],
+            },
+        ]
+        const res = aggregateMeta(sideSeries, mockHeroes, {
+            patchId: "all",
+            lane: "all",
+            tournamentNames: [],
+        })
+
+        const row = res.rows.find((r) => r.heroId === "tulen" && r.lane === "giua")
+        expect(row?.picks).toBe(10)
+        expect(row?.wins).toBe(4)
+        expect(row?.wrBlue).toBeCloseTo(0.6)
+        expect(row?.wrRed).toBeCloseTo(0.2)
     })
 })

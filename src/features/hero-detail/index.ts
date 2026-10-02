@@ -1,0 +1,1 @@
+export { HeroDetailView } from "./HeroDetailView"

@@ -1,0 +1,1 @@
+export { TeamProfileView } from "./TeamProfileView"

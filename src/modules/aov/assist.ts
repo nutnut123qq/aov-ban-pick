@@ -315,6 +315,9 @@ const suggestBans = (
 ): Array<Suggestion> => {
     const candidates = new Set<string>([...t.banCount.keys(), ...t.pickTotal.keys()])
 
+    // Chỉ boost deny ở phase cấm trễ (mình đã lộ ≥2 pick) — ban đầu vẫn theo meta.
+    const lateBanPhase = ctx.alliesPicked.length >= 2
+
     const scored = [...candidates]
         .filter((id) => !ctx.used.has(id))
         .map((id) => {
@@ -323,25 +326,50 @@ const suggestBans = (
             const lanes = t.lanesByHero.get(id)?.size ?? 0
             const banRate = t.totalMatches > 0 ? bans / t.totalMatches : 0
             const presence = t.totalMatches > 0 ? (bans + picks) / t.totalMatches : 0
+
+            // Deny: WR của candidate khi gặp từng tướng mình đã lộ — địch có thể
+            // pick nó để counter ta nên cấm đi. Chỉ cell đủ mẫu mới tính.
+            let denySum = 0
+            let denyN = 0
+            let bestDeny: { name: string; w: number; n: number } | null = null
+            if (lateBanPhase) {
+                for (const a of ctx.alliesPicked) {
+                    const cell = t.matchup.get(`${id}|${a.heroId}`)
+                    if (!cell || cell.n < MIN_PAIR_SAMPLE) continue
+                    denySum += cell.wins / cell.n
+                    denyN++
+                    if (!bestDeny || cell.wins * bestDeny.n > bestDeny.w * cell.n) {
+                        bestDeny = { name: heroById.get(a.heroId)?.name ?? a.heroId, w: cell.wins, n: cell.n }
+                    }
+                }
+            }
+            // Lệch 0.5 × hệ số 0.3 → tối đa ±0.15, không át ban-rate nền.
+            const denyBoost = denyN > 0 ? (denySum / denyN - 0.5) * 0.3 : 0
+
+            const safeBanRate = Number.isFinite(banRate) ? banRate : 0
+            const rawScore = safeBanRate + denyBoost
             return {
                 id,
                 bans,
                 picks,
                 lanes,
-                banRate: Number.isFinite(banRate) ? banRate : 0,
+                banRate: safeBanRate,
                 presence: Number.isFinite(presence) ? presence : 0,
+                bestDeny,
+                score: Number.isFinite(rawScore) ? rawScore : 0,
             }
         })
-        .sort((a, b) => b.banRate - a.banRate || b.presence - a.presence)
+        .sort((a, b) => b.score - a.score || b.presence - a.presence)
         .slice(0, MAX_SUGGESTIONS)
 
     return scored.map((c) => {
         const hero = heroById.get(c.id)
         const flex = c.lanes >= 2 ? ` · flex ${c.lanes} lane (khó đoán bài)` : ""
+        const counter = c.bestDeny ? ` · counter ${c.bestDeny.name} ${c.bestDeny.w}/${c.bestDeny.n}` : ""
         const reason =
             c.bans > 0
-                ? `Ban-rate ${(c.banRate * 100).toFixed(0)}%${flex}`
-                : `Hay xuất hiện ${(c.presence * 100).toFixed(0)}%${flex}`
+                ? `Ban-rate ${(c.banRate * 100).toFixed(0)}%${flex}${counter}`
+                : `Hay xuất hiện ${(c.presence * 100).toFixed(0)}%${flex}${counter}`
         return {
             heroId: c.id,
             heroName: hero?.name ?? c.id,

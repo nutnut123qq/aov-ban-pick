@@ -50,3 +50,14 @@ export const groupTournamentsByRegion = (
         tournaments: map.get(r)!.sort(),
     }))
 }
+
+/** Hiển thị tên đội từ team_id: slug nhiều từ → Title Case, mã ngắn → UPPER. */
+export const teamDisplayName = (teamId: string): string => {
+    const raw = teamId.replace(/^team_/, "")
+    return raw.includes("_")
+        ? raw
+              .split("_")
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" ")
+        : raw.toUpperCase()
+}

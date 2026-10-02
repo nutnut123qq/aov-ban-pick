@@ -49,6 +49,17 @@
             "sideBlue": "Blue",
             "sideRed": "Red",
             "source": "Suggestion source · {count} games"
+        },
+        "copyDraft": "Copy draft",
+        "copied": "Copied",
+        "score": {
+            "title": "Composition Score",
+            "blueFavored": "Blue favored {prob}%",
+            "redFavored": "Red favored {prob}%",
+            "lane": "Lane win rate",
+            "synergy": "Team synergy",
+            "matchup": "Cross matchups",
+            "notEnough": "Not enough data to score."
         }
     },
     "draftInput": {
@@ -124,8 +135,11 @@
             "allTournaments": "All tournaments",
             "dateFrom": "From date",
             "dateTo": "To date",
-            "reset": "Reset"
-        }
+            "reset": "Reset",
+            "hero": "Hero",
+            "allHeroes": "All heroes"
+        },
+        "viewTeam": "View team profile"
     },
     "regions": {
         "vn": "Vietnam",
@@ -160,7 +174,39 @@
         "tournamentsSelected": "{count} tournaments",
         "synergyTitle": "Teammate Combos",
         "matchupTitle": "Head-to-head Matchups",
-        "pairEmpty": "Not enough pair data (needs ≥{min} games together)."
+        "pairEmpty": "Not enough pair data (needs ≥{min} games together).",
+        "blueRedWr": "WR Blue/Red"
+    },
+    "hero": {
+        "backToMeta": "← Back to Meta",
+        "picks": "Picks",
+        "bans": "Bans",
+        "winRate": "Win rate",
+        "byLane": "By lane",
+        "byTournament": "By tournament",
+        "teammates": "Best teammates",
+        "beats": "Beats",
+        "losesTo": "Loses to",
+        "recentGames": "Recent games",
+        "trend": "Season trend",
+        "pairEmpty": "Not enough pair data.",
+        "watchVod": "VOD",
+        "notFound": "No data for this hero.",
+        "gamesCount": "{count} games"
+    },
+    "team": {
+        "backToMatches": "← Back to matches",
+        "record": "Record",
+        "seriesWl": "Series {w}-{l}",
+        "gameWl": "Games {w}-{l}",
+        "heroPool": "Hero pool",
+        "combos": "Frequent combos",
+        "seasons": "By season",
+        "opponents": "Head-to-head",
+        "recentMatches": "Recent series",
+        "bansByTeam": "Bans by team",
+        "bansAgainst": "Banned against",
+        "notFound": "No data for this team."
     },
     "dashboard": {
         "title": "AOV DraftMind",

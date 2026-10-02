@@ -2,7 +2,7 @@
 import { DRAFT_SEQUENCE } from "@/features/draft-input/sequence"
 import type { DraftStep } from "@/features/draft-input/types"
 import { suggestStep, useAovData, type AssistContext, type Suggestion } from "@/modules/aov"
-import type { HeroManifest, Lane, TeamSide } from "@/modules/types"
+import type { Lane, TeamSide } from "@/modules/types"
 
 export interface FilledStep {
     heroId: string | null

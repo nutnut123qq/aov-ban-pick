@@ -143,7 +143,6 @@ describe("Data Pipeline & Draft Engine Integration", () => {
     it("respects fearless global bans in game 2 simulation", () => {
         // Game 1 picks
         const game1BluePicks = ["tulen", "nakroth", "florentino", "capheny", "helen"]
-        const game1RedPicks = ["liliana", "airi", "hayate", "krizzix", "keera"]
 
         const globalBansBlue = new Set(game1BluePicks)
 

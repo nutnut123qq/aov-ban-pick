@@ -1,7 +1,7 @@
 ﻿"use client"
 import { type ReactNode, useMemo, useState } from "react"
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { BarChart3, FilePlus2, Search } from "lucide-react"
 
 import {
@@ -44,6 +44,14 @@ const MAX_PAIR_ROWS = 20
 
 /** Định dạng tỉ lệ 0..1 thành "62.5%". */
 const pct = (value: number): string => `${(value * 100).toFixed(1)}%`
+
+/** "61% / 48%" cho WR theo bên Xanh/Đỏ; "—" khi mẫu một bên (hoặc cả hai) <5. */
+const blueRedText = (row: MetaRow): string => {
+    if (row.wrBlue === null && row.wrRed === null) return "—"
+    const b = row.wrBlue === null ? "—" : `${(row.wrBlue * 100).toFixed(0)}%`
+    const r = row.wrRed === null ? "—" : `${(row.wrRed * 100).toFixed(0)}%`
+    return `${b} / ${r}`
+}
 
 /** Icon sắp xếp cho header bảng. */
 const renderSortIcon = (
@@ -284,6 +292,9 @@ export const MetaView = () => {
                                                                     {renderSortIcon(sort, "banRate")}
                                                                 </button>
                                                             </TableHead>
+                                                            <TableHead className="text-right">
+                                                                {t("blueRedWr")}
+                                                            </TableHead>
                                                         </TableRow>
                                                     </TableHeader>
                                                     <TableBody>
@@ -350,10 +361,14 @@ const PairTable = ({
     separator: "with" | "vs"
 }) => {
     const t = useTranslations("meta")
+    const locale = useLocale()
     const heroCell = (slug: string) => {
         const h = heroBySlug.get(slug)
         return (
-            <span className="flex min-w-0 items-center gap-1.5">
+            <Link
+                href={`/${locale}/heroes/${slug}`}
+                className="flex min-w-0 items-center gap-1.5 hover:underline"
+            >
                 {h?.file ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -365,7 +380,7 @@ const PairTable = ({
                     <div className="h-7 w-7 shrink-0 rounded bg-muted" />
                 )}
                 <span className="truncate text-sm font-medium">{h?.name ?? slug}</span>
-            </span>
+            </Link>
         )
     }
     const wrColor = (wr: number) =>
@@ -422,6 +437,7 @@ const PairTable = ({
 /** Một dòng tướng + lane trong bảng thống kê. */
 const StatRow = ({ row }: { row: MetaRow }) => {
     const tLane = useTranslations("lanes")
+    const locale = useLocale()
     const wrColor =
         row.winRate > 0.52
             ? "text-emerald-600 dark:text-emerald-400"
@@ -443,7 +459,12 @@ const StatRow = ({ row }: { row: MetaRow }) => {
                     ) : (
                         <div className="h-8 w-8 rounded bg-muted" />
                     )}
-                    <span className="font-medium">{row.heroName}</span>
+                    <Link
+                        href={`/${locale}/heroes/${row.heroId}`}
+                        className="font-medium hover:underline"
+                    >
+                        {row.heroName}
+                    </Link>
                 </div>
             </TableCell>
             <TableCell className="text-muted-foreground">{tLane(row.lane)}</TableCell>
@@ -455,6 +476,9 @@ const StatRow = ({ row }: { row: MetaRow }) => {
             <TableCell className="text-right tabular-nums text-muted-foreground">
                 {pct(row.banRate)}
             </TableCell>
+            <TableCell className="text-right tabular-nums text-muted-foreground">
+                {blueRedText(row)}
+            </TableCell>
         </TableRow>
     )
 }
@@ -463,6 +487,7 @@ const StatRow = ({ row }: { row: MetaRow }) => {
 const StatCard = ({ row }: { row: MetaRow }) => {
     const t = useTranslations("meta")
     const tLane = useTranslations("lanes")
+    const locale = useLocale()
     const wrColor =
         row.winRate > 0.52
             ? "text-emerald-600 dark:text-emerald-400"
@@ -484,7 +509,12 @@ const StatCard = ({ row }: { row: MetaRow }) => {
             )}
             <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                    <span className="truncate font-medium">{row.heroName}</span>
+                    <Link
+                        href={`/${locale}/heroes/${row.heroId}`}
+                        className="truncate font-medium hover:underline"
+                    >
+                        {row.heroName}
+                    </Link>
                     <span className="text-xs text-muted-foreground">{tLane(row.lane)}</span>
                 </div>
                 <div className="mt-1 grid grid-cols-3 gap-2 text-sm">
@@ -501,6 +531,9 @@ const StatCard = ({ row }: { row: MetaRow }) => {
                         <span className="tabular-nums">{pct(row.pickRate)} / {pct(row.banRate)}</span>
                     </div>
                 </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                    {t("blueRedWr")}: <span className="tabular-nums">{blueRedText(row)}</span>
+                </p>
             </div>
         </div>
     )

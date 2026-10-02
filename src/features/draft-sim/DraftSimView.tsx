@@ -1,22 +1,42 @@
 "use client"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Swords } from "lucide-react"
 
+import { getTally, scoreDraft, type CompPick } from "@/modules/aov"
+import type { TeamSide } from "@/modules/types"
 import { HeroPicker } from "@/features/draft-input/HeroPicker"
 import { DRAFT_SEQUENCE } from "@/features/draft-input/sequence"
 import { DraftControls } from "./components/DraftControls"
+import { DraftScoreCard } from "./components/DraftScoreCard"
 import { GlobalBanSection } from "./components/GlobalBanSection"
 import { SideColumn } from "./components/SideColumn"
 import { SuggestionPanel } from "./SuggestionPanel"
-import { useDraftEngine } from "./hooks/useDraftEngine"
+import { useDraftEngine, type FilledStep } from "./hooks/useDraftEngine"
 
 const BLUE_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "blue")
 const RED_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "red")
+
+/** Gom các pick đã có đủ hero + lane của một bên (pick thiếu lane chưa chấm được). */
+const collectPicks = (
+    filled: Array<FilledStep>,
+    side: TeamSide,
+): Array<CompPick> => {
+    const out: Array<CompPick> = []
+    for (const s of DRAFT_SEQUENCE) {
+        if (s.action !== "pick" || s.side !== side) continue
+        const f = filled[s.index]
+        if (f?.heroId && f.lane) out.push({ heroId: f.heroId, lane: f.lane })
+    }
+    return out
+}
 
 /** Trang mô phỏng cấm/chọn tương tác + gợi ý real-time mỗi lượt. */
 export const DraftSimView = () => {
     const t = useTranslations("draft")
     const tCommon = useTranslations("common")
+    const tLane = useTranslations("lanes")
+    const [copied, setCopied] = useState(false)
 
     const {
         data,
@@ -60,6 +80,60 @@ export const DraftSimView = () => {
           })
         : null
 
+    // Pick hợp lệ (đủ hero + lane) mỗi bên — nguồn cho scoreDraft.
+    const bluePicks = useMemo(() => collectPicks(filled, "blue"), [filled])
+    const redPicks = useMemo(() => collectPicks(filled, "red"), [filled])
+    const canScore = bluePicks.length > 0 && redPicks.length > 0
+
+    const compScore = useMemo(() => {
+        if (!canScore) return null
+        // getTally đã cache LRU theo fingerprint + scope — recompute rẻ.
+        const tallyData = getTally(filteredSeries, tournamentNames.join("|"))
+        return scoreDraft(bluePicks, redPicks, tallyData)
+    }, [canScore, bluePicks, redPicks, filteredSeries, tournamentNames])
+
+    // Text draft dạng "Xanh: A(lane)·B… | Đỏ: X… | Ban: …" để copy.
+    const draftText = useMemo(() => {
+        const heroName = (id: string | null) =>
+            id ? (heroBySlug.get(id)?.name ?? id) : "—"
+        const fmtPicks = (side: TeamSide) =>
+            DRAFT_SEQUENCE.filter((s) => s.action === "pick" && s.side === side)
+                .map((s) => {
+                    const f = filled[s.index]
+                    if (!f?.heroId) return "—"
+                    return f.lane
+                        ? `${heroName(f.heroId)}(${tLane(f.lane)})`
+                        : heroName(f.heroId)
+                })
+                .join("·")
+        const bans = DRAFT_SEQUENCE.filter((s) => s.action === "ban")
+            .map((s) => heroName(filled[s.index]?.heroId ?? null))
+            .filter((n) => n !== "—")
+            .join("·")
+        return `${tCommon("blue")}: ${fmtPicks("blue")} | ${tCommon("red")}: ${fmtPicks("red")} | ${t("ban")}: ${bans || "—"}`
+    }, [filled, heroBySlug, t, tCommon, tLane])
+
+    const handleCopyDraft = useCallback(async () => {
+        try {
+            await navigator.clipboard.writeText(draftText)
+        } catch {
+            // Clipboard API bị chặn (không secure context / quyền) — fallback.
+            const ta = document.createElement("textarea")
+            ta.value = draftText
+            ta.style.position = "fixed"
+            ta.style.opacity = "0"
+            document.body.appendChild(ta)
+            ta.select()
+            try {
+                document.execCommand("copy")
+            } catch {
+                // Bỏ qua — vẫn báo copied để không kẹt UI.
+            }
+            document.body.removeChild(ta)
+        }
+        setCopied(true)
+        window.setTimeout(() => setCopied(false), 2000)
+    }, [draftText])
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
@@ -76,9 +150,11 @@ export const DraftSimView = () => {
                     </div>
                     <DraftControls
                         vanNumber={vanNumber}
+                        copied={copied}
                         onVanChange={handleVanChange}
                         onUndo={undoLast}
                         onReset={reset}
+                        onCopyDraft={handleCopyDraft}
                     />
                 </header>
 
@@ -108,16 +184,19 @@ export const DraftSimView = () => {
                         onClear={clearStep}
                     />
 
-                    <SuggestionPanel
-                        turnLabel={turnLabel}
-                        suggestions={suggestions}
-                        hasData={!isLoading && (data?.series.length ?? 0) > 0}
-                        tournamentNames={tournamentNames}
-                        tournamentOptions={tournamentOptions}
-                        matchCount={filteredSeries.reduce((n, s) => n + s.matches.length, 0)}
-                        onApply={applySuggestion}
-                        onTournamentNamesChange={setTournamentNames}
-                    />
+                    <div className="space-y-4">
+                        <SuggestionPanel
+                            turnLabel={turnLabel}
+                            suggestions={suggestions}
+                            hasData={!isLoading && (data?.series.length ?? 0) > 0}
+                            tournamentNames={tournamentNames}
+                            tournamentOptions={tournamentOptions}
+                            matchCount={filteredSeries.reduce((n, s) => n + s.matches.length, 0)}
+                            onApply={applySuggestion}
+                            onTournamentNamesChange={setTournamentNames}
+                        />
+                        {canScore && <DraftScoreCard score={compScore} />}
+                    </div>
 
                     <SideColumn
                         side="red"

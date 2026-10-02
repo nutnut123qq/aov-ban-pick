@@ -49,6 +49,17 @@
             "sideBlue": "Xanh",
             "sideRed": "Đỏ",
             "source": "Nguồn gợi ý · {count} ván"
+        },
+        "copyDraft": "Sao chép draft",
+        "copied": "Đã sao chép",
+        "score": {
+            "title": "Đánh giá đội hình",
+            "blueFavored": "Xanh nghiêng {prob}%",
+            "redFavored": "Đỏ nghiêng {prob}%",
+            "lane": "WR theo lane",
+            "synergy": "Combo nội đội",
+            "matchup": "Kèo đối đầu",
+            "notEnough": "Chưa đủ dữ liệu để chấm điểm."
         }
     },
     "draftInput": {
@@ -124,8 +135,11 @@
             "allTournaments": "Tất cả giải",
             "dateFrom": "Từ ngày",
             "dateTo": "Đến ngày",
-            "reset": "Đặt lại"
-        }
+            "reset": "Đặt lại",
+            "hero": "Tướng",
+            "allHeroes": "Tất cả tướng"
+        },
+        "viewTeam": "Xem hồ sơ đội"
     },
     "regions": {
         "vn": "Việt Nam",
@@ -160,7 +174,39 @@
         "tournamentsSelected": "{count} giải đã chọn",
         "synergyTitle": "Combo đồng đội",
         "matchupTitle": "Kèo đối đầu",
-        "pairEmpty": "Chưa đủ dữ liệu cặp (cần ≥{min} ván cùng nhau)."
+        "pairEmpty": "Chưa đủ dữ liệu cặp (cần ≥{min} ván cùng nhau).",
+        "blueRedWr": "WR Xanh/Đỏ"
+    },
+    "hero": {
+        "backToMeta": "← Quay lại Meta",
+        "picks": "Lượt chọn",
+        "bans": "Lượt cấm",
+        "winRate": "Tỉ lệ thắng",
+        "byLane": "Theo lane",
+        "byTournament": "Theo giải",
+        "teammates": "Đồng đội hay thắng cùng",
+        "beats": "Kèo thắng",
+        "losesTo": "Kèo thua",
+        "recentGames": "Trận gần nhất",
+        "trend": "Xu hướng theo mùa",
+        "pairEmpty": "Chưa đủ dữ liệu cặp.",
+        "watchVod": "VOD",
+        "notFound": "Không có dữ liệu tướng này.",
+        "gamesCount": "{count} ván"
+    },
+    "team": {
+        "backToMatches": "← Quay lại các cặp đấu",
+        "record": "Thành tích",
+        "seriesWl": "Series {w}-{l}",
+        "gameWl": "Ván {w}-{l}",
+        "heroPool": "Pool tướng",
+        "combos": "Combo hay dùng",
+        "seasons": "Theo mùa",
+        "opponents": "Đối đầu trực tiếp",
+        "recentMatches": "Series gần nhất",
+        "bansByTeam": "Đội cấm",
+        "bansAgainst": "Bị cấm",
+        "notFound": "Không có dữ liệu đội này."
     },
     "dashboard": {
         "title": "AOV DraftMind",

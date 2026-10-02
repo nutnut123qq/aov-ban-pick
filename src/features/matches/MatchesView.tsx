@@ -1,17 +1,17 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import Link from "next/link"
 import { useLocale, useTranslations } from "next-intl"
 import { ArrowLeft, CalendarDays, ListOrdered, Swords, Trophy, X, MonitorPlay } from "lucide-react"
 
-import { LANE_LABELS } from "@/modules/aov/lanes"
 import { useAovData } from "@/modules/aov/useAovData"
-import type { DraftAction, Match, Series, TeamSide } from "@/modules/types"
+import type { DraftAction, HeroManifest, Match, Series, TeamSide } from "@/modules/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { groupTournamentsByRegion } from "@/modules/aov/leagues"
+import { groupTournamentsByRegion, teamDisplayName } from "@/modules/aov/leagues"
 import {
     Select,
     SelectContent,
@@ -90,16 +90,23 @@ export const MatchesView = () => {
         )
     }
 
-    return <SeriesListView series={sortedSeries} onSelect={setSelectedSeries} />
+    return (
+        <SeriesListView
+            series={sortedSeries}
+            heroes={data?.heroes ?? []}
+            onSelect={setSelectedSeries}
+        />
+    )
 }
 
 interface SeriesListViewProps {
     series: Array<Series>
+    heroes: Array<HeroManifest>
     onSelect: (s: Series) => void
 }
 
 /** Danh sách các cặp đấu (series). */
-const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
+const SeriesListView = ({ series, heroes, onSelect }: SeriesListViewProps) => {
     const t = useTranslations("matches")
     const locale = useLocale()
     const tRegions = useTranslations("regions")
@@ -108,6 +115,7 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
     const [listTournament, setListTournament] = useState("all")
     const [selectedTournament, setSelectedTournament] = useState("")
     const [selectedTeam, setSelectedTeam] = useState<string | null>(null)
+    const [selectedHero, setSelectedHero] = useState("all")
 
     const filteredSeries = useMemo(() => {
         const from = parseDate(dateFrom)
@@ -118,13 +126,32 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
             if (selectedTeam && s.team_blue_id !== selectedTeam && s.team_red_id !== selectedTeam) {
                 return false
             }
+            if (
+                selectedHero !== "all" &&
+                !s.matches.some((m) => m.draft_actions.some((a) => a.hero_id === selectedHero))
+            ) {
+                return false
+            }
             const d = parseDate(s.played_at)
             if (!d) return true
             if (from && stripTime(d) < stripTime(from)) return false
             if (to && stripTime(d) > stripTime(to)) return false
             return true
         })
-    }, [series, dateFrom, dateTo, selectedTeam, listTournament])
+    }, [series, dateFrom, dateTo, selectedTeam, selectedHero, listTournament])
+
+    /** Tướng có ít nhất 1 pick/ban trong dữ liệu — options của select lọc tướng. */
+    const heroOptions = useMemo(() => {
+        const used = new Set<string>()
+        for (const s of series) {
+            for (const m of s.matches) {
+                for (const a of m.draft_actions) used.add(a.hero_id)
+            }
+        }
+        return heroes
+            .filter((h) => used.has(h.slug))
+            .sort((a, b) => a.name.localeCompare(b.name))
+    }, [series, heroes])
 
     const tournaments = useMemo(
         () => [...new Set(series.map((s) => s.tournament_name))],
@@ -154,13 +181,15 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
         return [...map.entries()].sort((a, b) => b[1].w - b[1].l - (a[1].w - a[1].l))
     }, [series, selectedTeam])
 
-    const hasActiveFilter = dateFrom || dateTo || selectedTeam || listTournament !== "all"
+    const hasActiveFilter =
+        dateFrom || dateTo || selectedTeam || selectedHero !== "all" || listTournament !== "all"
 
     const resetFilters = () => {
         setDateFrom("")
         setDateTo("")
         setListTournament("all")
         setSelectedTeam(null)
+        setSelectedHero("all")
     }
 
     return (
@@ -225,7 +254,13 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                             )}
                                         >
                                             <TableCell className="pl-4 font-medium">
-                                                {teamDisplayName(r.teamId)}
+                                                <Link
+                                                    href={`/${locale}/teams/${r.teamId}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="hover:underline"
+                                                >
+                                                    {teamDisplayName(r.teamId)}
+                                                </Link>
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 {r.seriesW}-{r.seriesL}
@@ -290,7 +325,7 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                 </Button>
                             )}
                         </div>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <div className="space-y-2">
                                 <Label className="text-xs">{t("filter.tournament")}</Label>
                                 <Select value={listTournament} onValueChange={setListTournament}>
@@ -308,6 +343,22 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                                     </SelectItem>
                                                 ))}
                                             </SelectGroup>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-xs">{t("filter.hero")}</Label>
+                                <Select value={selectedHero} onValueChange={setSelectedHero}>
+                                    <SelectTrigger className="h-9">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">{t("filter.allHeroes")}</SelectItem>
+                                        {heroOptions.map((h) => (
+                                            <SelectItem key={h.slug} value={h.slug}>
+                                                {h.name}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -354,13 +405,17 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                 ) : (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {filteredSeries.map((s) => (
-                            <button
+                            <div
                                 key={s.id}
-                                type="button"
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => onSelect(s)}
-                                className="text-left transition-transform hover:scale-[1.01]"
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") onSelect(s)
+                                }}
+                                className="cursor-pointer text-left transition-transform hover:scale-[1.01]"
                             >
-                                <Card className="h-full cursor-pointer hover:border-primary">
+                                <Card className="h-full hover:border-primary">
                                     <CardHeader className="pb-3">
                                         <CardTitle className="text-sm font-medium text-muted-foreground">
                                             {s.tournament_name}
@@ -368,13 +423,21 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <div className="flex items-center justify-between gap-2 text-lg font-bold">
-                                            <span className={cn("truncate", sideColor("blue"))}>
+                                            <Link
+                                                href={`/${locale}/teams/${s.team_blue_id}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className={cn("truncate hover:underline", sideColor("blue"))}
+                                            >
                                                 {teamDisplayName(s.team_blue_id)}
-                                            </span>
+                                            </Link>
                                             <span className="text-muted-foreground">vs</span>
-                                            <span className={cn("truncate", sideColor("red"))}>
+                                            <Link
+                                                href={`/${locale}/teams/${s.team_red_id}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className={cn("truncate hover:underline", sideColor("red"))}
+                                            >
                                                 {teamDisplayName(s.team_red_id)}
-                                            </span>
+                                            </Link>
                                         </div>
                                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                                             <span>
@@ -393,7 +456,7 @@ const SeriesListView = ({ series, onSelect }: SeriesListViewProps) => {
                                         )}
                                     </CardContent>
                                 </Card>
-                            </button>
+                            </div>
                         ))}
                     </div>
                 )}
@@ -423,9 +486,19 @@ const SeriesDetailView = ({ series, onBack, onSelectMatch }: SeriesDetailViewPro
                     </Button>
                     <div>
                         <h1 className="text-xl font-bold">
-                            <span className={sideColor("blue")}>{teamDisplayName(series.team_blue_id)}</span>
+                            <Link
+                                href={`/${locale}/teams/${series.team_blue_id}`}
+                                className={cn("hover:underline", sideColor("blue"))}
+                            >
+                                {teamDisplayName(series.team_blue_id)}
+                            </Link>
                             {" vs "}
-                            <span className={sideColor("red")}>{teamDisplayName(series.team_red_id)}</span>
+                            <Link
+                                href={`/${locale}/teams/${series.team_red_id}`}
+                                className={cn("hover:underline", sideColor("red"))}
+                            >
+                                {teamDisplayName(series.team_red_id)}
+                            </Link>
                         </h1>
                         <p className="text-sm text-muted-foreground">
                             {series.tournament_name} · {series.format} · {formatDate(series.played_at, locale)}
@@ -500,6 +573,7 @@ interface MatchDraftViewProps {
 /** Chi tiết cấm/chọn của một ván. */
 const MatchDraftView = ({ match, heroBySlug, onBack }: MatchDraftViewProps) => {
     const t = useTranslations("matches")
+    const locale = useLocale()
 
     const sortedActions = useMemo(
         () =>
@@ -528,9 +602,19 @@ const MatchDraftView = ({ match, heroBySlug, onBack }: MatchDraftViewProps) => {
                     <div>
                         <h1 className="text-xl font-bold">{t("vanNumber", { number: match.van_number })}</h1>
                         <p className="text-sm text-muted-foreground">
-                            <span className={sideColor("blue")}>{teamDisplayName(match.team_blue_id)}</span>
+                            <Link
+                                href={`/${locale}/teams/${match.team_blue_id}`}
+                                className={cn("hover:underline", sideColor("blue"))}
+                            >
+                                {teamDisplayName(match.team_blue_id)}
+                            </Link>
                             {" vs "}
-                            <span className={sideColor("red")}>{teamDisplayName(match.team_red_id)}</span>
+                            <Link
+                                href={`/${locale}/teams/${match.team_red_id}`}
+                                className={cn("hover:underline", sideColor("red"))}
+                            >
+                                {teamDisplayName(match.team_red_id)}
+                            </Link>
                             {" · "}
                             {t("winner")}: {teamDisplayName(match.winner_team_id)}
                         </p>
@@ -623,17 +707,6 @@ const DraftActionCard = ({ action, heroBySlug }: DraftActionCardProps) => {
     )
 }
 
-
-/** Hiển thị tên đội từ team_id: slug nhiều từ → Title Case, mã ngắn → UPPER. */
-const teamDisplayName = (teamId: string): string => {
-    const raw = teamId.replace(/^team_/, "")
-    return raw.includes("_")
-        ? raw
-              .split("_")
-              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-              .join(" ")
-        : raw.toUpperCase()
-}
 
 interface TeamStanding {
     teamId: string

@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest"
-import type { HeroManifest, Series } from "@/modules/types"
+import type { DraftAction, HeroManifest, Lane, Match, Series, TeamSide } from "@/modules/types"
 import { getTally, suggestStep, tally, type AssistContext } from "../assist"
 
 const mockHeroes: Array<HeroManifest> = [
@@ -58,6 +58,82 @@ const createMockSeries = (): Array<Series> => [
         ],
     },
 ]
+
+const banAction = (turn: number, side: TeamSide, heroId: string): DraftAction => ({
+    turn_number: turn,
+    pick_index: null,
+    team_side: side,
+    action_type: "ban",
+    hero_id: heroId,
+    lane_position: null,
+    player_id: null,
+    is_counter_pick: false,
+})
+
+const pickAction = (
+    turn: number,
+    idx: number,
+    side: TeamSide,
+    heroId: string,
+    lane: Lane,
+): DraftAction => ({
+    turn_number: turn,
+    pick_index: idx,
+    team_side: side,
+    action_type: "pick",
+    hero_id: heroId,
+    lane_position: lane,
+    player_id: null,
+    is_counter_pick: false,
+})
+
+/**
+ * 6 ván: Xanh pick [tulen + 4 filler], Đỏ pick [florentino + 4 filler], Đỏ thắng 5/6.
+ * → matchup `florentino|tulen` = 5/6, đủ mẫu để deny-boost khi ban phase trễ.
+ */
+const createCounterSeries = (): Array<Series> => {
+    const mkMatch = (van: number, blueWon: boolean): Match => ({
+        van_number: van,
+        team_blue_id: "A",
+        team_red_id: "R",
+        winner_team_id: blueWon ? "A" : "R",
+        is_blind_pick: false,
+        draft_actions: [
+            banAction(1, "blue", "veres"),
+            banAction(2, "red", "enzo"),
+            pickAction(3, 1, "blue", "tulen", "giua"),
+            pickAction(3, 2, "blue", "b1", "rung"),
+            pickAction(4, 3, "blue", "b2", "ta_than"),
+            pickAction(4, 4, "blue", "b3", "rong_xa"),
+            pickAction(5, 5, "blue", "b4", "rong_ho_tro"),
+            pickAction(5, 6, "red", "florentino", "ta_than"),
+            pickAction(6, 7, "red", "r1", "giua"),
+            pickAction(6, 8, "red", "r2", "rung"),
+            pickAction(7, 9, "red", "r3", "rong_xa"),
+            pickAction(7, 10, "red", "r4", "rong_ho_tro"),
+        ],
+    })
+    return [
+        {
+            id: "s-counter",
+            tournament_name: "Counter Cup",
+            patch_id: "1.55",
+            format: "BO7",
+            team_blue_id: "A",
+            team_red_id: "R",
+            winner_team_id: "R",
+            played_at: "2026-02-01",
+            matches: [
+                mkMatch(1, true),
+                mkMatch(2, false),
+                mkMatch(3, false),
+                mkMatch(4, false),
+                mkMatch(5, false),
+                mkMatch(6, false),
+            ],
+        },
+    ]
+}
 
 describe("assist module", () => {
     describe("tally & getTally caching", () => {
@@ -152,6 +228,43 @@ describe("assist module", () => {
             }
             const suggestions2 = suggestStep(ctxUsed, series, mockHeroes)
             expect(suggestions2.some((s) => s.heroId === "florentino")).toBe(false)
+        })
+
+        it("deny-boosts counters of revealed allies during late ban phase", () => {
+            const series = createCounterSeries()
+            const ctx: AssistContext = {
+                action: "ban",
+                side: "blue",
+                used: new Set(["tulen", "b1", "b2", "b3", "b4"]),
+                lanesNeeded: [],
+                alliesPicked: [
+                    { heroId: "tulen", lane: "giua" },
+                    { heroId: "b1", lane: "rung" },
+                ],
+                enemyRevealed: [],
+            }
+
+            const suggestions = suggestStep(ctx, series, mockHeroes)
+            const flo = suggestions.find((s) => s.heroId === "florentino")
+            expect(flo).toBeDefined()
+            // matchup florentino|tulen = 5/6 → reason kèm kèo counter mạnh nhất
+            expect(flo?.reason).toContain("counter Tulen")
+            expect(flo?.reason).toContain("5/6")
+        })
+
+        it("does not apply deny boost in early ban phase (alliesPicked < 2)", () => {
+            const series = createCounterSeries()
+            const ctx: AssistContext = {
+                action: "ban",
+                side: "blue",
+                used: new Set(["tulen", "b1", "b2", "b3", "b4"]),
+                lanesNeeded: [],
+                alliesPicked: [{ heroId: "tulen", lane: "giua" }],
+                enemyRevealed: [],
+            }
+
+            const suggestions = suggestStep(ctx, series, mockHeroes)
+            expect(suggestions.every((s) => !s.reason.includes("counter"))).toBe(true)
         })
     })
 
