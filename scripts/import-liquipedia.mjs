@@ -67,6 +67,9 @@ const HERO_SLUG_ALIAS = {
     "flowborn-mm": "flowborn-ad", // LP viết liền: "Flowborn-mm" ~ "Flowborn (mm)"
     "diao-chan": "diaochan", // LP: "Diao Chan" / "Diaochan"
     "lubu": "lu-bo", // RPL (RoV Thái) ghi "Lubu"; manifest: lu-bo
+    "wukong": "ngo-khong", // tên quốc tế của Ngộ Không
+    "mortos": "arthur", // tên quốc tế của Arthur
+    "jinnar": "jinna", // LP: "Jinnar"; manifest: jinna
     "kil-groth": "kilgroth", // LP: "Kil'Groth" → slug có gạch; manifest: kilgroth
     // Lưu ý: "zanis"/"riktor" KHÔNG phải zephys/richter — LP có ván pick
     // cả hai cùng team. Đây là tướng riêng → importer tự kéo icon về manifest.

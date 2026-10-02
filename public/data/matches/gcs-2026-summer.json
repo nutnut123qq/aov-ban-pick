@@ -10529,7 +10529,7 @@
             "pick_index": 5,
             "team_side": "blue",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": false
@@ -17530,7 +17530,7 @@
             "pick_index": null,
             "team_side": "blue",
             "action_type": "ban",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": null,
             "player_id": null,
             "is_counter_pick": false
@@ -18072,7 +18072,7 @@
             "pick_index": 6,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": true

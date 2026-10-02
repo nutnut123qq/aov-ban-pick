@@ -665,23 +665,8 @@
     "file": "diaochan.png"
   },
   {
-    "name": "Jinnar",
-    "slug": "jinnar",
-    "file": "jinnar.png"
-  },
-  {
     "name": "Sikong Zhen",
     "slug": "sikong",
     "file": "sikong.png"
-  },
-  {
-    "name": "Wukong",
-    "slug": "wukong",
-    "file": "wukong.png"
-  },
-  {
-    "name": "Mortos",
-    "slug": "mortos",
-    "file": "mortos.png"
   }
 ]

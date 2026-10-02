@@ -16228,7 +16228,7 @@
             "pick_index": 6,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": true
@@ -21278,7 +21278,7 @@
             "pick_index": 6,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": true
@@ -24750,7 +24750,7 @@
             "pick_index": 6,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": true
@@ -41156,7 +41156,7 @@
             "pick_index": 4,
             "team_side": "blue",
             "action_type": "pick",
-            "hero_id": "wukong",
+            "hero_id": "ngo-khong",
             "lane_position": "rung",
             "player_id": null,
             "is_counter_pick": true
@@ -48498,7 +48498,7 @@
             "pick_index": 3,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "wukong",
+            "hero_id": "ngo-khong",
             "lane_position": "rung",
             "player_id": null,
             "is_counter_pick": false
@@ -48748,7 +48748,7 @@
             "pick_index": null,
             "team_side": "red",
             "action_type": "ban",
-            "hero_id": "mortos",
+            "hero_id": "arthur",
             "lane_position": null,
             "player_id": null,
             "is_counter_pick": false
@@ -48908,7 +48908,7 @@
             "pick_index": 6,
             "team_side": "red",
             "action_type": "pick",
-            "hero_id": "jinnar",
+            "hero_id": "jinna",
             "lane_position": "giua",
             "player_id": null,
             "is_counter_pick": true
