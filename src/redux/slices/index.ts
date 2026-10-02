@@ -1,2 +1,3 @@
-export * from "./tabs"
-export * from "./user"
+// Redux slices index
+export {}
+

@@ -1,216 +1,61 @@
 "use client"
-import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
-import { RotateCcw, Swords, Undo, X } from "lucide-react"
+import { Swords } from "lucide-react"
 
 import { HeroPicker } from "@/features/draft-input/HeroPicker"
 import { DRAFT_SEQUENCE } from "@/features/draft-input/sequence"
-import type { DraftStep } from "@/features/draft-input/types"
-import { LANE_OPTIONS, suggestStep, useAovData, type AssistContext } from "@/modules/aov"
-import type { Lane, TeamSide } from "@/modules/types"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { cn } from "@/lib/utils"
-
+import { DraftControls } from "./components/DraftControls"
+import { GlobalBanSection } from "./components/GlobalBanSection"
+import { SideColumn } from "./components/SideColumn"
 import { SuggestionPanel } from "./SuggestionPanel"
+import { useDraftEngine } from "./hooks/useDraftEngine"
 
-/** Giá trị người dùng điền cho từng bước (hero + lane). */
-interface FilledStep {
-    heroId: string | null
-    lane: Lane | null
-}
-
-const ALL_LANES: Array<Lane> = ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"]
-const EMPTY: FilledStep = { heroId: null, lane: null }
 const BLUE_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "blue")
 const RED_STEPS = DRAFT_SEQUENCE.filter((s) => s.side === "red")
-
-const VAN_OPTIONS = [1, 2, 3, 4, 5, 6] as const
-
-/** Số tướng global ban cho mỗi bên ở ván đã chọn. */
-const globalBanCount = (vanNumber: number) => Math.max(0, vanNumber - 1) * 5
-
-/** Khởi tạo mảng global ban với độ dài phù hợp. */
-const initGlobalBans = (vanNumber: number) =>
-    Array.from<string | null>({ length: globalBanCount(vanNumber) }).fill(null)
 
 /** Trang mô phỏng cấm/chọn tương tác + gợi ý real-time mỗi lượt. */
 export const DraftSimView = () => {
     const t = useTranslations("draft")
-    const { data, isLoading } = useAovData()
-    const [filled, setFilled] = useState<Array<FilledStep>>(() =>
-        DRAFT_SEQUENCE.map(() => ({ ...EMPTY })),
-    )
-    const [pickerIndex, setPickerIndex] = useState<number | null>(null)
-    const [globalBanPicker, setGlobalBanPicker] = useState<{
-        side: TeamSide
-        index: number
-    } | null>(null)
-    const [vanNumber, setVanNumber] = useState<number>(1)
-    const [globalBansBlue, setGlobalBansBlue] = useState<Array<string | null>>(() =>
-        initGlobalBans(1),
-    )
-    const [globalBansRed, setGlobalBansRed] = useState<Array<string | null>>(() =>
-        initGlobalBans(1),
-    )
+    const tCommon = useTranslations("common")
 
-    // Lượt đang tới = bước chưa chọn tướng đầu tiên theo trình tự.
-    const activeIndex = useMemo(
-        () => DRAFT_SEQUENCE.findIndex((s) => !filled[s.index]?.heroId),
-        [filled],
-    )
-    const activeStep: DraftStep | null =
-        activeIndex >= 0 ? DRAFT_SEQUENCE[activeIndex] : null
-
-    // Tướng đã dùng trong ván hiện tại (không tính ô draft đang mở picker).
-    const currentUsedHeroIds = useMemo(
-        () =>
-            new Set(
-                filled
-                    .filter((_, i) => i !== pickerIndex)
-                    .map((f) => f.heroId)
-                    .filter(Boolean) as Array<string>,
-            ),
-        [filled, pickerIndex],
-    )
-
-    // Tướng đã dùng trong global ban cùng bên (không tính ô global ban đang mở picker).
-    const globalBanPickerUsedIds = useMemo(() => {
-        if (!globalBanPicker) return new Set<string>()
-        const sameSideBans =
-            globalBanPicker.side === "blue" ? globalBansBlue : globalBansRed
-        return new Set(
-            sameSideBans
-                .filter((h, i) => h && i !== globalBanPicker.index)
-                .filter(Boolean) as Array<string>,
-        )
-    }, [globalBanPicker, globalBansBlue, globalBansRed])
-
-    // Tướng bị global ban của bên đang mở draft picker — chỉ khóa khi pick.
-    const pickerDisabledIds = useMemo(() => {
-        if (pickerIndex === null) return new Set<string>()
-        const step = DRAFT_SEQUENCE[pickerIndex]
-        const bans = step.side === "blue" ? globalBansBlue : globalBansRed
-        return new Set(bans.filter(Boolean) as Array<string>)
-    }, [pickerIndex, globalBansBlue, globalBansRed])
-
-    // Ngữ cảnh cho engine gợi ý, suy từ trạng thái bàn cờ.
-    const ctx: AssistContext | null = useMemo(() => {
-        if (!activeStep) return null
-        const mySide = activeStep.side
-
-        const myLanes = new Set<Lane>()
-        const enemyRevealed: Array<{ heroId: string; lane: Lane }> = []
-        for (const step of DRAFT_SEQUENCE) {
-            const f = filled[step.index]
-            if (step.action !== "pick" || !f?.heroId || !f.lane) continue
-            if (step.side === mySide) myLanes.add(f.lane)
-            else enemyRevealed.push({ heroId: f.heroId, lane: f.lane })
-        }
-
-        const sideGlobalBans = new Set(
-            (mySide === "blue" ? globalBansBlue : globalBansRed).filter(
-                Boolean,
-            ) as Array<string>,
-        )
-        const used = new Set([
-            ...(filled.map((f) => f.heroId).filter(Boolean) as Array<string>),
-            ...sideGlobalBans,
-        ])
-
-        return {
-            action: activeStep.action,
-            side: mySide,
-            used,
-            lanesNeeded: ALL_LANES.filter((l) => !myLanes.has(l)),
-            enemyRevealed,
-        }
-    }, [activeStep, filled, globalBansBlue, globalBansRed])
-
-    const suggestions = useMemo(() => {
-        if (!ctx || !data) return []
-        return suggestStep(ctx, data.series, data.heroes)
-    }, [ctx, data])
-
-    const heroBySlug = useMemo(
-        () => new Map((data?.heroes ?? []).map((h) => [h.slug, h])),
-        [data],
-    )
-
-    const setStep = (index: number, patch: Partial<FilledStep>) =>
-        setFilled((prev) => prev.map((s, i) => (i === index ? { ...s, ...patch } : s)))
-
-    const clearStep = (index: number) => setStep(index, { heroId: null, lane: null })
-
-    const undoLast = useCallback(() => {
-        setFilled((prev) => {
-            const lastFilled = [...prev]
-                .map((s, i) => ({ ...s, i }))
-                .filter((s) => s.heroId)
-                .pop()
-            if (!lastFilled) return prev
-            return prev.map((s, i) =>
-                i === lastFilled.i ? { ...s, heroId: null, lane: null } : s,
-            )
-        })
-    }, [])
-
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
-                e.preventDefault()
-                undoLast()
-            }
-        }
-        window.addEventListener("keydown", handler)
-        return () => window.removeEventListener("keydown", handler)
-    }, [undoLast])
-
-    const reset = () => {
-        setFilled(DRAFT_SEQUENCE.map(() => ({ ...EMPTY })))
-        setPickerIndex(null)
-        setGlobalBanPicker(null)
-    }
-
-    const handleVanChange = (nextVan: number) => {
-        setVanNumber(nextVan)
-        setFilled(DRAFT_SEQUENCE.map(() => ({ ...EMPTY })))
-        setPickerIndex(null)
-        setGlobalBanPicker(null)
-        setGlobalBansBlue(initGlobalBans(nextVan))
-        setGlobalBansRed(initGlobalBans(nextVan))
-    }
-
-    const setGlobalBan = (side: TeamSide, index: number, heroId: string | null) => {
-        const updater = (prev: Array<string | null>) =>
-            prev.map((h, i) => (i === index ? heroId : h))
-        if (side === "blue") setGlobalBansBlue(updater)
-        else setGlobalBansRed(updater)
-    }
-
-    const clearGlobalBan = (side: TeamSide, index: number) => {
-        setGlobalBan(side, index, null)
-    }
-
-    // Áp dụng gợi ý vào đúng lượt đang tới.
-    const applySuggestion = (heroId: string, lane?: Lane) => {
-        if (activeIndex < 0) return
-        setStep(activeIndex, { heroId, lane: lane ?? filled[activeIndex]?.lane ?? null })
-    }
+    const {
+        data,
+        isLoading,
+        filled,
+        vanNumber,
+        activeIndex,
+        activeStep,
+        pickerIndex,
+        globalBanPicker,
+        globalBansBlue,
+        globalBansRed,
+        currentUsedHeroIds,
+        globalBanPickerUsedIds,
+        pickerDisabledIds,
+        suggestions,
+        heroBySlug,
+        setStep,
+        clearStep,
+        undoLast,
+        reset,
+        handleVanChange,
+        setGlobalBan,
+        clearGlobalBan,
+        applySuggestion,
+        setPickerIndex,
+        setGlobalBanPicker,
+    } = useDraftEngine()
 
     const turnLabel = activeStep
-        ? `Bên ${activeStep.side === "blue" ? "Xanh" : "Đỏ"} · ${
-              activeStep.action === "ban" ? "CẤM" : `CHỌN ${activeStep.pickIndex}`
-          }`
+        ? t("turnLabel", {
+              side: activeStep.side === "blue" ? tCommon("blue") : tCommon("red"),
+              action:
+                  activeStep.action === "ban"
+                      ? t("ban")
+                      : t("pick", { number: activeStep.pickIndex ?? 0 }),
+          })
         : null
+
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
@@ -219,41 +64,18 @@ export const DraftSimView = () => {
                     <div>
                         <h1 className="flex items-center gap-2 text-2xl font-bold">
                             <Swords className="h-6 w-6 text-primary" />
-                            Mô phỏng Draft
+                            {t("title")}
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Dựng lại cấm/chọn theo thể thức ĐTDV; mỗi lượt nhận gợi ý dựa trên
-                            thống kê đã có.
+                            {t("subtitle")}
                         </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <Label className="text-xs text-muted-foreground">Ván</Label>
-                            <Select
-                                value={String(vanNumber)}
-                                onValueChange={(v) => handleVanChange(Number(v))}
-                            >
-                                <SelectTrigger className="w-20">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {VAN_OPTIONS.map((v) => (
-                                        <SelectItem key={v} value={String(v)}>
-                                            {v}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <Button variant="outline" onClick={undoLast} className="gap-2">
-                            <Undo className="h-4 w-4" />
-                            {t("undo")}
-                        </Button>
-                        <Button variant="outline" onClick={reset} className="gap-2">
-                            <RotateCcw className="h-4 w-4" />
-                            Làm lại
-                        </Button>
-                    </div>
+                    <DraftControls
+                        vanNumber={vanNumber}
+                        onVanChange={handleVanChange}
+                        onUndo={undoLast}
+                        onReset={reset}
+                    />
                 </header>
 
                 {vanNumber > 1 && (
@@ -326,242 +148,3 @@ export const DraftSimView = () => {
     )
 }
 
-interface GlobalBanSectionProps {
-    vanNumber: number
-    globalBansBlue: Array<string | null>
-    globalBansRed: Array<string | null>
-    heroBySlug: Map<string, { name: string; file: string }>
-    onOpen: (side: TeamSide, index: number) => void
-    onClear: (side: TeamSide, index: number) => void
-}
-
-/** Hiển thị các tướng đã pick các ván trước để khóa ở ván hiện tại (Fearless Draft). */
-const GlobalBanSection = ({
-    vanNumber,
-    globalBansBlue,
-    globalBansRed,
-    heroBySlug,
-    onOpen,
-    onClear,
-}: GlobalBanSectionProps) => {
-    const count = globalBanCount(vanNumber)
-    return (
-        <Card className="mb-6">
-            <CardHeader className="pb-3">
-                <CardTitle className="text-base">Tướng đã pick các ván trước</CardTitle>
-                <p className="text-xs text-muted-foreground">
-                    Ván {vanNumber}: mỗi bên {count} tướng đã pick ở {vanNumber - 1} ván trước sẽ
-                    bị khóa không cho chọn lại.
-                </p>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <GlobalBanColumn
-                    side="blue"
-                    bans={globalBansBlue}
-                    heroBySlug={heroBySlug}
-                    onOpen={(i) => onOpen("blue", i)}
-                    onClear={(i) => onClear("blue", i)}
-                />
-                <GlobalBanColumn
-                    side="red"
-                    bans={globalBansRed}
-                    heroBySlug={heroBySlug}
-                    onOpen={(i) => onOpen("red", i)}
-                    onClear={(i) => onClear("red", i)}
-                />
-            </CardContent>
-        </Card>
-    )
-}
-
-interface GlobalBanColumnProps {
-    side: TeamSide
-    bans: Array<string | null>
-    heroBySlug: Map<string, { name: string; file: string }>
-    onOpen: (index: number) => void
-    onClear: (index: number) => void
-}
-
-const GlobalBanColumn = ({
-    side,
-    bans,
-    heroBySlug,
-    onOpen,
-    onClear,
-}: GlobalBanColumnProps) => (
-    <div
-        className={cn(
-            "rounded-lg border p-3",
-            side === "blue" ? "border-l-4 border-l-blue-500" : "border-l-4 border-l-red-500",
-        )}
-    >
-        <h4
-            className={cn(
-                "mb-2 text-sm font-semibold",
-                side === "blue" ? "text-blue-600 dark:text-blue-400" : "text-rose-600 dark:text-rose-400",
-            )}
-        >
-            {side === "blue" ? "Đội Xanh" : "Đội Đỏ"}
-        </h4>
-        <div className="grid grid-cols-5 gap-2">
-            {bans.map((heroId, index) => {
-                const hero = heroId ? heroBySlug.get(heroId) : undefined
-                return (
-                    <div key={index} className="relative">
-                        <button
-                            type="button"
-                            onClick={() => onOpen(index)}
-                            className={cn(
-                                "flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-md border p-1 text-center text-xs transition-colors hover:border-primary",
-                                !hero && "text-muted-foreground",
-                            )}
-                        >
-                            {hero ? (
-                                <>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={`/images/heroes/${hero.file}`}
-                                        alt={hero.name}
-                                        className="h-8 w-8 rounded object-cover"
-                                    />
-                                    <span className="line-clamp-1 w-full">{hero.name}</span>
-                                </>
-                            ) : (
-                                <span>+</span>
-                            )}
-                        </button>
-                        {hero && (
-                            <button
-                                type="button"
-                                onClick={() => onClear(index)}
-                                className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[8px] text-destructive-foreground hover:bg-destructive/90"
-                            >
-                                <X className="h-3 w-3" />
-                            </button>
-                        )}
-                    </div>
-                )
-            })}
-        </div>
-    </div>
-)
-
-interface SideColumnProps {
-    side: TeamSide
-    steps: ReadonlyArray<DraftStep>
-    filled: Array<FilledStep>
-    activeIndex: number
-    heroBySlug: Map<string, { name: string; file: string }>
-    onSlotClick: (index: number) => void
-    onLane: (index: number, lane: Lane) => void
-    onClear: (index: number) => void
-}
-
-/** Một cột (Xanh/Đỏ) liệt kê các lượt cấm/chọn của bên đó theo thứ tự. */
-const SideColumn = ({
-    side,
-    steps,
-    filled,
-    activeIndex,
-    heroBySlug,
-    onSlotClick,
-    onLane,
-    onClear,
-}: SideColumnProps) => {
-    const t = useTranslations("draft")
-    return (
-        <Card>
-            <CardHeader className="pb-3">
-                <CardTitle
-                    className={cn(
-                        "text-base",
-                        side === "blue" ? "text-blue-600 dark:text-blue-400" : "text-rose-600 dark:text-rose-400",
-                    )}
-                >
-                    {side === "blue" ? "Đội Xanh" : "Đội Đỏ"}
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-                {steps.map((step) => {
-                    const slot = filled[step.index]
-                    const hero = slot?.heroId ? heroBySlug.get(slot.heroId) : undefined
-                    const isActive = step.index === activeIndex
-                    const isFuture = activeIndex >= 0 && step.index > activeIndex
-                    return (
-                        <div
-                            key={step.index}
-                            className={cn(
-                                "flex flex-wrap items-center gap-2 rounded-lg border p-2",
-                                isActive && "ring-2 ring-primary",
-                                step.action === "ban" && "bg-muted/30",
-                            )}
-                        >
-                            <span className="w-12 shrink-0 text-xs font-semibold text-muted-foreground sm:w-14">
-                                {step.action === "ban" ? "CẤM" : `CHỌN ${step.pickIndex}`}
-                            </span>
-                            <button
-                                type="button"
-                                disabled={isFuture}
-                                onClick={() => onSlotClick(step.index)}
-                                className={cn(
-                                    "flex min-w-0 flex-1 items-center gap-2 rounded-md border px-2 py-2 text-left text-sm transition-colors",
-                                    isFuture
-                                        ? "cursor-not-allowed opacity-40"
-                                        : "hover:border-primary",
-                                    !hero && "text-muted-foreground",
-                                    step.action === "ban" && hero && "opacity-70 grayscale",
-                                )}
-                            >
-                                {hero ? (
-                                    <>
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                            src={`/images/heroes/${hero.file}`}
-                                            alt={hero.name}
-                                            className="h-8 w-8 rounded object-cover"
-                                        />
-                                        <span className="truncate">{hero.name}</span>
-                                    </>
-                                ) : (
-                                    <span>{isActive ? "→ Lượt này" : "—"}</span>
-                                )}
-                            </button>
-    
-                            {hero && (
-                                <button
-                                    type="button"
-                                    aria-label={t("clearSelection")}
-                                    title={t("clearSelection")}
-                                    onClick={() => onClear(step.index)}
-                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                                >
-                                    <X className="h-4 w-4" />
-                                </button>
-                            )}
-    
-                            {step.action === "pick" && (
-                                <div className="w-full shrink-0 sm:w-24 lg:w-28">
-                                    <Select
-                                        value={slot?.lane || undefined}
-                                        onValueChange={(v) => onLane(step.index, v as Lane)}
-                                    >
-                                        <SelectTrigger className="h-9 text-xs">
-                                            <SelectValue placeholder="Lane" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {LANE_OPTIONS.map((l) => (
-                                                <SelectItem key={l.value} value={l.value}>
-                                                    {l.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            )}
-                        </div>
-                    )
-                })}
-            </CardContent>
-        </Card>
-    )
-}

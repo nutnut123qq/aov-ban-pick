@@ -44,3 +44,4 @@ next-env.d.ts
 docs/PHASE1_FRONTEND_PAGES.md
 FEATURES_REST_API.md
 GRAPHQL_FRONTEND.md
+scripts/.lp-cache/

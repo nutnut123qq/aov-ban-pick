@@ -1,3 +1,4 @@
+import { SeriesSchema } from "@/modules/types"
 import { DRAFT_SEQUENCE } from "./sequence"
 import type { DraftMeta, FilledStep } from "./types"
 
@@ -50,8 +51,20 @@ export const validate = (meta: DraftMeta, filled: Array<FilledStep>): Array<stri
         errors.push(`Trùng tướng trong ván: ${Array.from(new Set(dup)).join(", ")}.`)
     }
 
+    // Nếu không có lỗi cơ bản, validate schema với Zod
+    if (errors.length === 0) {
+        const seriesObj = buildSeries(meta, filled)
+        const parsed = SeriesSchema.safeParse(seriesObj)
+        if (!parsed.success) {
+            for (const issue of parsed.error.issues) {
+                errors.push(`[Schema Error] ${issue.path.join(".")}: ${issue.message}`)
+            }
+        }
+    }
+
     return errors
 }
+
 
 /**
  * Dựng object series (chứa 1 ván) đúng schema `matches/<giai>.json`.

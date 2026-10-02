@@ -1,11 +1,11 @@
-"use client"
+﻿"use client"
 import { type ReactNode, useMemo, useState } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { BarChart3, FilePlus2, Search } from "lucide-react"
 
 import {
     aggregateMeta,
-    LANE_LABELS,
     LANE_OPTIONS,
     useAovData,
     type MetaRow,
@@ -51,6 +51,10 @@ const renderSortIcon = (
 
 /** Trang thống kê Meta: WR/PR/BR theo patch + lane, kèm cỡ mẫu. */
 export const MetaView = () => {
+    const t = useTranslations("meta")
+    const tCommon = useTranslations("common")
+    const tLane = useTranslations("lanes")
+
     const { data, error, isLoading } = useAovData()
     const [patchId, setPatchId] = useState<string>(ALL)
     const [tournament, setTournament] = useState<string>(ALL)
@@ -102,11 +106,10 @@ export const MetaView = () => {
                 <header className="mb-6">
                     <h1 className="flex items-center gap-2 text-2xl font-bold">
                         <BarChart3 className="h-6 w-6 text-primary" />
-                        Thống kê Meta
+                        {t("title")}
                     </h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Tỉ lệ thắng / chọn / cấm theo patch và lane. WR là số thô từ dữ liệu
-                        giải, kèm cỡ mẫu.
+                        {t("description")}
                     </p>
                 </header>
 
@@ -115,7 +118,7 @@ export const MetaView = () => {
                 {error && (
                     <Card>
                         <CardContent className="py-8 text-center text-sm text-destructive">
-                            Không tải được dữ liệu: {String(error.message ?? error)}
+                            {tCommon("error")}: {String(error.message ?? error)}
                         </CardContent>
                     </Card>
                 )}
@@ -124,17 +127,17 @@ export const MetaView = () => {
                     <>
                         <Card className="mb-6">
                             <CardHeader className="pb-3">
-                                <CardTitle className="text-base">Bộ lọc</CardTitle>
+                                <CardTitle className="text-base">{t("filterTitle")}</CardTitle>
                             </CardHeader>
                             <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground">Patch</Label>
+                                    <Label className="text-xs text-muted-foreground">{t("patch")}</Label>
                                     <Select value={patchId} onValueChange={setPatchId}>
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value={ALL}>Tất cả patch</SelectItem>
+                                            <SelectItem value={ALL}>{t("allPatches")}</SelectItem>
                                             {result.patches.map((p) => (
                                                 <SelectItem key={p} value={p}>
                                                     {p}
@@ -144,29 +147,29 @@ export const MetaView = () => {
                                     </Select>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground">Giải đấu</Label>
+                                    <Label className="text-xs text-muted-foreground">{t("tournament")}</Label>
                                     <Select value={tournament} onValueChange={setTournament}>
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value={ALL}>Tất cả giải</SelectItem>
-                                            {result.tournaments.map((t) => (
-                                                <SelectItem key={t} value={t}>
-                                                    {t}
+                                            <SelectItem value={ALL}>{t("allTournaments")}</SelectItem>
+                                            {result.tournaments.map((tItem) => (
+                                                <SelectItem key={tItem} value={tItem}>
+                                                    {tItem}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground">Tìm tướng</Label>
+                                    <Label className="text-xs text-muted-foreground">{t("searchHero")}</Label>
                                     <div className="relative">
                                         <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                         <Input
                                             value={query}
                                             onChange={(e) => setQuery(e.target.value)}
-                                            placeholder="Tên tướng…"
+                                            placeholder={t("searchPlaceholder")}
                                             className="pl-8"
                                         />
                                     </div>
@@ -180,13 +183,16 @@ export const MetaView = () => {
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-base">
-                                        {rows.length} dòng · {result.totalMatches} ván
+                                        {t("rowsHeader", {
+                                            rowCount: rows.length,
+                                            matchCount: result.totalMatches,
+                                        })}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     {rows.length === 0 ? (
                                         <p className="py-6 text-center text-sm text-muted-foreground">
-                                            Không có tướng nào khớp bộ lọc.
+                                            {t("noMatch")}
                                         </p>
                                     ) : (
                                         <>
@@ -194,10 +200,10 @@ export const MetaView = () => {
                                                 <Table>
                                                     <TableHeader>
                                                         <TableRow>
-                                                            <TableHead>Tướng</TableHead>
+                                                            <TableHead>{t("hero")}</TableHead>
                                                             <TableHead>
                                                                 <div className="flex flex-col gap-1">
-                                                                    <span>Vị trí</span>
+                                                                    <span>{t("position")}</span>
                                                                     <Select
                                                                         value={lane}
                                                                         onValueChange={(v) =>
@@ -209,11 +215,11 @@ export const MetaView = () => {
                                                                         </SelectTrigger>
                                                                         <SelectContent>
                                                                             <SelectItem value={ALL}>
-                                                                                Tất cả
+                                                                                {t("allPositions")}
                                                                             </SelectItem>
                                                                             {LANE_OPTIONS.map((l) => (
                                                                                 <SelectItem key={l.value} value={l.value}>
-                                                                                    {l.label}
+                                                                                    {tLane(l.value)}
                                                                                 </SelectItem>
                                                                             ))}
                                                                         </SelectContent>
@@ -226,7 +232,7 @@ export const MetaView = () => {
                                                                     onClick={() => toggleSort("picks")}
                                                                     className="inline-flex items-center gap-1"
                                                                 >
-                                                                    Số trận{" "}
+                                                                    {t("matchesCount")}{" "}
                                                                     {renderSortIcon(sort, "picks")}
                                                                 </button>
                                                             </TableHead>
@@ -236,7 +242,7 @@ export const MetaView = () => {
                                                                     onClick={() => toggleSort("winRate")}
                                                                     className="inline-flex items-center gap-1"
                                                                 >
-                                                                    Tỉ lệ thắng{" "}
+                                                                    {t("winRate")}{" "}
                                                                     {renderSortIcon(sort, "winRate")}
                                                                 </button>
                                                             </TableHead>
@@ -246,7 +252,7 @@ export const MetaView = () => {
                                                                     onClick={() => toggleSort("pickRate")}
                                                                     className="inline-flex items-center gap-1"
                                                                 >
-                                                                    Tỉ lệ chọn{" "}
+                                                                    {t("pickRate")}{" "}
                                                                     {renderSortIcon(sort, "pickRate")}
                                                                 </button>
                                                             </TableHead>
@@ -256,7 +262,7 @@ export const MetaView = () => {
                                                                     onClick={() => toggleSort("banRate")}
                                                                     className="inline-flex items-center gap-1"
                                                                 >
-                                                                    Tỉ lệ cấm{" "}
+                                                                    {t("banRate")}{" "}
                                                                     {renderSortIcon(sort, "banRate")}
                                                                 </button>
                                                             </TableHead>
@@ -288,6 +294,7 @@ export const MetaView = () => {
 
 /** Một dòng tướng + lane trong bảng thống kê. */
 const StatRow = ({ row }: { row: MetaRow }) => {
+    const tLane = useTranslations("lanes")
     const wrColor =
         row.winRate > 0.52
             ? "text-emerald-600 dark:text-emerald-400"
@@ -312,7 +319,7 @@ const StatRow = ({ row }: { row: MetaRow }) => {
                     <span className="font-medium">{row.heroName}</span>
                 </div>
             </TableCell>
-            <TableCell className="text-muted-foreground">{LANE_LABELS[row.lane]}</TableCell>
+            <TableCell className="text-muted-foreground">{tLane(row.lane)}</TableCell>
             <TableCell className="text-right tabular-nums">{row.picks}</TableCell>
             <TableCell className="text-right">
                 <div className={cn("font-semibold tabular-nums", wrColor)}>{pct(row.winRate)}</div>
@@ -327,6 +334,8 @@ const StatRow = ({ row }: { row: MetaRow }) => {
 
 /** Một dòng tướng + lane dạng card cho mobile. */
 const StatCard = ({ row }: { row: MetaRow }) => {
+    const t = useTranslations("meta")
+    const tLane = useTranslations("lanes")
     const wrColor =
         row.winRate > 0.52
             ? "text-emerald-600 dark:text-emerald-400"
@@ -349,23 +358,22 @@ const StatCard = ({ row }: { row: MetaRow }) => {
             <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                     <span className="truncate font-medium">{row.heroName}</span>
-                    <span className="text-xs text-muted-foreground">{LANE_LABELS[row.lane]}</span>
+                    <span className="text-xs text-muted-foreground">{tLane(row.lane)}</span>
                 </div>
                 <div className="mt-1 grid grid-cols-3 gap-2 text-sm">
                     <div>
-                        <p className="text-xs text-muted-foreground">Số trận</p>
+                        <p className="text-xs text-muted-foreground">{t("matchesCount")}</p>
                         <span className="tabular-nums">{row.picks}</span>
                     </div>
                     <div>
-                        <p className="text-xs text-muted-foreground">Tỉ lệ thắng</p>
+                        <p className="text-xs text-muted-foreground">{t("winRate")}</p>
                         <span className={cn("font-semibold tabular-nums", wrColor)}>{pct(row.winRate)}</span>
                     </div>
                     <div>
-                        <p className="text-xs text-muted-foreground">Chọn / Cấm</p>
+                        <p className="text-xs text-muted-foreground">{t("pickBanRate")}</p>
                         <span className="tabular-nums">{pct(row.pickRate)} / {pct(row.banRate)}</span>
                     </div>
                 </div>
-
             </div>
         </div>
     )
@@ -383,19 +391,22 @@ const LoadingState = () => (
 )
 
 /** Hiện khi chưa có ván nào trong dữ liệu — dẫn người dùng đi nhập liệu. */
-const EmptyState = () => (
-    <Card>
-        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <FilePlus2 className="h-10 w-10 text-muted-foreground" />
-            <div>
-                <p className="font-medium">Chưa có dữ liệu trận đấu</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                    Nhập vài ván rồi gộp vào <code className="text-xs">public/data/</code> để thấy thống kê.
-                </p>
-            </div>
-            <Button asChild>
-                <Link href="/draft-input">Đi nhập dữ liệu</Link>
-            </Button>
-        </CardContent>
-    </Card>
-)
+const EmptyState = () => {
+    const t = useTranslations("meta")
+    return (
+        <Card>
+            <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+                <FilePlus2 className="h-10 w-10 text-muted-foreground" />
+                <div>
+                    <p className="font-medium">{t("emptyTitle")}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        {t("emptyDesc")}
+                    </p>
+                </div>
+                <Button asChild>
+                    <Link href="/draft-input">{t("goToInput")}</Link>
+                </Button>
+            </CardContent>
+        </Card>
+    )
+}

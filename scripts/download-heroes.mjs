@@ -67,6 +67,13 @@ async function runBatch(batch) {
 }
 
 let ok = 0, skipped = 0, failed = 0
+// Giữ lại entry manifest cũ của tướng không nằm trong hero-urls.json
+// (vd tướng do import-liquipedia.mjs tự kéo) — trước đây chạy lại script
+// này làm mất chúng khỏi manifest.
+const MANIFEST_FILE = join(OUTPUT_DIR, "manifest.json")
+const oldManifest = existsSync(MANIFEST_FILE)
+    ? JSON.parse(readFileSync(MANIFEST_FILE, "utf-8"))
+    : []
 const manifest = []
 
 for (let i = 0; i < heroes.length; i += CONCURRENCY) {
@@ -77,7 +84,10 @@ for (let i = 0; i < heroes.length; i += CONCURRENCY) {
         if (r.status === "fulfilled") {
             const { name, filename, status } = r.value
             if (status === "skip") { skipped++; process.stdout.write(`  ⏭  ${filename}\n`) }
-            else { ok++; process.stdout.write(`  ✓  ${filename}\n`); manifest.push({ name, slug: filename.replace(/\.[^.]+$/, ""), file: filename }) }
+            else { ok++; process.stdout.write(`  ✓  ${filename}\n`) }
+            // File tồn tại ở cả 2 nhánh → luôn ghi manifest (trước đây "skip"
+            // bị bỏ qua nên chạy lại script làm manifest mất tướng).
+            manifest.push({ name, slug: filename.replace(/\.[^.]+$/, ""), file: filename })
         } else {
             failed++
             console.error(`  ✗  ${batch[results.indexOf(r)]?.name} — ${r.reason?.message}`)
@@ -86,7 +96,14 @@ for (let i = 0; i < heroes.length; i += CONCURRENCY) {
     console.log(`[${Math.min(i + CONCURRENCY, heroes.length)}/${heroes.length}]`)
 }
 
-writeFileSync(join(OUTPUT_DIR, "manifest.json"), JSON.stringify(manifest, null, 2))
+// Union với manifest cũ: entry không có trong hero-urls.json nhưng file còn
+// trên đĩa thì giữ lại.
+const seen = new Set(manifest.map((m) => m.slug))
+for (const h of oldManifest) {
+    if (!seen.has(h.slug) && existsSync(join(OUTPUT_DIR, h.file))) manifest.push(h)
+}
+
+writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2))
 
 console.log(`\n✅  Xong: ${ok} tải về, ${skipped} đã có, ${failed} lỗi`)
 console.log(`📁  public/images/heroes/`)

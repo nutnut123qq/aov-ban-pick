@@ -391,6 +391,7 @@ interface DraftActionCardProps {
 /** Một ô cấm/chọn trong bảng draft. */
 const DraftActionCard = ({ action, heroBySlug }: DraftActionCardProps) => {
     const t = useTranslations("matches")
+    const tLane = useTranslations("lanes")
     const hero = heroBySlug.get(action.hero_id)
     const isBan = action.action_type === "ban"
 
@@ -421,7 +422,7 @@ const DraftActionCard = ({ action, heroBySlug }: DraftActionCardProps) => {
                 <p className="text-muted-foreground">
                     {isBan
                         ? t("ban")
-                        : `${t("pick")}${action.lane_position ? ` · ${LANE_LABELS[action.lane_position]}` : ""}`}
+                        : `${t("pick")}${action.lane_position ? ` · ${tLane(action.lane_position)}` : ""}`}
                 </p>
                 <p className={cn("text-[10px] font-semibold uppercase", sideColor(action.team_side))}>
                     {action.team_side === "blue" ? t("blue") : t("red")}
@@ -430,6 +431,7 @@ const DraftActionCard = ({ action, heroBySlug }: DraftActionCardProps) => {
         </div>
     )
 }
+
 
 /** Hiển thị tên đội từ team_id (bỏ prefix "team_"). */
 const teamDisplayName = (teamId: string): string => {

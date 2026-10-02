@@ -1,4 +1,10 @@
-import type { DataIndex, HeroManifest, Series } from "@/modules/types"
+import {
+    DataIndexSchema,
+    HeroManifestListSchema,
+    SeriesListSchema,
+    type HeroManifest,
+    type Series,
+} from "@/modules/types"
 
 /** Toàn bộ dữ liệu tĩnh đã tải về browser. */
 export interface AovData {
@@ -11,24 +17,51 @@ export interface AovData {
 /** Fetch + parse JSON; ném lỗi rõ ràng nếu HTTP không OK. */
 const fetchJson = async <T>(url: string): Promise<T> => {
     const res = await fetch(url)
-    if (!res.ok) throw new Error(`${url} → HTTP ${res.status}`)
+    if (!res.ok) throw new Error(`[AOV Data Loader] ${url} → HTTP ${res.status}`)
     return (await res.json()) as T
 }
 
 /**
  * Tải dữ liệu draft tĩnh: catalog tướng + mọi file mùa trong `public/data/index.json`.
- * Chạy ở browser (đường dẫn tương đối tới `public/`). Không đụng tới backend.
+ * Tích hợp Zod parser validation runtime để fail fast nếu dữ liệu bị lỗi.
  * @returns catalog tướng + danh sách series đã gộp phẳng
  */
 export const loadAovData = async (): Promise<AovData> => {
-    const [heroes, index] = await Promise.all([
-        fetchJson<Array<HeroManifest>>("/images/heroes/manifest.json"),
-        fetchJson<DataIndex>("/data/index.json"),
+    const [rawHeroes, rawIndex] = await Promise.all([
+        fetchJson<unknown>("/images/heroes/manifest.json"),
+        fetchJson<unknown>("/data/index.json"),
     ])
 
+    const heroesParsed = HeroManifestListSchema.safeParse(rawHeroes)
+    if (!heroesParsed.success) {
+        throw new Error(
+            `[AOV Data Loader] Lỗi cấu trúc manifest tướng: ${heroesParsed.error.message}`,
+        )
+    }
+
+    const indexParsed = DataIndexSchema.safeParse(rawIndex)
+    if (!indexParsed.success) {
+        throw new Error(
+            `[AOV Data Loader] Lỗi cấu trúc index.json: ${indexParsed.error.message}`,
+        )
+    }
+
     const seasons = await Promise.all(
-        (index.matches ?? []).map((id) => fetchJson<Array<Series>>(`/data/matches/${id}.json`)),
+        (indexParsed.data.matches ?? []).map(async (id) => {
+            const rawSeriesList = await fetchJson<unknown>(`/data/matches/${id}.json`)
+            const seriesParsed = SeriesListSchema.safeParse(rawSeriesList)
+            if (!seriesParsed.success) {
+                throw new Error(
+                    `[AOV Data Loader] File /data/matches/${id}.json không hợp lệ: ${seriesParsed.error.message}`,
+                )
+            }
+            return seriesParsed.data as Array<Series>
+        }),
     )
 
-    return { heroes, series: seasons.flat() }
+    return {
+        heroes: heroesParsed.data as Array<HeroManifest>,
+        series: seasons.flat(),
+    }
 }
+

@@ -1,4 +1,4 @@
-import type { HeroManifest, Lane, Series, TeamSide } from "@/modules/types"
+﻿import type { HeroManifest, Lane, Series, TeamSide } from "@/modules/types"
 import { LANE_LABELS } from "./lanes"
 
 /**
@@ -41,33 +41,50 @@ const MAX_SUGGESTIONS = 6
 
 const ALL_LANES: Array<Lane> = ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"]
 
-/** Kẹp về [0, 1] — WR khử nhiễu phe có thể tràn nhẹ ra ngoài do tái tâm. */
-const clamp01 = (x: number): number => (x < 0 ? 0 : x > 1 ? 1 : x)
+/** Kẹp về [0, 1] an toàn — bảo vệ chống NaN, Infinity. */
+export const clamp01 = (x: number): number => {
+    if (typeof x !== "number" || !Number.isFinite(x) || Number.isNaN(x)) return 0.5
+    return x < 0 ? 0 : x > 1 ? 1 : x
+}
 
 /**
  * Cận dưới khoảng tin cậy Wilson 95% cho tỉ lệ thắng — dùng để XẾP HẠNG.
- * Kéo mẫu nhỏ về thấp (1 thắng/1 trận không còn = 100%), nên không bị ăn may đè mẫu lớn.
- * WR hiển thị vẫn là WR thô; chỉ điểm sắp xếp dùng giá trị này.
+ * Kéo mẫu nhỏ về thấp, bảo vệ triệt để chống chia 0 và số âm.
  */
-const wilsonLower = (wins: number, n: number): number => {
-    if (n <= 0) return 0
-    const z = 1.96
+export const wilsonLower = (wins: number, n: number): number => {
+    if (
+        typeof wins !== "number" ||
+        typeof n !== "number" ||
+        !Number.isFinite(wins) ||
+        !Number.isFinite(n) ||
+        n <= 0 ||
+        wins < 0
+    ) {
+        return 0
+    }
+    const safeWins = Math.min(n, Math.max(0, wins))
+    const z = 1.959963984540054
     const z2 = z * z
-    const phat = wins / n
+    const phat = safeWins / n
     const denom = 1 + z2 / n
+    if (!Number.isFinite(denom) || denom <= 0) return 0
+
     const center = phat + z2 / (2 * n)
-    const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * n)) / n)
-    return (center - margin) / denom
+    const variance = (phat * (1 - phat)) / n + z2 / (4 * n * n)
+    const margin = z * Math.sqrt(Math.max(0, variance))
+    const result = (center - margin) / denom
+
+    return Number.isFinite(result) ? Math.max(0, Math.min(1, result)) : 0
 }
 
-interface PickCell {
+export interface PickCell {
     n: number
     wins: number
     /** Số lần pick này nằm ở bên đỏ (để khử nhiễu lợi thế phe khi xếp hạng). */
     redN: number
 }
 
-interface Tally {
+export interface Tally {
     totalMatches: number
     /** key = heroId → số lần bị cấm. */
     banCount: Map<string, number>
@@ -79,12 +96,9 @@ interface Tally {
     pickTotal: Map<string, number>
     /** Tỉ lệ thắng nền của bên xanh (first pick) — base rate để khử nhiễu phe. */
     blueBase: number
-    /** Tỉ lệ thắng nền của bên đỏ (last pick). APL 2026: đỏ ~59% nên WR thô lệch. */
+    /** Tỉ lệ thắng nền của bên đỏ (last pick). */
     redBase: number
-    /**
-     * key = lane → tỉ lệ lane đó được pick trong phase 1 (pick_index ≤ 6).
-     * Học quy ước thứ tự lane từ data: HT/AD/Giữa pick sớm (~0.7+), Tà thần để muộn (~0.35).
-     */
+    /** key = lane → tỉ lệ lane đó được pick trong phase 1 (pick_index ≤ 6). */
     lanePhase1Share: Map<Lane, number>
 }
 
@@ -92,7 +106,7 @@ interface Tally {
 const PHASE1_MAX_PICK = 6
 
 /** Quét toàn bộ series một lượt, dựng các bảng đếm cho engine gợi ý. */
-const tally = (series: Array<Series>): Tally => {
+export const tally = (series: Array<Series>): Tally => {
     const banCount = new Map<string, number>()
     const pick = new Map<string, PickCell>()
     const lanesByHero = new Map<string, Set<Lane>>()
@@ -102,11 +116,18 @@ const tally = (series: Array<Series>): Tally => {
     let totalMatches = 0
     let blueWins = 0
 
+    if (!Array.isArray(series)) {
+        return createEmptyTally()
+    }
+
     for (const s of series) {
+        if (!s || !Array.isArray(s.matches)) continue
         for (const m of s.matches) {
+            if (!m || !Array.isArray(m.draft_actions)) continue
             totalMatches++
-            if (m.winner_team_id === m.team_blue_id) blueWins++
+            if (m.winner_team_id && m.winner_team_id === m.team_blue_id) blueWins++
             for (const a of m.draft_actions) {
+                if (!a || !a.hero_id) continue
                 if (a.action_type === "ban") {
                     banCount.set(a.hero_id, (banCount.get(a.hero_id) ?? 0) + 1)
                     continue
@@ -136,10 +157,12 @@ const tally = (series: Array<Series>): Tally => {
     }
 
     const blueBase = totalMatches > 0 ? blueWins / totalMatches : 0.5
+    const safeBlueBase = Number.isFinite(blueBase) ? Math.max(0, Math.min(1, blueBase)) : 0.5
     const lanePhase1Share = new Map<Lane, number>()
     for (const lane of ALL_LANES) {
         const n = laneN.get(lane) ?? 0
-        lanePhase1Share.set(lane, n > 0 ? (lanePhase1.get(lane) ?? 0) / n : 0.5)
+        const share = n > 0 ? (lanePhase1.get(lane) ?? 0) / n : 0.5
+        lanePhase1Share.set(lane, Number.isFinite(share) ? Math.max(0, Math.min(1, share)) : 0.5)
     }
     return {
         totalMatches,
@@ -147,10 +170,95 @@ const tally = (series: Array<Series>): Tally => {
         pick,
         lanesByHero,
         pickTotal,
-        blueBase,
-        redBase: 1 - blueBase,
+        blueBase: safeBlueBase,
+        redBase: 1 - safeBlueBase,
         lanePhase1Share,
     }
+}
+
+const createEmptyTally = (): Tally => ({
+    totalMatches: 0,
+    banCount: new Map(),
+    pick: new Map(),
+    lanesByHero: new Map(),
+    pickTotal: new Map(),
+    blueBase: 0.5,
+    redBase: 0.5,
+    lanePhase1Share: new Map(ALL_LANES.map((l) => [l, 0.5])),
+})
+
+/** Tạo fingerprint ổn định từ dataset series để làm cache key (chống mất cache khi SWR re-parse). */
+export const computeSeriesFingerprint = (series: Array<Series>): string => {
+    if (!Array.isArray(series) || series.length === 0) return "empty"
+    const count = series.length
+    const first = series[0]
+    const last = series[count - 1]
+    const matchCount = series.reduce((acc, s) => acc + (s?.matches?.length ?? 0), 0)
+    return `${count}:${matchCount}:${first?.id ?? ""}:${last?.id ?? ""}:${first?.played_at ?? ""}:${last?.played_at ?? ""}`
+}
+
+/** LRU Cache giới hạn dung lượng lưu trữ Tally objects. */
+class BoundedTallyCache {
+    private readonly cache = new Map<string, Tally>()
+    private readonly maxSize: number
+
+    constructor(maxSize = 50) {
+        this.maxSize = maxSize
+    }
+
+    get(key: string): Tally | undefined {
+        const val = this.cache.get(key)
+        if (val) {
+            // Đẩy key lên cuối cùng để duy trì thứ tự LRU
+            this.cache.delete(key)
+            this.cache.set(key, val)
+        }
+        return val
+    }
+
+    set(key: string, val: Tally): void {
+        if (this.cache.has(key)) {
+            this.cache.delete(key)
+        } else if (this.cache.size >= this.maxSize) {
+            const oldestKey = this.cache.keys().next().value
+            if (oldestKey !== undefined) {
+                this.cache.delete(oldestKey)
+            }
+        }
+        this.cache.set(key, val)
+    }
+
+    clear(): void {
+        this.cache.clear()
+    }
+
+    get size(): number {
+        return this.cache.size
+    }
+}
+
+const tallyLruCache = new BoundedTallyCache(50)
+
+export const clearTallyCache = (): void => {
+    tallyLruCache.clear()
+}
+
+/**
+ * Lấy Tally đã memoize theo dataset fingerprint ổn định (chống vỡ cache với SWR).
+ * @param series - mảng series
+ * @returns kết quả tally từ LRU cache hoặc tính mới
+ */
+export const getTally = (series: Array<Series>): Tally => {
+    if (!Array.isArray(series) || series.length === 0) {
+        return createEmptyTally()
+    }
+    const key = computeSeriesFingerprint(series)
+    const cached = tallyLruCache.get(key)
+    if (cached) return cached
+
+    const computed = tally(series)
+    tallyLruCache.set(key, computed)
+    return computed
 }
 
 /** Gợi ý cho lượt CẤM: tướng ban-rate cao + flex nhiều lane (khó đoán bài). */
@@ -159,7 +267,6 @@ const suggestBans = (
     ctx: AssistContext,
     heroById: Map<string, HeroManifest>,
 ): Array<Suggestion> => {
-    // Hợp nhất ứng viên: từng bị cấm HOẶC từng được pick (để cả tướng chỉ pick cũng lên).
     const candidates = new Set<string>([...t.banCount.keys(), ...t.pickTotal.keys()])
 
     const scored = [...candidates]
@@ -170,11 +277,15 @@ const suggestBans = (
             const lanes = t.lanesByHero.get(id)?.size ?? 0
             const banRate = t.totalMatches > 0 ? bans / t.totalMatches : 0
             const presence = t.totalMatches > 0 ? (bans + picks) / t.totalMatches : 0
-            return { id, bans, picks, lanes, banRate, presence }
+            return {
+                id,
+                bans,
+                picks,
+                lanes,
+                banRate: Number.isFinite(banRate) ? banRate : 0,
+                presence: Number.isFinite(presence) ? presence : 0,
+            }
         })
-        // Ưu tiên BAN-RATE (sở thích cấm thật của pro), rồi độ hiện diện.
-        // Presence-first cũ kéo nhầm tướng-pick mạnh (vd Flowborn pick=20) lên đầu
-        // và chôn permaban thật (vd Florentino pick=0, ban=19). Xem data APL 2026.
         .sort((a, b) => b.banRate - a.banRate || b.presence - a.presence)
         .slice(0, MAX_SUGGESTIONS)
 
@@ -205,13 +316,8 @@ const suggestPicks = (
     const enemyByLane = new Map<Lane, string>()
     for (const e of ctx.enemyRevealed) enemyByLane.set(e.lane, e.heroId)
 
-    // Vị trí trong lượt pick của mình: lanesNeeded.length = số pick còn lại (kể cả lượt này).
-    // Pick cuối → ưu tiên counter lane địch đã lộ. Còn nhiều pick + địch lộ ít → ưu tiên
-    // tướng flex (lane mơ hồ, khó bị bắt bài ngược). Thuần lý thuyết draft, không cần thêm data.
     const isLastPick = ctx.lanesNeeded.length <= 1
     const earlyExposed = ctx.lanesNeeded.length >= 3 && ctx.enemyRevealed.length <= 1
-    // Phase 1 của mình = vẫn còn ≥3 pick (2 pick cuối là phase 2). Dùng để xếp đúng
-    // thứ tự lane như pro: phase 1 ưu tiên HT/AD/Giữa, để Tà thần cho phase 2.
     const myPhase1 = ctx.lanesNeeded.length >= 3
 
     const rows: Array<{ suggestion: Suggestion; score: number }> = []
@@ -222,48 +328,39 @@ const suggestPicks = (
         if (ctx.used.has(heroId)) continue
         if (!lanes.includes(lane)) continue
 
-        const wr = cell.n > 0 ? cell.wins / cell.n : 0
-        // WR khử nhiễu phe: trừ base rate của bên đã pick lịch sử rồi tái tâm về 0.5.
-        // Đỏ ~59% nên staple bên đỏ bị hạ, hero bên xanh thắng được lại được nâng.
-        const expWins = cell.redN * t.redBase + (cell.n - cell.redN) * t.blueBase
-        const adjRate = clamp01((cell.wins - expWins + 0.5 * cell.n) / cell.n)
+        const wr = cell.n > 0 ? clamp01(cell.wins / cell.n) : 0
+        const expWins = cell.redN * (Number.isFinite(t.redBase) ? t.redBase : 0.5) + (cell.n - cell.redN) * (Number.isFinite(t.blueBase) ? t.blueBase : 0.5)
+        const adjRate = cell.n > 0 ? clamp01((cell.wins - expWins + 0.5 * cell.n) / cell.n) : 0.5
         const hero = heroById.get(heroId)
         const enemy = enemyByLane.get(lane)
         const flexLanes = t.lanesByHero.get(heroId)?.size ?? 0
         const isFlex = flexLanes >= 2
-        // Note trung thực: ta CHƯA tính head-to-head, chỉ biết lane này cần đối bài.
+
         const laneNote = enemy
-            ? ` · cần đối ${LANE_LABELS[lane]} (địch đã có ${heroById.get(enemy)?.name ?? enemy})`
+            ? ` · cần đối ${LANE_LABELS[lane] ?? lane} (địch đã có ${heroById.get(enemy)?.name ?? enemy})`
             : ""
-        // Mẫu nhỏ là chuẩn ở giải đấu (median n=3) — cảnh báo để không tin mù WR.
         const lowSample = cell.n < 5 ? " · mẫu ít" : ""
         const flexNote = earlyExposed && isFlex ? ` · flex ${flexLanes} lane (khó bắt bài)` : ""
 
-        // Nudge counter ở pick cuối (lúc đó mới chốt được đối lane). Giữ NHỎ vì data
-        // APL 2026 cho thấy is_counter_pick chỉ +2% WR — counter gần như không lợi thế.
         const counterBoost = enemy ? (isLastPick ? 0.05 : 0.02) : 0
-        // Ưu tiên flex khi mình lộ bài sớm — tránh bị hard-counter ở các lượt sau.
         const flexBoost = earlyExposed && isFlex ? 0.04 : 0
-        // Thứ tự lane theo phase (học từ data): lane hợp phase được cộng, lệch phase bị trừ.
-        // Vd Tà thần (phase1Share ~0.35) bị dìm ở phase 1, được nâng ở phase 2.
-        // Hệ số 0.4 hiệu chỉnh trên data APL 2026: nhỏ nhất ép đúng thứ tự lane như pro
-        // (phase1 = HT/AD/Giữa, phase2 = Tà thần/Rừng), ổn định tới 0.7 nên không overfit.
         const laneShare = t.lanePhase1Share.get(lane) ?? 0.5
         const laneBoost = (myPhase1 ? 1 : -1) * (laneShare - 0.5) * 0.4
+
+        const rawScore = wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost + laneBoost
+        const score = Number.isFinite(rawScore) ? rawScore : 0
 
         rows.push({
             suggestion: {
                 heroId,
                 heroName: hero?.name ?? heroId,
                 heroFile: hero?.file ?? null,
-                reason: `WR ${LANE_LABELS[lane]} ${(wr * 100).toFixed(0)}% (n=${cell.n})${lowSample}${flexNote}${laneNote}`,
+                reason: `WR ${LANE_LABELS[lane] ?? lane} ${(wr * 100).toFixed(0)}% (n=${cell.n})${lowSample}${flexNote}${laneNote}`,
                 n: cell.n,
                 winRate: wr,
                 lane,
             },
-            // Xếp hạng theo Wilson trên WR ĐÃ KHỬ NHIỄU PHE (mẫu nhỏ không ăn may lên top),
-            // cộng nudge counter/flex/thứ-tự-lane theo vị trí lượt — không đè bẹp WR.
-            score: wilsonLower(adjRate * cell.n, cell.n) + counterBoost + flexBoost + laneBoost,
+            score,
         })
     }
 
@@ -275,7 +372,6 @@ const suggestPicks = (
 
 /**
  * Gợi ý cấm/chọn cho lượt hiện tại dựa trên thống kê đã có.
- * Trả mảng rỗng khi chưa đủ dữ liệu — UI tự hiển thị trạng thái "chưa có gợi ý".
  * @param ctx - ngữ cảnh lượt hiện tại (bên, hành động, bàn cờ)
  * @param series - mọi series đã load
  * @param heroes - catalog tướng (tên/ảnh)
@@ -286,9 +382,10 @@ export const suggestStep = (
     series: Array<Series>,
     heroes: Array<HeroManifest>,
 ): Array<Suggestion> => {
-    const t = tally(series)
+    if (!series || series.length === 0) return []
+    const t = getTally(series)
     if (t.totalMatches === 0) return []
-    const heroById = new Map(heroes.map((h) => [h.slug, h]))
+    const heroById = new Map((heroes || []).map((h) => [h.slug, h]))
     return ctx.action === "ban"
         ? suggestBans(t, ctx, heroById)
         : suggestPicks(t, ctx, heroById)

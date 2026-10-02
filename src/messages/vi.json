@@ -7,70 +7,87 @@
     "draft": "Mô phỏng Draft",
     "meta": "Thống kê Meta",
     "draftInput": "Nhập dữ liệu",
-    "matches": "Các cặp đấu",
-    "courses": "Khóa học",
-    "contact": "Liên hệ",
-    "logout": "Đăng xuất",
-    "signIn": "Đăng nhập",
-    "redirectingHome": "Đang chuyển về trang chủ…",
-    "userMenu": {
-      "label": "Menu tài khoản"
-    }
-  },
-  "auth": {
-    "loginPage": {
-      "title": "Đăng nhập AOV DraftMind",
-      "desc": "Sử dụng tài khoản Keycloak được cấp để tiếp tục.",
-      "submit": "Đăng nhập với Keycloak"
-    },
-    "signIn": {
-      "title": "Đăng nhập",
-      "desc": "Đăng nhập để tiếp tục",
-      "google": "Đăng nhập với Google",
-      "keycloak": "Đăng nhập với Keycloak",
-      "email": {
-        "label": "Email",
-        "placeholder": "Nhập email của bạn"
-      },
-      "password": {
-        "label": "Mật khẩu",
-        "placeholder": "Nhập mật khẩu của bạn",
-        "show": "Hiện mật khẩu",
-        "hide": "Ẩn mật khẩu"
-      },
-      "rememberMe": "Ghi nhớ đăng nhập",
-      "forgotPassword": "Quên mật khẩu?",
-      "submit": "Đăng nhập",
-      "noAccount": "Chưa có tài khoản?",
-      "signUp": "Đăng ký"
-    },
-    "signUp": {
-      "title": "Đăng ký",
-      "desc": "Tạo tài khoản để tiếp tục",
-      "email": {
-        "label": "Email",
-        "placeholder": "Nhập email của bạn"
-      },
-      "password": {
-        "label": "Mật khẩu",
-        "placeholder": "Nhập mật khẩu của bạn"
-      },
-      "submit": "Đăng ký",
-      "haveAccount": "Đã có tài khoản?",
-      "signIn": "Đăng nhập"
-    }
+    "matches": "Các cặp đấu"
   },
   "common": {
     "loading": "Đang tải...",
     "error": "Đã xảy ra lỗi",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "all": "Tất cả",
+    "reset": "Đặt lại",
+    "back": "Quay lại",
+    "blue": "Xanh",
+    "red": "Đỏ"
+  },
+  "lanes": {
+    "ta_than": "Tà thần",
+    "rung": "Rừng",
+    "giua": "Giữa",
+    "rong_xa": "Rồng",
+    "rong_ho_tro": "Hỗ trợ"
   },
   "draft": {
-    "undo": "Undo",
-    "clearSelection": "Xoá lựa chọn"
+    "title": "Mô phỏng Draft",
+    "subtitle": "Dựng lại cấm/chọn theo thể thức ĐTDV; mỗi lượt nhận gợi ý dựa trên thống kê đã có.",
+    "van": "Ván",
+    "undo": "Hoàn tác",
+    "reset": "Làm lại",
+    "blueTeam": "Đội Xanh",
+    "redTeam": "Đội Đỏ",
+    "ban": "CẤM",
+    "pick": "CHỌN {number}",
+    "currentTurn": "→ Lượt này",
+    "clearSelection": "Xoá lựa chọn",
+    "lane": "Lane",
+    "globalBanTitle": "Tướng đã pick các ván trước",
+    "globalBanSubtitle": "Ván {vanNumber}: mỗi bên {count} tướng đã pick ở {prevCount} ván trước sẽ bị khóa không cho chọn lại.",
+    "turnLabel": "Bên {side} · {action}",
+    "suggestions": {
+      "title": "Gợi ý cấm/chọn",
+      "noData": "Chưa có gợi ý (chưa đủ dữ liệu trận đấu).",
+      "apply": "Áp dụng",
+      "sideBlue": "Xanh",
+      "sideRed": "Đỏ"
+    }
   },
   "draftInput": {
-    "clearSelection": "Xoá lựa chọn"
+    "title": "Nhập dữ liệu Draft",
+    "subtitle": "Nhập lượt cấm/chọn của một ván theo đúng thể thức ĐTDV, hệ thống tự sinh JSON để thêm vào dữ liệu trận đấu.",
+    "matchInfoTitle": "Thông tin ván",
+    "tournamentName": "Tên giải",
+    "tournamentPlaceholder": "ĐTDV Mùa Xuân 2024",
+    "patchId": "Patch (patch_id)",
+    "patchPlaceholder": "p_1_50",
+    "teamBlue": "Đội Xanh (blue)",
+    "teamBluePlaceholder": "SGP",
+    "teamRed": "Đội Đỏ (red)",
+    "teamRedPlaceholder": "HKA",
+    "format": "Thể thức",
+    "vanNumber": "Ván thứ",
+    "playedAt": "Ngày thi đấu",
+    "duration": "Thời lượng (giây, tuỳ chọn)",
+    "durationPlaceholder": "1820",
+    "winner": "Đội thắng",
+    "winnerPlaceholder": "Chọn đội thắng",
+    "winnerOption": "{name} ({side})",
+    "blindPick": "Ván chọn ẩn (Blind Pick — ván 7 BO7)",
+    "sequenceTitle": "Trình tự cấm/chọn",
+    "manifestError": "Không tải được danh sách tướng (manifest.json).",
+    "chooseHero": "+ Chọn tướng",
+    "clearSelection": "Xoá lựa chọn",
+    "exportTitle": "JSON xuất ra",
+    "copy": "Sao chép",
+    "copied": "Đã chép",
+    "download": "Tải JSON",
+    "import": "Nhập JSON",
+    "importTitle": "Nhập từ JSON export",
+    "importNote": "Dán JSON đã export (vd JSON sinh từ ảnh ban/pick). Chỉ lấy ván đầu tiên trong matches[].",
+    "importPlaceholder": "{\"id\": \"s_...\", \"matches\": [...]}",
+    "importApply": "Điền vào form",
+    "ban": "CẤM",
+    "pick": "CHỌN {number}",
+    "sideBlue": "Xanh",
+    "sideRed": "Đỏ"
   },
   "matches": {
     "title": "Các cặp đấu",
@@ -96,5 +113,45 @@
       "dateTo": "Đến ngày",
       "reset": "Đặt lại"
     }
+  },
+  "meta": {
+    "title": "Thống kê Meta",
+    "description": "Tỉ lệ thắng / chọn / cấm theo patch và lane. WR là số thô từ dữ liệu giải, kèm cỡ mẫu.",
+    "filterTitle": "Bộ lọc",
+    "patch": "Patch",
+    "allPatches": "Tất cả patch",
+    "tournament": "Giải đấu",
+    "allTournaments": "Tất cả giải",
+    "searchHero": "Tìm tướng",
+    "searchPlaceholder": "Tên tướng…",
+    "rowsHeader": "{rowCount} dòng · {matchCount} ván",
+    "noMatch": "Không có tướng nào khớp bộ lọc.",
+    "hero": "Tướng",
+    "position": "Vị trí",
+    "allPositions": "Tất cả",
+    "matchesCount": "Số trận",
+    "winRate": "Tỉ lệ thắng",
+    "pickRate": "Tỉ lệ chọn",
+    "banRate": "Tỉ lệ cấm",
+    "pickBanRate": "Chọn / Cấm",
+    "emptyTitle": "Chưa có dữ liệu trận đấu",
+    "emptyDesc": "Nhập vài ván rồi gộp vào public/data/ để thấy thống kê.",
+    "goToInput": "Đi nhập dữ liệu"
+  },
+  "dashboard": {
+    "title": "AOV DraftMind",
+    "subtitle": "Trợ lý cấm/chọn Liên Quân Mobile chuyên nghiệp",
+    "startDraft": "Bắt đầu cấm/chọn",
+    "cards": {
+      "draftSimTitle": "Mô phỏng Draft",
+      "draftSimDesc": "Dựng lại bàn cấm/chọn thời gian thực, nhận gợi ý tối ưu theo vị trí và counter-pick.",
+      "metaTitle": "Thống kê Meta",
+      "metaDesc": "Tra cứu tỉ lệ thắng (WR), tỉ lệ chọn (PR) và cấm (BR) chi tiết từng tướng theo lane.",
+      "globalBanTitle": "Global-Ban Tracker",
+      "globalBanDesc": "Theo dõi và tự động khóa tướng đã dùng ở các ván trước theo luật cấm chọn quốc tế.",
+      "draftInputTitle": "Nhập dữ liệu Draft",
+      "draftInputDesc": "Nhập liệu diễn biến cấm/chọn từ các trận đấu thực tế và xuất file JSON chuẩn hóa."
+    }
   }
 }
+

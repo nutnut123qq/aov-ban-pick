@@ -112,6 +112,10 @@ export const aggregateMeta = (
         if (filter.lane !== "all" && lane !== filter.lane) continue
 
         const hero = heroById.get(heroId)
+        const rawWr = acc.picks > 0 ? acc.wins / acc.picks : 0
+        const rawPr = totalMatches > 0 ? acc.picks / totalMatches : 0
+        const rawBr = totalMatches > 0 ? (banCount.get(heroId) ?? 0) / totalMatches : 0
+
         rows.push({
             heroId,
             heroName: hero?.name ?? heroId,
@@ -119,13 +123,13 @@ export const aggregateMeta = (
             lane,
             picks: acc.picks,
             wins: acc.wins,
-            winRate: acc.picks > 0 ? acc.wins / acc.picks : 0,
-            pickRate: totalMatches > 0 ? acc.picks / totalMatches : 0,
-            banRate: totalMatches > 0 ? (banCount.get(heroId) ?? 0) / totalMatches : 0,
+            winRate: Number.isFinite(rawWr) ? rawWr : 0,
+            pickRate: Number.isFinite(rawPr) ? rawPr : 0,
+            banRate: Number.isFinite(rawBr) ? rawBr : 0,
         })
     }
 
-    rows.sort((a, b) => b.picks - a.picks || b.winRate - a.winRate)
+    rows.sort((a, b) => b.picks - a.picks || (b.winRate - a.winRate))
 
     return {
         rows,
@@ -134,3 +138,4 @@ export const aggregateMeta = (
         tournaments: [...tournamentSet].sort(),
     }
 }
+

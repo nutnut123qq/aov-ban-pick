@@ -1,6 +1,7 @@
 "use client"
 import React from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { Swords, BarChart3, ShieldBan, FilePlus2 } from "lucide-react"
 
@@ -33,6 +34,8 @@ const FeatureCard = ({
 )
 
 const DashboardPage = () => {
+    const t = useTranslations("dashboard")
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
             <div className="container mx-auto max-w-5xl px-4 py-8">
@@ -42,35 +45,35 @@ const DashboardPage = () => {
                     transition={{ duration: 0.4 }}
                     className="mb-8"
                 >
-                    <h1 className="text-2xl font-bold mb-1">AOV DraftMind 👋</h1>
+                    <h1 className="text-2xl font-bold mb-1">{t("title")} 👋</h1>
                     <p className="text-sm text-muted-foreground">
-                        Trợ lý cấm/chọn Liên Quân — bắt đầu từ một trong các công cụ bên dưới.
+                        {t("subtitle")}
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <FeatureCard
                         icon={Swords}
-                        title="Mô phỏng Draft"
-                        description="Dựng lại lượt cấm/chọn theo đúng thể thức và nhận gợi ý ở mỗi lượt."
+                        title={t("cards.draftSimTitle")}
+                        description={t("cards.draftSimDesc")}
                         href="/draft"
                     />
                     <FeatureCard
                         icon={BarChart3}
-                        title="Thống kê Meta"
-                        description="WR / PR / BR theo patch và lane, kèm cỡ mẫu và độ tin cậy."
+                        title={t("cards.metaTitle")}
+                        description={t("cards.metaDesc")}
                         href="/meta"
                     />
                     <FeatureCard
                         icon={ShieldBan}
-                        title="Global-Ban Tracker"
-                        description="Theo dõi pool tướng đã dùng của hai đội trong series."
+                        title={t("cards.globalBanTitle")}
+                        description={t("cards.globalBanDesc")}
                         href="/draft"
                     />
                     <FeatureCard
                         icon={FilePlus2}
-                        title="Nhập dữ liệu Draft"
-                        description="Nhập lượt cấm/chọn một ván và xuất JSON đúng schema dữ liệu."
+                        title={t("cards.draftInputTitle")}
+                        description={t("cards.draftInputDesc")}
                         href="/draft-input"
                     />
                 </div>
@@ -80,3 +83,4 @@ const DashboardPage = () => {
 }
 
 export default DashboardPage
+

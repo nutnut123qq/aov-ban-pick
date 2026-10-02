@@ -1,12 +1,15 @@
 "use client"
 import React from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { Swords, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
 export default function HomeScreen() {
+    const t = useTranslations("dashboard")
+
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-b from-muted/30 to-background px-4">
             <motion.div
@@ -19,16 +22,15 @@ export default function HomeScreen() {
                     <Swords className="h-7 w-7" />
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-                    AOV DraftMind
+                    {t("title")}
                 </h1>
                 <p className="text-muted-foreground mb-8">
-                    Trợ lý cấm/chọn Liên Quân Mobile — thống kê và gợi ý draft theo thời
-                    gian thực dựa trên dữ liệu giải chuyên nghiệp và rank cao.
+                    {t("subtitle")}
                 </p>
                 <div className="flex items-center justify-center gap-3">
                     <Button asChild className="gap-2">
                         <Link href="/dashboard">
-                            Bắt đầu <ArrowRight className="h-4 w-4" />
+                            {t("startDraft")} <ArrowRight className="h-4 w-4" />
                         </Link>
                     </Button>
                 </div>
@@ -36,3 +38,4 @@ export default function HomeScreen() {
         </div>
     )
 }
+

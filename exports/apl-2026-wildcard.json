@@ -1,0 +1,5632 @@
+[
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_21_box_gamingvscarnifex",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_carnifex",
+    "team_red_id": "team_box_gaming",
+    "winner_team_id": "team_box_gaming",
+    "played_at": "2026-05-21",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_carnifex",
+        "team_red_id": "team_box_gaming",
+        "winner_team_id": "team_box_gaming",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "keera",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "liliana",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "mganga",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "gildur",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "stuart",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "baldum",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 359
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_box_gaming",
+        "team_red_id": "team_carnifex",
+        "winner_team_id": "team_box_gaming",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "murad",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "tachi",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "krixi",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "ryoma",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "valhein",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 486
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_21_one_star_esportsvstenacity",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_tenacity",
+    "team_red_id": "team_one_star_esports",
+    "winner_team_id": "team_one_star_esports",
+    "played_at": "2026-05-21",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_one_star_esports",
+        "winner_team_id": "team_one_star_esports",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "airi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "tachi",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "skud",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "hayate",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "elsu",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 979
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_one_star_esports",
+        "team_red_id": "team_tenacity",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "edras",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "mganga",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "dyadia",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "dolia",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "murad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 573
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_one_star_esports",
+        "winner_team_id": "team_one_star_esports",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "tachi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "mina",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "nakroth",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zephys",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "stuart",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "violet",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "enzo",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 635
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_22_box_gamingvsone_star_esports",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_box_gaming",
+    "team_red_id": "team_one_star_esports",
+    "winner_team_id": "team_one_star_esports",
+    "played_at": "2026-05-22",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_box_gaming",
+        "team_red_id": "team_one_star_esports",
+        "winner_team_id": "team_one_star_esports",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "aya",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "florentino",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "aoi",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zuka",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "natalya",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "taara",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "edras",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zephys",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "billow",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "dyadia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 445
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_22_one_teamvstimeless",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_timeless",
+    "team_red_id": "team_one_team",
+    "winner_team_id": "team_timeless",
+    "played_at": "2026-05-22",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_timeless",
+        "team_red_id": "team_one_team",
+        "winner_team_id": "team_one_team",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ignis",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "ryoma",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "taara",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "mina",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "wiro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1741
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_one_team",
+        "team_red_id": "team_timeless",
+        "winner_team_id": "team_timeless",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "capheny",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "astrid",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "azzen-ka",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "krizzix",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "murad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "violet",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1009
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_timeless",
+        "team_red_id": "team_one_team",
+        "winner_team_id": "team_timeless",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "dolia",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "nakroth",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "liliana",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "ignis",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "mganga",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "wisp",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1080
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_23_bacon_timevshong_kong_attitude",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_hong_kong_attitude",
+    "team_red_id": "team_bacon_time",
+    "winner_team_id": "team_hong_kong_attitude",
+    "played_at": "2026-05-23",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "airi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "errol",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "max",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "hayate",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "fennik",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "tachi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "stuart",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "cresht",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1174
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "billow",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "keera",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "mganga",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "hayate",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "capheny",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "slimz",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 615
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "florentino",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "astrid",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "mganga",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "hayate",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "valhein",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "murad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "violet",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "tel-annas",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "enzo",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 597
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_23_bacon_timevsone_team",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_one_team",
+    "team_red_id": "team_bacon_time",
+    "winner_team_id": "team_one_team",
+    "played_at": "2026-05-23",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_one_team",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_one_team",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "aya",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "qi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "mganga",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "elsu",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "roxie",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1163
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_one_team",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_one_team",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "keera",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "kriknak",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zephys",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "nakroth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "murad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "wisp",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "chaugnar",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 947
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_bacon_time",
+        "team_red_id": "team_one_team",
+        "winner_team_id": "team_one_team",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "dolia",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "taara",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "yan",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "liliana",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "baldum",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1295
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_21_carnifexvstenacity",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO5",
+    "team_blue_id": "team_tenacity",
+    "team_red_id": "team_carnifex",
+    "winner_team_id": "team_tenacity",
+    "played_at": "2026-05-21",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_carnifex",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "keera",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "maloch",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "enzo",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "stuart",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "teemee",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "fennik",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "roxie",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 479
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_carnifex",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "biron",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "stuart",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "richter",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "valhein",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "chaugnar",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 480
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_carnifex",
+        "team_red_id": "team_tenacity",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "omen",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "butterfly",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "taara",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "raz",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "tachi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "skud",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "maloch",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "violet",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "aya",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "dyadia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 570
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_22_bacon_timevstenacity",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_tenacity",
+    "team_red_id": "team_bacon_time",
+    "winner_team_id": "team_tenacity",
+    "played_at": "2026-05-22",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "taara",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zuka",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "krixi",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "billow",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "skud",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "valhein",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "thane",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 421
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_tenacity",
+        "team_red_id": "team_bacon_time",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zuka",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "annette",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "stuart",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "murad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "raz",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "edras",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 414
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_bacon_time",
+        "team_red_id": "team_tenacity",
+        "winner_team_id": "team_tenacity",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "omen",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "nakroth",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "goverra",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "stuart",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "thane",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "billow",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "teemee",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "valhein",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "fennik",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "dyadia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "ming",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 570
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_24_hong_kong_attitudevstimeless",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_timeless",
+    "team_red_id": "team_hong_kong_attitude",
+    "winner_team_id": "team_timeless",
+    "played_at": "2026-05-24",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_timeless",
+        "team_red_id": "team_hong_kong_attitude",
+        "winner_team_id": "team_timeless",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "volkath",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "keera",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "liliana",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "baldum",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 769
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_timeless",
+        "team_red_id": "team_hong_kong_attitude",
+        "winner_team_id": "team_timeless",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "edras",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "heino",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "aya",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "mganga",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "violet",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "cresht",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1742
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_timeless",
+        "team_red_id": "team_hong_kong_attitude",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "qi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "sinestrea",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "azzen-ka",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "krizzix",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "gildur",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "max",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "wisp",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "wiro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1169
+      },
+      {
+        "van_number": 4,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_timeless",
+        "winner_team_id": "team_timeless",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "florentino",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "airi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "taara",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "natalya",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "aya",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "qi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "tachi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "biron",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "stuart",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1150
+      }
+    ]
+  },
+  {
+    "id": "s_arena_of_valor_premier_league_2026_2026_05_24_box_gamingvshong_kong_attitude",
+    "tournament_name": "Arena of Valor Premier League 2026",
+    "patch_id": "p_1",
+    "format": "BO3",
+    "team_blue_id": "team_box_gaming",
+    "team_red_id": "team_hong_kong_attitude",
+    "winner_team_id": "team_hong_kong_attitude",
+    "played_at": "2026-05-24",
+    "matches": [
+      {
+        "van_number": 1,
+        "team_blue_id": "team_box_gaming",
+        "team_red_id": "team_hong_kong_attitude",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "flowborn-ad",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "ryoma",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "marja",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "murad",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "lorion",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "rouie",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "y-bneth",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "teemee",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "qi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "wisp",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "capheny",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "xeniel",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "toro",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1418
+      },
+      {
+        "van_number": 2,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_box_gaming",
+        "winner_team_id": "team_box_gaming",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "ryoma",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "richter",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "airi",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "zephys",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "billow",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "mganga",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "iggy",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "stuart",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "qi",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "y-bneth",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1429
+      },
+      {
+        "van_number": 3,
+        "team_blue_id": "team_box_gaming",
+        "team_red_id": "team_hong_kong_attitude",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "marja",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "volkath",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "eland-orr",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "yena",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "skud",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "nakroth",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zuka",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "zata",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "annette",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "astrid",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "taara",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "max",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "hayate",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "fennik",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "dolia",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "teemee",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 984
+      },
+      {
+        "van_number": 4,
+        "team_blue_id": "team_hong_kong_attitude",
+        "team_red_id": "team_box_gaming",
+        "winner_team_id": "team_hong_kong_attitude",
+        "is_blind_pick": false,
+        "draft_actions": [
+          {
+            "turn_number": 1,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "rouie",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 2,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "sinestrea",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 3,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "toro",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 4,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "zata",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 5,
+            "pick_index": 1,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "ryoma",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 2,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "taara",
+            "lane_position": "ta_than",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 6,
+            "pick_index": 3,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "astrid",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 4,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "tachi",
+            "lane_position": "rung",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 7,
+            "pick_index": 5,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "ignis",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 8,
+            "pick_index": 6,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "gildur",
+            "lane_position": "giua",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 9,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "lorion",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 10,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "omen",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 11,
+            "pick_index": null,
+            "team_side": "red",
+            "action_type": "ban",
+            "hero_id": "goverra",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 12,
+            "pick_index": null,
+            "team_side": "blue",
+            "action_type": "ban",
+            "hero_id": "florentino",
+            "lane_position": null,
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 13,
+            "pick_index": 7,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "eland-orr",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 8,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "flowborn-ad",
+            "lane_position": "rong_xa",
+            "player_id": null,
+            "is_counter_pick": true
+          },
+          {
+            "turn_number": 14,
+            "pick_index": 9,
+            "team_side": "blue",
+            "action_type": "pick",
+            "hero_id": "thane",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": false
+          },
+          {
+            "turn_number": 15,
+            "pick_index": 10,
+            "team_side": "red",
+            "action_type": "pick",
+            "hero_id": "enzo",
+            "lane_position": "rong_ho_tro",
+            "player_id": null,
+            "is_counter_pick": true
+          }
+        ],
+        "duration_seconds": 1492
+      }
+    ]
+  }
+]

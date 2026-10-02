@@ -1,208 +1,633 @@
 [
   {
-    "slug": "airi",
-    "file": "airi.jpg",
-    "name": "Airi"
+    "name": "Flowborn",
+    "slug": "flowborn",
+    "file": "flowborn.jpg"
   },
   {
-    "slug": "aleister",
-    "file": "aleister.jpg",
-    "name": "Aleister"
+    "name": "Dyadia",
+    "slug": "dyadia",
+    "file": "dyadia.jpg"
   },
   {
-    "slug": "alice",
-    "file": "alice.png",
-    "name": "Alice"
+    "name": "Edras",
+    "slug": "edras",
+    "file": "edras.jpg"
   },
   {
+    "name": "Goverra",
+    "slug": "goverra",
+    "file": "goverra.jpg"
+  },
+  {
+    "name": "Heino",
+    "slug": "heino",
+    "file": "heino.jpg"
+  },
+  {
+    "name": "Billow",
+    "slug": "billow",
+    "file": "billow.jpg"
+  },
+  {
+    "name": "Bolt Baron",
+    "slug": "bolt-baron",
+    "file": "bolt-baron.jpg"
+  },
+  {
+    "name": "Biron",
+    "slug": "biron",
+    "file": "biron.jpg"
+  },
+  {
+    "name": "Dolia",
+    "slug": "dolia",
+    "file": "dolia.jpg"
+  },
+  {
+    "name": "Charlotte",
+    "slug": "charlotte",
+    "file": "charlotte.jpg"
+  },
+  {
+    "name": "Tachi",
+    "slug": "tachi",
+    "file": "tachi.jpg"
+  },
+  {
+    "name": "Dirak",
+    "slug": "dirak",
+    "file": "dirak.jpg"
+  },
+  {
+    "name": "Qi",
+    "slug": "qi",
+    "file": "qi.jpg"
+  },
+  {
+    "name": "Erin",
+    "slug": "erin",
+    "file": "erin.jpg"
+  },
+  {
+    "name": "Ming",
+    "slug": "ming",
+    "file": "ming.jpg"
+  },
+  {
+    "name": "Bijan",
+    "slug": "bijan",
+    "file": "bijan.jpg"
+  },
+  {
+    "name": "Bonnie",
+    "slug": "bonnie",
+    "file": "bonnie.jpg"
+  },
+  {
+    "name": "Teeri",
+    "slug": "teeri",
+    "file": "teeri.jpg"
+  },
+  {
+    "name": "Yue",
+    "slug": "yue",
+    "file": "yue.jpg"
+  },
+  {
+    "name": "Yan",
+    "slug": "yan",
+    "file": "yan.jpg"
+  },
+  {
+    "name": "Aya",
+    "slug": "aya",
+    "file": "aya.jpg"
+  },
+  {
+    "name": "Bright",
+    "slug": "bright",
+    "file": "bright.jpg"
+  },
+  {
+    "name": "Lorion",
+    "slug": "lorion",
+    "file": "lorion.jpg"
+  },
+  {
+    "name": "Dextra",
+    "slug": "dextra",
+    "file": "dextra.jpg"
+  },
+  {
+    "name": "Sinestrea",
+    "slug": "sinestrea",
+    "file": "sinestrea.jpg"
+  },
+  {
+    "name": "Thorne",
+    "slug": "thorne",
+    "file": "thorne.jpg"
+  },
+  {
+    "name": "Allain",
     "slug": "allain",
-    "file": "allain.jpg",
-    "name": "Allain"
+    "file": "allain.jpg"
   },
   {
+    "name": "Zata",
+    "slug": "zata",
+    "file": "zata.jpg"
+  },
+  {
+    "name": "Rouie",
+    "slug": "rouie",
+    "file": "rouie.jpg"
+  },
+  {
+    "name": "Laville",
+    "slug": "laville",
+    "file": "laville.jpg"
+  },
+  {
+    "name": "Paine",
+    "slug": "paine",
+    "file": "paine.jpg"
+  },
+  {
+    "name": "Ata",
+    "slug": "ata",
+    "file": "ata.jpg"
+  },
+  {
+    "name": "Keera",
+    "slug": "keera",
+    "file": "keera.jpg"
+  },
+  {
+    "name": "Ishar",
+    "slug": "ishar",
+    "file": "ishar.jpg"
+  },
+  {
+    "name": "Eland'orr",
+    "slug": "eland-orr",
+    "file": "eland-orr.jpg"
+  },
+  {
+    "name": "Krizzix",
+    "slug": "krizzix",
+    "file": "krizzix.png"
+  },
+  {
+    "name": "Volkath",
+    "slug": "volkath",
+    "file": "volkath.jpg"
+  },
+  {
+    "name": "Celica",
+    "slug": "celica",
+    "file": "celica.jpg"
+  },
+  {
+    "name": "Zip",
+    "slug": "zip",
+    "file": "zip.jpg"
+  },
+  {
+    "name": "Enzo",
+    "slug": "enzo",
+    "file": "enzo.jpg"
+  },
+  {
+    "name": "Yena",
+    "slug": "yena",
+    "file": "yena.jpg"
+  },
+  {
+    "name": "Errol",
+    "slug": "errol",
+    "file": "errol.jpg"
+  },
+  {
+    "name": "Capheny",
+    "slug": "capheny",
+    "file": "capheny.jpg"
+  },
+  {
+    "name": "Hayate",
+    "slug": "hayate",
+    "file": "hayate.jpg"
+  },
+  {
+    "name": "D'Arcy",
+    "slug": "d-arcy",
+    "file": "d-arcy.jpg"
+  },
+  {
+    "name": "Veres",
+    "slug": "veres",
+    "file": "veres.jpg"
+  },
+  {
+    "name": "Florentino",
+    "slug": "florentino",
+    "file": "florentino.jpg"
+  },
+  {
+    "name": "Sephera",
+    "slug": "sephera",
+    "file": "sephera.jpg"
+  },
+  {
+    "name": "Quillen",
+    "slug": "quillen",
+    "file": "quillen.jpg"
+  },
+  {
+    "name": "Wiro",
+    "slug": "wiro",
+    "file": "wiro.jpg"
+  },
+  {
+    "name": "Richter",
+    "slug": "richter",
+    "file": "richter.jpg"
+  },
+  {
+    "name": "Elsu",
+    "slug": "elsu",
+    "file": "elsu.jpg"
+  },
+  {
+    "name": "Y'bneth",
+    "slug": "y-bneth",
+    "file": "y-bneth.jpg"
+  },
+  {
+    "name": "Amily",
     "slug": "amily",
-    "file": "amily.jpg",
-    "name": "Amily"
+    "file": "amily.jpg"
   },
   {
+    "name": "Annette",
     "slug": "annette",
-    "file": "annette.jpg",
-    "name": "Annette"
+    "file": "annette.jpg"
+  },
+  {
+    "name": "Baldum",
+    "slug": "baldum",
+    "file": "baldum.jpg"
+  },
+  {
+    "name": "Roxie",
+    "slug": "roxie",
+    "file": "roxie.jpg"
+  },
+  {
+    "name": "Marja",
+    "slug": "marja",
+    "file": "marja.jpg"
+  },
+  {
+    "name": "Rourke",
+    "slug": "rourke",
+    "file": "rourke.jpg"
+  },
+  {
+    "name": "Arum",
+    "slug": "arum",
+    "file": "arum.jpg"
+  },
+  {
+    "name": "Wisp",
+    "slug": "wisp",
+    "file": "wisp.jpg"
+  },
+  {
+    "name": "The Flash",
+    "slug": "the-flash",
+    "file": "the-flash.jpg"
+  },
+  {
+    "name": "Max",
+    "slug": "max",
+    "file": "max.jpg"
+  },
+  {
+    "name": "Liliana",
+    "slug": "liliana",
+    "file": "liliana.jpg"
+  },
+  {
+    "name": "Tulen",
+    "slug": "tulen",
+    "file": "tulen.jpg"
+  },
+  {
+    "name": "Omen",
+    "slug": "omen",
+    "file": "omen.jpg"
+  },
+  {
+    "name": "Lindis",
+    "slug": "lindis",
+    "file": "lindis.jpg"
+  },
+  {
+    "name": "TeeMee",
+    "slug": "teemee",
+    "file": "teemee.jpg"
+  },
+  {
+    "name": "Moren",
+    "slug": "moren",
+    "file": "moren.jpg"
+  },
+  {
+    "name": "Xeniel",
+    "slug": "xeniel",
+    "file": "xeniel.jpg"
+  },
+  {
+    "name": "Wonder Woman",
+    "slug": "wonder-woman",
+    "file": "wonder-woman.jpg"
+  },
+  {
+    "name": "Superman",
+    "slug": "superman",
+    "file": "superman.jpg"
+  },
+  {
+    "name": "Tel'Annas",
+    "slug": "tel-annas",
+    "file": "tel-annas.jpg"
+  },
+  {
+    "name": "Astrid",
+    "slug": "astrid",
+    "file": "astrid.jpg"
+  },
+  {
+    "name": "Ryoma",
+    "slug": "ryoma",
+    "file": "ryoma.jpg"
+  },
+  {
+    "name": "Stuart",
+    "slug": "stuart",
+    "file": "stuart.jpg"
+  },
+  {
+    "name": "Arduin",
+    "slug": "arduin",
+    "file": "arduin.jpg"
+  },
+  {
+    "name": "Zill",
+    "slug": "zill",
+    "file": "zill.jpg"
+  },
+  {
+    "name": "Murad",
+    "slug": "murad",
+    "file": "murad.jpg"
+  },
+  {
+    "name": "Ignis",
+    "slug": "ignis",
+    "file": "ignis.jpg"
+  },
+  {
+    "name": "Zuka",
+    "slug": "zuka",
+    "file": "zuka.jpg"
+  },
+  {
+    "name": "Airi",
+    "slug": "airi",
+    "file": "airi.jpg"
+  },
+  {
+    "name": "Kaine",
+    "slug": "kaine",
+    "file": "kaine.jpg"
+  },
+  {
+    "name": "Lauriel",
+    "slug": "lauriel",
+    "file": "lauriel.jpg"
+  },
+  {
+    "name": "Raz",
+    "slug": "raz",
+    "file": "raz.jpg"
+  },
+  {
+    "name": "Skud",
+    "slug": "skud",
+    "file": "skud.jpg"
+  },
+  {
+    "name": "Preyta",
+    "slug": "preyta",
+    "file": "preyta.jpg"
+  },
+  {
+    "name": "Ilumia",
+    "slug": "ilumia",
+    "file": "ilumia.jpg"
+  },
+  {
+    "name": "Slimz",
+    "slug": "slimz",
+    "file": "slimz.png"
+  },
+  {
+    "name": "Arthur",
+    "slug": "arthur",
+    "file": "arthur.jpg"
+  },
+  {
+    "name": "Kriknak",
+    "slug": "kriknak",
+    "file": "kriknak.png"
+  },
+  {
+    "name": "Ngộ Không",
+    "slug": "ngo-khong",
+    "file": "ngo-khong.jpg"
+  },
+  {
+    "name": "Maloch",
+    "slug": "maloch",
+    "file": "maloch.jpg"
+  },
+  {
+    "name": "Helen",
+    "slug": "helen",
+    "file": "helen.jpg"
+  },
+  {
+    "name": "Jinna",
+    "slug": "jinna",
+    "file": "jinna.jpg"
+  },
+  {
+    "name": "Cresht",
+    "slug": "cresht",
+    "file": "cresht.jpg"
+  },
+  {
+    "name": "Natalya",
+    "slug": "natalya",
+    "file": "natalya.jpg"
+  },
+  {
+    "name": "Lumburr",
+    "slug": "lumburr",
+    "file": "lumburr.jpg"
+  },
+  {
+    "name": "Fennik",
+    "slug": "fennik",
+    "file": "fennik.jpg"
+  },
+  {
+    "name": "Aleister",
+    "slug": "aleister",
+    "file": "aleister.jpg"
+  },
+  {
+    "name": "Grakk",
+    "slug": "grakk",
+    "file": "grakk.png"
+  },
+  {
+    "name": "Nakroth",
+    "slug": "nakroth",
+    "file": "nakroth.jpg"
+  },
+  {
+    "name": "Taara",
+    "slug": "taara",
+    "file": "taara.jpg"
+  },
+  {
+    "name": "Toro",
+    "slug": "toro",
+    "file": "toro.jpg"
+  },
+  {
+    "name": "Yorn",
+    "slug": "yorn",
+    "file": "yorn.jpg"
+  },
+  {
+    "name": "Gildur",
+    "slug": "gildur",
+    "file": "gildur.jpg"
+  },
+  {
+    "name": "Alice",
+    "slug": "alice",
+    "file": "alice.png"
+  },
+  {
+    "name": "Azzen'Ka",
+    "slug": "azzen-ka",
+    "file": "azzen-ka.jpg"
+  },
+  {
+    "name": "Ormarr",
+    "slug": "ormarr",
+    "file": "ormarr.jpg"
+  },
+  {
+    "name": "Butterfly",
+    "slug": "butterfly",
+    "file": "butterfly.jpg"
+  },
+  {
+    "name": "Violet",
+    "slug": "violet",
+    "file": "violet.jpg"
+  },
+  {
+    "name": "Chaugnar",
+    "slug": "chaugnar",
+    "file": "chaugnar.jpg"
+  },
+  {
+    "name": "Điêu Thuyền",
+    "slug": "dieu-thuyen",
+    "file": "dieu-thuyen.jpg"
+  },
+  {
+    "name": "Zephys",
+    "slug": "zephys",
+    "file": "zephys.jpg"
+  },
+  {
+    "name": "Kahlii",
+    "slug": "kahlii",
+    "file": "kahlii.png"
+  },
+  {
+    "name": "Omega",
+    "slug": "omega",
+    "file": "omega.jpg"
+  },
+  {
+    "name": "Triệu Vân",
+    "slug": "trieu-van",
+    "file": "trieu-van.jpg"
+  },
+  {
+    "name": "Mganga",
+    "slug": "mganga",
+    "file": "mganga.jpg"
+  },
+  {
+    "name": "Krixi",
+    "slug": "krixi",
+    "file": "krixi.png"
+  },
+  {
+    "name": "Mina",
+    "slug": "mina",
+    "file": "mina.png"
+  },
+  {
+    "name": "Lữ Bố",
+    "slug": "lu-bo",
+    "file": "lu-bo.jpg"
+  },
+  {
+    "name": "Veera",
+    "slug": "veera",
+    "file": "veera.jpg"
+  },
+  {
+    "name": "Thane",
+    "slug": "thane",
+    "file": "thane.png"
+  },
+  {
+    "name": "Valhein",
+    "slug": "valhein",
+    "file": "valhein.jpg"
+  },
+  {
+    "name": "Tamyn",
+    "slug": "tamyn",
+    "file": "tamyn.jpg"
   },
   {
     "slug": "aoi",
     "file": "aoi.jpg",
     "name": "Aoi"
-  },
-  {
-    "slug": "arduin",
-    "file": "arduin.jpg",
-    "name": "Arduin"
-  },
-  {
-    "slug": "arthur",
-    "file": "arthur.jpg",
-    "name": "Arthur"
-  },
-  {
-    "slug": "arum",
-    "file": "arum.jpg",
-    "name": "Arum"
-  },
-  {
-    "slug": "astrid",
-    "file": "astrid.jpg",
-    "name": "Astrid"
-  },
-  {
-    "slug": "ata",
-    "file": "ata.jpg",
-    "name": "Ata"
-  },
-  {
-    "slug": "aya",
-    "file": "aya.jpg",
-    "name": "Aya"
-  },
-  {
-    "slug": "azzen-ka",
-    "file": "azzen-ka.jpg",
-    "name": "Azzen Ka"
-  },
-  {
-    "slug": "baldum",
-    "file": "baldum.jpg",
-    "name": "Baldum"
-  },
-  {
-    "slug": "bijan",
-    "file": "bijan.jpg",
-    "name": "Bijan"
-  },
-  {
-    "slug": "billow",
-    "file": "billow.jpg",
-    "name": "Billow"
-  },
-  {
-    "slug": "biron",
-    "file": "biron.jpg",
-    "name": "Biron"
-  },
-  {
-    "slug": "bolt-baron",
-    "file": "bolt-baron.jpg",
-    "name": "Bolt Baron"
-  },
-  {
-    "slug": "bonnie",
-    "file": "bonnie.jpg",
-    "name": "Bonnie"
-  },
-  {
-    "slug": "bright",
-    "file": "bright.jpg",
-    "name": "Bright"
-  },
-  {
-    "slug": "butterfly",
-    "file": "butterfly.jpg",
-    "name": "Butterfly"
-  },
-  {
-    "slug": "capheny",
-    "file": "capheny.jpg",
-    "name": "Capheny"
-  },
-  {
-    "slug": "celica",
-    "file": "celica.jpg",
-    "name": "Celica"
-  },
-  {
-    "slug": "charlotte",
-    "file": "charlotte.jpg",
-    "name": "Charlotte"
-  },
-  {
-    "slug": "chaugnar",
-    "file": "chaugnar.jpg",
-    "name": "Chaugnar"
-  },
-  {
-    "slug": "cresht",
-    "file": "cresht.jpg",
-    "name": "Cresht"
-  },
-  {
-    "slug": "d-arcy",
-    "file": "d-arcy.jpg",
-    "name": "D Arcy"
-  },
-  {
-    "slug": "dextra",
-    "file": "dextra.jpg",
-    "name": "Dextra"
-  },
-  {
-    "slug": "dieu-thuyen",
-    "file": "dieu-thuyen.jpg",
-    "name": "Dieu Thuyen"
-  },
-  {
-    "slug": "dirak",
-    "file": "dirak.jpg",
-    "name": "Dirak"
-  },
-  {
-    "slug": "dolia",
-    "file": "dolia.jpg",
-    "name": "Dolia"
-  },
-  {
-    "slug": "dyadia",
-    "file": "dyadia.jpg",
-    "name": "Dyadia"
-  },
-  {
-    "slug": "edras",
-    "file": "edras.jpg",
-    "name": "Edras"
-  },
-  {
-    "slug": "eland-orr",
-    "file": "eland-orr.jpg",
-    "name": "Eland Orr"
-  },
-  {
-    "slug": "elsu",
-    "file": "elsu.jpg",
-    "name": "Elsu"
-  },
-  {
-    "slug": "enzo",
-    "file": "enzo.jpg",
-    "name": "Enzo"
-  },
-  {
-    "slug": "erin",
-    "file": "erin.jpg",
-    "name": "Erin"
-  },
-  {
-    "slug": "errol",
-    "file": "errol.jpg",
-    "name": "Errol"
-  },
-  {
-    "slug": "fennik",
-    "file": "fennik.jpg",
-    "name": "Fennik"
-  },
-  {
-    "slug": "florentino",
-    "file": "florentino.jpg",
-    "name": "Florentino"
   },
   {
     "slug": "flowborn-ad",
@@ -215,74 +640,9 @@
     "name": "Flowborn Mid"
   },
   {
-    "slug": "gildur",
-    "file": "gildur.jpg",
-    "name": "Gildur"
-  },
-  {
-    "slug": "goverra",
-    "file": "goverra.jpg",
-    "name": "Goverra"
-  },
-  {
-    "slug": "grakk",
-    "file": "grakk.png",
-    "name": "Grakk"
-  },
-  {
-    "slug": "hayate",
-    "file": "hayate.jpg",
-    "name": "Hayate"
-  },
-  {
-    "slug": "heino",
-    "file": "heino.jpg",
-    "name": "Heino"
-  },
-  {
-    "slug": "helen",
-    "file": "helen.jpg",
-    "name": "Helen"
-  },
-  {
     "slug": "iggy",
     "file": "iggy.jpg",
     "name": "Iggy"
-  },
-  {
-    "slug": "ignis",
-    "file": "ignis.jpg",
-    "name": "Ignis"
-  },
-  {
-    "slug": "ilumia",
-    "file": "ilumia.jpg",
-    "name": "Ilumia"
-  },
-  {
-    "slug": "ishar",
-    "file": "ishar.jpg",
-    "name": "Ishar"
-  },
-  {
-    "slug": "jinna",
-    "file": "jinna.jpg",
-    "name": "Jinna"
-  },
-  {
-    "slug": "kahlii",
-    "file": "kahlii.png",
-    "name": "Kahlii"
-  },
-  {
-    "slug": "kaine",
-    "file": "kaine.jpg",
-    "name": "Kaine"
-  },
-  {
-    "slug": "keera",
-    "file": "keera.jpg",
-    "name": "Keera"
   },
   {
     "slug": "kilgroth",
@@ -290,353 +650,13 @@
     "name": "Kilgroth"
   },
   {
-    "slug": "kriknak",
-    "file": "kriknak.png",
-    "name": "Kriknak"
+    "name": "Zanis",
+    "slug": "zanis",
+    "file": "zanis.jpg"
   },
   {
-    "slug": "krixi",
-    "file": "krixi.png",
-    "name": "Krixi"
-  },
-  {
-    "slug": "krizzix",
-    "file": "krizzix.png",
-    "name": "Krizzix"
-  },
-  {
-    "slug": "lauriel",
-    "file": "lauriel.jpg",
-    "name": "Lauriel"
-  },
-  {
-    "slug": "laville",
-    "file": "laville.jpg",
-    "name": "Laville"
-  },
-  {
-    "slug": "liliana",
-    "file": "liliana.jpg",
-    "name": "Liliana"
-  },
-  {
-    "slug": "lindis",
-    "file": "lindis.jpg",
-    "name": "Lindis"
-  },
-  {
-    "slug": "lorion",
-    "file": "lorion.jpg",
-    "name": "Lorion"
-  },
-  {
-    "slug": "lu-bo",
-    "file": "lu-bo.jpg",
-    "name": "Lu Bo"
-  },
-  {
-    "slug": "lumburr",
-    "file": "lumburr.jpg",
-    "name": "Lumburr"
-  },
-  {
-    "slug": "maloch",
-    "file": "maloch.jpg",
-    "name": "Maloch"
-  },
-  {
-    "slug": "marja",
-    "file": "marja.jpg",
-    "name": "Marja"
-  },
-  {
-    "slug": "max",
-    "file": "max.jpg",
-    "name": "Max"
-  },
-  {
-    "slug": "mganga",
-    "file": "mganga.jpg",
-    "name": "Mganga"
-  },
-  {
-    "slug": "mina",
-    "file": "mina.png",
-    "name": "Mina"
-  },
-  {
-    "slug": "ming",
-    "file": "ming.jpg",
-    "name": "Ming"
-  },
-  {
-    "slug": "moren",
-    "file": "moren.jpg",
-    "name": "Moren"
-  },
-  {
-    "slug": "murad",
-    "file": "murad.jpg",
-    "name": "Murad"
-  },
-  {
-    "slug": "nakroth",
-    "file": "nakroth.jpg",
-    "name": "Nakroth"
-  },
-  {
-    "slug": "natalya",
-    "file": "natalya.jpg",
-    "name": "Natalya"
-  },
-  {
-    "slug": "ngo-khong",
-    "file": "ngo-khong.jpg",
-    "name": "Ngo Khong"
-  },
-  {
-    "slug": "omega",
-    "file": "omega.jpg",
-    "name": "Omega"
-  },
-  {
-    "slug": "omen",
-    "file": "omen.jpg",
-    "name": "Omen"
-  },
-  {
-    "slug": "ormarr",
-    "file": "ormarr.jpg",
-    "name": "Ormarr"
-  },
-  {
-    "slug": "paine",
-    "file": "paine.jpg",
-    "name": "Paine"
-  },
-  {
-    "slug": "preyta",
-    "file": "preyta.jpg",
-    "name": "Preyta"
-  },
-  {
-    "slug": "qi",
-    "file": "qi.jpg",
-    "name": "Qi"
-  },
-  {
-    "slug": "quillen",
-    "file": "quillen.jpg",
-    "name": "Quillen"
-  },
-  {
-    "slug": "raz",
-    "file": "raz.jpg",
-    "name": "Raz"
-  },
-  {
-    "slug": "richter",
-    "file": "richter.jpg",
-    "name": "Richter"
-  },
-  {
-    "slug": "rouie",
-    "file": "rouie.jpg",
-    "name": "Rouie"
-  },
-  {
-    "slug": "rourke",
-    "file": "rourke.jpg",
-    "name": "Rourke"
-  },
-  {
-    "slug": "roxie",
-    "file": "roxie.jpg",
-    "name": "Roxie"
-  },
-  {
-    "slug": "ryoma",
-    "file": "ryoma.jpg",
-    "name": "Ryoma"
-  },
-  {
-    "slug": "sephera",
-    "file": "sephera.jpg",
-    "name": "Sephera"
-  },
-  {
-    "slug": "sinestrea",
-    "file": "sinestrea.jpg",
-    "name": "Sinestrea"
-  },
-  {
-    "slug": "skud",
-    "file": "skud.jpg",
-    "name": "Skud"
-  },
-  {
-    "slug": "slimz",
-    "file": "slimz.png",
-    "name": "Slimz"
-  },
-  {
-    "slug": "stuart",
-    "file": "stuart.jpg",
-    "name": "Stuart"
-  },
-  {
-    "slug": "superman",
-    "file": "superman.jpg",
-    "name": "Superman"
-  },
-  {
-    "slug": "taara",
-    "file": "taara.jpg",
-    "name": "Taara"
-  },
-  {
-    "slug": "tachi",
-    "file": "tachi.jpg",
-    "name": "Tachi"
-  },
-  {
-    "slug": "teemee",
-    "file": "teemee.jpg",
-    "name": "Teemee"
-  },
-  {
-    "slug": "teeri",
-    "file": "teeri.jpg",
-    "name": "Teeri"
-  },
-  {
-    "slug": "tel-annas",
-    "file": "tel-annas.jpg",
-    "name": "Tel Annas"
-  },
-  {
-    "slug": "thane",
-    "file": "thane.png",
-    "name": "Thane"
-  },
-  {
-    "slug": "the-flash",
-    "file": "the-flash.jpg",
-    "name": "The Flash"
-  },
-  {
-    "slug": "thorne",
-    "file": "thorne.jpg",
-    "name": "Thorne"
-  },
-  {
-    "slug": "toro",
-    "file": "toro.jpg",
-    "name": "Toro"
-  },
-  {
-    "slug": "trieu-van",
-    "file": "trieu-van.jpg",
-    "name": "Trieu Van"
-  },
-  {
-    "slug": "tulen",
-    "file": "tulen.jpg",
-    "name": "Tulen"
-  },
-  {
-    "slug": "valhein",
-    "file": "valhein.jpg",
-    "name": "Valhein"
-  },
-  {
-    "slug": "veera",
-    "file": "veera.jpg",
-    "name": "Veera"
-  },
-  {
-    "slug": "veres",
-    "file": "veres.jpg",
-    "name": "Veres"
-  },
-  {
-    "slug": "violet",
-    "file": "violet.jpg",
-    "name": "Violet"
-  },
-  {
-    "slug": "volkath",
-    "file": "volkath.jpg",
-    "name": "Volkath"
-  },
-  {
-    "slug": "wiro",
-    "file": "wiro.jpg",
-    "name": "Wiro"
-  },
-  {
-    "slug": "wisp",
-    "file": "wisp.jpg",
-    "name": "Wisp"
-  },
-  {
-    "slug": "wonder-woman",
-    "file": "wonder-woman.jpg",
-    "name": "Wonder Woman"
-  },
-  {
-    "slug": "xeniel",
-    "file": "xeniel.jpg",
-    "name": "Xeniel"
-  },
-  {
-    "slug": "y-bneth",
-    "file": "y-bneth.jpg",
-    "name": "Y Bneth"
-  },
-  {
-    "slug": "yan",
-    "file": "yan.jpg",
-    "name": "Yan"
-  },
-  {
-    "slug": "yena",
-    "file": "yena.jpg",
-    "name": "Yena"
-  },
-  {
-    "slug": "yorn",
-    "file": "yorn.jpg",
-    "name": "Yorn"
-  },
-  {
-    "slug": "yue",
-    "file": "yue.jpg",
-    "name": "Yue"
-  },
-  {
-    "slug": "zata",
-    "file": "zata.jpg",
-    "name": "Zata"
-  },
-  {
-    "slug": "zephys",
-    "file": "zephys.jpg",
-    "name": "Zephys"
-  },
-  {
-    "slug": "zill",
-    "file": "zill.jpg",
-    "name": "Zill"
-  },
-  {
-    "slug": "zip",
-    "file": "zip.jpg",
-    "name": "Zip"
-  },
-  {
-    "slug": "zuka",
-    "file": "zuka.jpg",
-    "name": "Zuka"
+    "name": "Riktor",
+    "slug": "riktor",
+    "file": "riktor.png"
   }
 ]
