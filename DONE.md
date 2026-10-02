@@ -12,10 +12,10 @@ Version đang mở: **v1.0** — pro-meta analytics + draft sim dùng được, 
 - [x] `/heroes/[slug]` + `/teams/[id]` + `/matches` (filter tướng, link đội) — verify live (Sinestrea 231p/61.5%, SGP 12-3, 506 link tướng ở meta).
 - [x] i18n vi/en đủ 215/215 keys, không thiếu phía nào.
 - [x] Gates: lint 0 error/0 warning · vitest 87/87 · `npm run build` xanh.
-- [ ] **README viết lại** — hiện là boilerplate `create-next-app`: phải nói được tool là gì, screenshot/danh sách tính năng, nguồn data Liquipedia, link production, cách dev/import data.
-- [ ] **SEO/OG + sửa typo** — `app/layout.tsx` description đang viết sai `"thờigian"`; thêm `openGraph`/`twitter` (title, description, og:image) để share link lên FB/Discord có preview; kiểm bằng cách view-source trang production thấy đủ `og:` tags.
-- [ ] **Trang/section "về dữ liệu"** — nói rõ: nguồn Liquipedia, coverage thật (7 giải / 334 series / 1295 ván), giới hạn (đây là pro-meta không phải meta ranked, `pick_index`/`is_counter_pick` là xấp xỉ, ngưỡng mẫu tối thiểu); link từ navbar/footer, verify render trên site.
-- [ ] **Dọn workflow chết** — xoá hoặc disable `.github/workflows/deploy.yml` (self-hosted `tedo-vps` queued vô hạn); verify trên GitHub tab Actions không còn run queued.
+- [x] **README viết lại** — song ngữ (Việt chính + English tóm tắt), 4 screenshot chụp từ production (`docs/screenshots/`), nguồn Liquipedia + coverage + link site + hướng dẫn dev/import.
+- [x] **SEO/OG + sửa typo** — typo `"thờigian"` đã sửa; `openGraph` + `twitter` đầy đủ (title/description/url/site_name/locale/og:image 1200×630 `public/og.png`); verify qua SSR HTML: đủ `og:*`/`twitter:*` tags.
+- [x] **Trang "về dữ liệu"** — `/about`: nguồn Liquipedia, coverage sống (7 giải / 334 series / 1295 ván / 133 tướng, render từ `useAovData`), 4 giới hạn (pro-meta, `pick_index` xấp xỉ, ngưỡng mẫu, không có player stats); link "Về dữ liệu" trong navbar desktop + mobile; verify render trên prod build.
+- [x] **Dọn workflow chết** — đã xoá `.github/workflows/deploy.yml` + cancel run queued `37038297798`; Actions không còn treo.
 
 ## Someday (chưa vào version nào)
 
