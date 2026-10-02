@@ -32,7 +32,7 @@ const ROOT = process.cwd()
 const MANIFEST_FILE = join(ROOT, "public", "images", "heroes", "manifest.json")
 const API = "https://liquipedia.net/honorofkings/api.php"
 const UA = "AovDraftmind-Importer/1.0 (https://github.com; local data tooling)"
-const FETCH_DELAY_MS = 2500 // Liquipedia yêu cầu rate-limit nhẹ tay
+const FETCH_DELAY_MS = 4000 // Liquipedia rate-limit gắt: giữ nhịp chậm để không bị block IP
 
 /** Lane theo vị trí pick trên overlay (xác nhận: trái→phải = top,rừng,mid,AD,SP). */
 const PICK_LANES = ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"]
