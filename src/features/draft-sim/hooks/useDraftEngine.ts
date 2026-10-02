@@ -25,8 +25,8 @@ const createEmptyGame = (): Array<FilledStep> =>
 export const useDraftEngine = (initialVan = 1) => {
     const { data, isLoading } = useAovData()
 
-    // Bộ lọc nguồn data cho gợi ý: theo giải đấu ("all" = mọi series)
-    const [tournamentName, setTournamentName] = useState<string>("all")
+    // Bộ lọc nguồn data cho gợi ý: theo các giải đấu ([] = mọi series)
+    const [tournamentNames, setTournamentNames] = useState<Array<string>>([])
 
     // Lưu trữ toàn bộ lịch sử draft của từng ván (1..6) trong series
     const [games, setGames] = useState<Record<number, Array<FilledStep>>>(() => ({
@@ -203,9 +203,9 @@ export const useDraftEngine = (initialVan = 1) => {
     const filteredSeries = useMemo(() => {
         if (!data) return []
         return data.series.filter(
-            (s) => tournamentName === "all" || s.tournament_name === tournamentName,
+            (s) => tournamentNames.length === 0 || tournamentNames.includes(s.tournament_name),
         )
-    }, [data, tournamentName])
+    }, [data, tournamentNames])
 
     const tournamentOptions = useMemo(
         () => [...new Set((data?.series ?? []).map((s) => s.tournament_name))].sort(),
@@ -214,8 +214,8 @@ export const useDraftEngine = (initialVan = 1) => {
 
     const suggestions: Array<Suggestion> = useMemo(() => {
         if (!ctx || !data) return []
-        return suggestStep(ctx, filteredSeries, data.heroes, tournamentName)
-    }, [ctx, data, filteredSeries, tournamentName])
+        return suggestStep(ctx, filteredSeries, data.heroes, tournamentNames.join("|"))
+    }, [ctx, data, filteredSeries, tournamentNames])
 
     const heroBySlug = useMemo(
         () => new Map((data?.heroes ?? []).map((h) => [h.slug, h])),
@@ -317,7 +317,7 @@ export const useDraftEngine = (initialVan = 1) => {
         globalBanPickerUsedIds,
         pickerDisabledIds,
         suggestions,
-        tournamentName,
+        tournamentNames,
         tournamentOptions,
         filteredSeries,
         heroBySlug,
@@ -331,6 +331,6 @@ export const useDraftEngine = (initialVan = 1) => {
         applySuggestion,
         setPickerIndex,
         setGlobalBanPicker,
-        setTournamentName,
+        setTournamentNames,
     }
 }

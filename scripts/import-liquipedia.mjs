@@ -504,7 +504,8 @@ for (const { page: p, tpl, names } of matchEntries) {
 
         const winnerTeam = w === "1" ? id1 : w === "2" ? id2 : null
         if (!winnerTeam) { warnings.push(`${tag}: winner="${w}" không hợp lệ`); gamesSkipped++; continue }
-        w === "1" ? wins1++ : wins2++
+        if (w === "1") wins1++
+        else wins2++
 
         const blueId = (map.get("team1side") || "").trim().toLowerCase() === "blue" ? id1 : id2
         const match = {

@@ -14,6 +14,7 @@ import type { Lane } from "@/modules/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { TournamentMultiSelect } from "@/components/TournamentMultiSelect"
 import { Label } from "@/components/ui/label"
 import {
     Select,
@@ -56,7 +57,7 @@ export const MetaView = () => {
     const tLane = useTranslations("lanes")
 
     const { data, error, isLoading } = useAovData()
-    const [tournament, setTournament] = useState<string>(ALL)
+    const [tournaments, setTournaments] = useState<Array<string>>([])
     const [lane, setLane] = useState<Lane | typeof ALL>(ALL)
     const [query, setQuery] = useState("")
     const [sort, setSort] = useState<{
@@ -69,9 +70,9 @@ export const MetaView = () => {
         return aggregateMeta(data.series, data.heroes, {
             patchId: ALL,
             lane: lane as Lane | "all",
-            tournamentName: tournament,
+            tournamentNames: tournaments,
         })
-    }, [data, lane, tournament])
+    }, [data, lane, tournaments])
 
     const rows = useMemo(() => {
         if (!result) return []
@@ -131,19 +132,11 @@ export const MetaView = () => {
                             <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">{t("tournament")}</Label>
-                                    <Select value={tournament} onValueChange={setTournament}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value={ALL}>{t("allTournaments")}</SelectItem>
-                                            {result.tournaments.map((tItem) => (
-                                                <SelectItem key={tItem} value={tItem}>
-                                                    {tItem}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <TournamentMultiSelect
+                                        tournaments={result.tournaments}
+                                        selected={tournaments}
+                                        onChange={setTournaments}
+                                    />
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label className="text-xs text-muted-foreground">{t("searchHero")}</Label>

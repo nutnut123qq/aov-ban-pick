@@ -5,18 +5,7 @@ import { Lightbulb } from "lucide-react"
 import type { Suggestion } from "@/modules/aov"
 import type { Lane } from "@/modules/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { groupTournamentsByRegion } from "@/modules/aov/leagues"
-
-const ALL = "all"
+import { TournamentMultiSelect } from "@/components/TournamentMultiSelect"
 
 interface SuggestionPanelProps {
     /** Nhãn lượt hiện tại (vd "Bên Xanh · CẤM"); null nếu đã xong draft. */
@@ -25,8 +14,8 @@ interface SuggestionPanelProps {
     suggestions: Array<Suggestion>
     /** Đã có dữ liệu trận hay chưa (để phân biệt "hết ứng viên" vs "chưa có data"). */
     hasData: boolean
-    /** Giải đấu đang lọc ("all" = mọi giải). */
-    tournamentName: string
+    /** Các giải đấu đang lọc ([] = mọi giải). */
+    tournamentNames: Array<string>
     /** Mọi giải đấu có trong dữ liệu (dựng dropdown). */
     tournamentOptions: Array<string>
     /** Số ván sau khi lọc (cỡ mẫu đang cộng gợi ý). */
@@ -34,7 +23,7 @@ interface SuggestionPanelProps {
     /** Người dùng chọn áp dụng một gợi ý. */
     onApply: (heroId: string, lane?: Lane) => void
     /** Đổi bộ lọc giải đấu. */
-    onTournamentNameChange: (v: string) => void
+    onTournamentNamesChange: (v: Array<string>) => void
 }
 
 /** Panel gợi ý real-time cho lượt cấm/chọn đang tới, lọc được theo patch/giải. */
@@ -42,15 +31,13 @@ export const SuggestionPanel = ({
     turnLabel,
     suggestions,
     hasData,
-    tournamentName,
+    tournamentNames,
     tournamentOptions,
     matchCount,
     onApply,
-    onTournamentNameChange,
+    onTournamentNamesChange,
 }: SuggestionPanelProps) => {
     const t = useTranslations("draft.suggestions")
-    const tMeta = useTranslations("meta")
-    const tRegions = useTranslations("regions")
 
     return (
         <Card className="lg:sticky lg:top-4">
@@ -67,24 +54,12 @@ export const SuggestionPanel = ({
                         <p className="text-xs font-medium text-muted-foreground">
                             {t("source", { count: matchCount })}
                         </p>
-                        <Select value={tournamentName} onValueChange={onTournamentNameChange}>
-                            <SelectTrigger className="h-8 text-xs">
-                                <SelectValue placeholder={tMeta("tournament")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value={ALL}>{tMeta("allTournaments")}</SelectItem>
-                                {groupTournamentsByRegion(tournamentOptions).map((g) => (
-                                    <SelectGroup key={g.region}>
-                                        <SelectLabel>{tRegions(g.region)}</SelectLabel>
-                                        {g.tournaments.map((v) => (
-                                            <SelectItem key={v} value={v}>
-                                                {v}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <TournamentMultiSelect
+                            tournaments={tournamentOptions}
+                            selected={tournamentNames}
+                            onChange={onTournamentNamesChange}
+                            className="h-8 text-xs"
+                        />
                     </div>
                 )}
                 {!turnLabel ? (

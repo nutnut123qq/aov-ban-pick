@@ -149,7 +149,7 @@ describe("Adversarial & Zero-Propagation Defense Test Suite", () => {
             const meta = aggregateMeta([], dummyHeroes, {
                 patchId: "non_existent_patch",
                 lane: "all",
-                tournamentName: "non_existent_tournament",
+                tournamentNames: ["non_existent_tournament"],
             })
 
             expect(meta.totalMatches).toBe(0)

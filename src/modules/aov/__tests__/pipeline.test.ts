@@ -45,7 +45,7 @@ describe("Data Pipeline & Draft Engine Integration", () => {
         const meta = aggregateMeta(allSeries, heroes, {
             patchId: "all",
             lane: "all",
-            tournamentName: "all",
+            tournamentNames: [],
         })
 
         expect(meta.totalMatches).toBeGreaterThan(0)

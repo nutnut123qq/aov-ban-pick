@@ -28,8 +28,8 @@ export interface MetaFilter {
     patchId: string
     /** Lane cần lọc, hoặc "all" cho mọi lane. */
     lane: Lane | "all"
-    /** Tên giải đấu cần lọc, hoặc "all" cho mọi giải. */
-    tournamentName: string
+    /** Các giải đấu cần lọc — mảng rỗng nghĩa là mọi giải. */
+    tournamentNames: Array<string>
 }
 
 /** Kết quả tổng hợp meta. */
@@ -83,7 +83,7 @@ export const aggregateMeta = (
         patchSet.add(s.patch_id)
         tournamentSet.add(s.tournament_name)
         if (filter.patchId !== "all" && s.patch_id !== filter.patchId) continue
-        if (filter.tournamentName !== "all" && s.tournament_name !== filter.tournamentName) continue
+        if (filter.tournamentNames.length > 0 && !filter.tournamentNames.includes(s.tournament_name)) continue
 
         for (const m of s.matches) {
             totalMatches++

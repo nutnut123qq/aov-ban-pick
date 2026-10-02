@@ -65,7 +65,7 @@ const mockSeries: Array<Series> = [
 
 describe("aggregate module", () => {
     it("returns empty result when series list is empty", () => {
-        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentName: "all" }
+        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentNames: [] }
         const res = aggregateMeta([], mockHeroes, filter)
 
         expect(res.totalMatches).toBe(0)
@@ -75,7 +75,7 @@ describe("aggregate module", () => {
     })
 
     it("aggregates all matches when filter is 'all'", () => {
-        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentName: "all" }
+        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentNames: [] }
         const res = aggregateMeta(mockSeries, mockHeroes, filter)
 
         expect(res.totalMatches).toBe(2)
@@ -100,7 +100,7 @@ describe("aggregate module", () => {
     })
 
     it("filters accurately by patchId", () => {
-        const filter: MetaFilter = { patchId: "1.54", lane: "all", tournamentName: "all" }
+        const filter: MetaFilter = { patchId: "1.54", lane: "all", tournamentNames: [] }
         const res = aggregateMeta(mockSeries, mockHeroes, filter)
 
         expect(res.totalMatches).toBe(1)
@@ -111,8 +111,8 @@ describe("aggregate module", () => {
         expect(tulenRow?.wins).toBe(0)
     })
 
-    it("filters accurately by tournamentName", () => {
-        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentName: "APL 2026" }
+    it("filters accurately by tournamentNames", () => {
+        const filter: MetaFilter = { patchId: "all", lane: "all", tournamentNames: ["APL 2026"] }
         const res = aggregateMeta(mockSeries, mockHeroes, filter)
 
         expect(res.totalMatches).toBe(1)
@@ -120,7 +120,7 @@ describe("aggregate module", () => {
     })
 
     it("filters accurately by lane position", () => {
-        const filter: MetaFilter = { patchId: "all", lane: "rung", tournamentName: "all" }
+        const filter: MetaFilter = { patchId: "all", lane: "rung", tournamentNames: [] }
         const res = aggregateMeta(mockSeries, mockHeroes, filter)
 
         expect(res.rows.length).toBe(1)
