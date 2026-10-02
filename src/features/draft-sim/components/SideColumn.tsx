@@ -118,7 +118,7 @@ export const SideColumn = ({
                             {step.action === "pick" && (
                                 <div className="w-full shrink-0 sm:w-24 lg:w-28">
                                     <Select
-                                        value={slot?.lane || undefined}
+                                        value={slot?.lane ?? ""}
                                         onValueChange={(v) => onLane(step.index, v as Lane)}
                                     >
                                         <SelectTrigger className="h-9 text-xs">
