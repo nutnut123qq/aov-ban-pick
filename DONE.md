@@ -2,7 +2,16 @@
 
 Khán giả/mục đích: **public cho cộng đồng Liên Quân Mobile** — bản đầu đủ tin cậy để đăng site/repo ra ngoài mà không xấu hổ.
 
-Version đang mở: **— (v1.1 đã đóng, đang ở trạng thái bảo trì)**
+Version đang mở: **v1.2 — pipeline data đáng tin**
+
+## Checklist v1.2 — đang mở (2026-10-28)
+
+- [x] `merge.mjs` tính lại winner (hoà → winner của export) + cập nhật format (không hạ dưới ván lớn nhất) khi gộp vào series đã có — `scripts/__tests__/merge.test.mjs`.
+- [x] Importer: `bestof` kế thừa từ `|bestof=` gần nhất trên trang; đếm thắng cả ván LP lỗi draft; nhịp `action=parse` 30s; cờ `--offline` đọc cache. `validate:data` chặn ván > BO và winner lệch số ván thắng.
+- [ ] Cào lại toàn bộ 7 giải — **dở**: Liquipedia chặn IP (2026-10-28, do nhịp 4s cũ). 5/7 giải đã sửa từ cache (225 format + 1 winner). Còn AOG Leg 1 (18 series) + APL (12) sai format, playoffs AOG/GCS sau 25/10, APL 18/07 BT–FPT ván 7 `is_blind_pick` — chờ LP mở lại; `validate:data` đỏ tới lúc đó.
+- [x] "Đồng đội hay thắng cùng" chỉ hiện cặp thắng nhiều hơn thua (test 0/5, 3/6 loại, 4/5 giữ) — Evita giờ hiện "Chưa đủ dữ liệu cặp".
+- [x] Xem `/draft` (gợi ý nguồn 1623 ván), `/matches` (412 series, BO3-quá-ván 177 → 29), `/heroes/evita` trên dev server.
+- [x] Tài liệu: README bỏ `lp-relay.mjs`, TASKS.md tick đúng, Someday bỏ mục đã làm.
 
 ## Checklist v1.1 — ✅ ĐÃ ĐÓNG 2026-10-02
 
@@ -26,13 +35,12 @@ Version đang mở: **— (v1.1 đã đóng, đang ở trạng thái bảo trì)
 
 ## Someday (chưa vào version nào)
 
-- Cập nhật `AGENTS.md`: mục Testing vẫn ghi "không có test runner" (thực tế vitest 12 file/87 test); xoá phần deploy VPS.
-- Browser console error `Store does not have a valid reducer` — Redux store setup cũ.
-- `formatSec` edge: giây làm tròn có thể hiển thị `60`.
-- `duoLaneKey` sort hero độc lập lane — nếu sau này cần "hero A ở lane A với hero B ở lane B" thì đổi key.
 - Chuẩn bị vs đội X (draft sim lọc theo đối thủ) + team Elo vào scoreDraft (opt-in khi chọn đội).
 - Hero archetype tags (damage_type/role/range) → comp balance trong scoreDraft.
 - Bracket/upcoming matches từ Liquipedia; bổ sung VOD cho AOG/APL.
+- Bảng "Combo đồng đội" ở `/meta` (`MetaView.tsx` ~165) không lọc cặp thua nhiều hơn thắng (bảng kèo ngay dưới có lọc).
+- "Combo hay dùng" ở trang đội (`teamStats.ts` ~171) sort theo số ván thắng chứ không theo số lần dùng.
+- Empty state "Chưa đủ dữ liệu cặp" cũng hiện khi có đủ mẫu nhưng mọi cặp đều thua — câu chữ chưa sát.
 
 ## Lịch sử version
 

@@ -9,6 +9,8 @@
 import { readFileSync, existsSync, readdirSync } from "fs"
 import { join } from "path"
 
+import { seriesWinnerByGames } from "./merge.mjs"
+
 const ROOT = process.cwd()
 const DATA_DIR = join(ROOT, "public", "data")
 const MATCHES_DIR = join(DATA_DIR, "matches")
@@ -152,6 +154,18 @@ for (const matchId of indexedMatchFiles) {
         }
 
         totalMatchCount += series.matches.length
+
+        // Chặn hồi quy importer cũ: ghi "BO3" cho series có 4-7 ván, winner lấy từ ván 1.
+        const bestOf = Number(/^BO(\d+)$/.exec(series.format)?.[1])
+        // So van_number lớn nhất (không phải số ván): series có ván bị bỏ vẫn lộ ván 4 trong "BO3"
+        const maxVan = Math.max(...series.matches.map((m) => m.van_number))
+        if (bestOf && maxVan > bestOf) {
+            fail(`Series '${series.id}' có ván ${maxVan} nhưng format ${series.format}.`)
+        }
+        const gameWinner = seriesWinnerByGames(series.matches)
+        if (gameWinner && gameWinner !== series.winner_team_id) {
+            fail(`Series '${series.id}' có winner_team_id '${series.winner_team_id}' nhưng thắng nhiều ván hơn là '${gameWinner}'.`)
+        }
 
         for (const match of series.matches) {
             if (typeof match.van_number !== "number" || match.van_number < 1) {

@@ -3,7 +3,7 @@
  * và sinh file export đúng schema `public/data/matches/`, giống trang /draft-input.
  *
  * Dùng:
- *   node scripts/import-liquipedia.mjs "<page>" --patch <id> [--tournament <name>] [--out <file>]
+ *   node scripts/import-liquipedia.mjs "<page>" --patch <id> [--tournament <name>] [--out <file>] [--fresh|--offline]
  *
  * tournament_name/team_id lấy theo tên chuẩn Liquipedia: --tournament chỉ là override;
  * mặc định script tự đọc |name= từ trang giải (param |tournament= trong từng {{Match}}).
@@ -31,8 +31,9 @@ import { dirname, join } from "path"
 const ROOT = process.cwd()
 const MANIFEST_FILE = join(ROOT, "public", "images", "heroes", "manifest.json")
 const API = "https://liquipedia.net/honorofkings/api.php"
-const UA = "AovDraftmind-Importer/1.0 (https://github.com; local data tooling)"
-const FETCH_DELAY_MS = 4000 // Liquipedia rate-limit gắt: giữ nhịp chậm để không bị block IP
+const UA = "AovDraftmind-Importer/1.0 (https://github.com/nutnut123qq/aov-ban-pick; local data tooling)"
+// Điều khoản API Liquipedia: action=parse tối đa 1 request/30s — nhịp 4s cũ đã khiến IP bị chặn (2026-10-28)
+const FETCH_DELAY_MS = 30000
 
 /** Lane theo vị trí pick trên overlay (xác nhận: trái→phải = top,rừng,mid,AD,SP). */
 const PICK_LANES = ["ta_than", "rung", "giua", "rong_xa", "rong_ho_tro"]
@@ -83,7 +84,8 @@ const fail = (msg) => {
     process.exit(1)
 }
 const warn = (msg) => console.warn(`⚠️  ${msg}`)
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+// --offline không gọi mạng nên không cần giãn nhịp
+const sleep = (ms) => (offline ? Promise.resolve() : new Promise((r) => setTimeout(r, ms)))
 
 /** slugify giống export.ts (a-z,0-9,_) — dùng cho team_id/series id. */
 const slugify = (s) =>
@@ -120,6 +122,7 @@ const teamId = (displayName) => `team_${slugify(displayName)}`
 const argv = process.argv.slice(2)
 let page, patch, tournament, out
 let fresh = false
+let offline = false // --offline: chỉ đọc scripts/.lp-cache (bỏ TTL), KHÔNG gọi mạng — dùng khi LP chặn IP
 
 for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -127,8 +130,9 @@ for (let i = 0; i < argv.length; i++) {
     else if (a === "--tournament") tournament = argv[++i]
     else if (a === "--out") out = argv[++i]
     else if (a === "--fresh") fresh = true
+    else if (a === "--offline") offline = true
     else if (a === "--help" || a === "-h") {
-        console.log(`\n  node scripts/import-liquipedia.mjs "<page>" --patch <id> [--tournament <name>] [--out <file>]\n`)
+        console.log(`\n  node scripts/import-liquipedia.mjs "<page>" --patch <id> [--tournament <name>] [--out <file>] [--fresh|--offline]\n`)
         process.exit(0)
     } else if (a.startsWith("--")) fail(`Cờ không hiểu: ${a}`)
     else if (!page) page = a
@@ -166,6 +170,7 @@ const heroUrls = existsSync(HERO_URLS_FILE) ? JSON.parse(readFileSync(HERO_URLS_
  * Trả về danh sách slug vẫn không tìm được.
  */
 async function fetchMissingHeroIcons(slugs) {
+    if (offline) return [...slugs] // tải icon = gọi mạng
     const stillMissing = []
     for (const slug of slugs) {
         const lpName = slugToLpName.get(slug) || slug
@@ -201,7 +206,11 @@ async function lpApi(params, attempt = 1, soft = false) {
     const cacheFile = join(CACHE_DIR, Buffer.from(qs).toString("base64url") + ".json")
     if (!fresh && existsSync(cacheFile)) {
         const st = JSON.parse(readFileSync(cacheFile, "utf-8"))
-        if (Date.now() - st.t < CACHE_TTL_MS) return st.j
+        if (offline || Date.now() - st.t < CACHE_TTL_MS) return st.j
+    }
+    if (offline) {
+        if (soft) return null
+        fail(`--offline: chưa có cache cho ${params.page ?? params.titles}`)
     }
     const url = `${API}?${qs}`
     try {
@@ -429,8 +438,18 @@ for (const { page: p, wikitext, html } of pages) {
     if (teamsByMatch.length && teamsByMatch.length !== blocks.length) {
         warn(`${p}: HTML có ${teamsByMatch.length} trận nhưng wikitext có ${blocks.length} — tên đội có thể lệch`)
     }
+    // LP thường chỉ ghi |bestof= ở {{Match}} đầu của mỗi Matchlist/Bracket; module LP
+    // nhớ giá trị đó cho các Match sau trên cùng trang. Match thiếu bestof → lấy
+    // |bestof= gần nhất phía trước (kể cả param của Matchlist/Bracket), không có thì phía sau.
+    const bestofAt = [...wikitext.matchAll(/\|\s*bestof\s*=\s*(\d+)/g)].map((m) => ({ at: m.index, n: Number(m[1]) }))
+    let cursor = 0
     blocks.forEach((block, i) => {
-        matchEntries.push({ page: p, tpl: parseTemplate(block), names: teamsByMatch[i] })
+        const at = wikitext.indexOf(block, cursor)
+        cursor = at + block.length
+        const tpl = parseTemplate(block)
+        const own = Number((tpl.params.get("bestof") || "").replace(/\D/g, ""))
+        const near = bestofAt.filter((b) => b.at < at).pop() ?? bestofAt.find((b) => b.at > at)
+        matchEntries.push({ page: p, tpl, names: teamsByMatch[i], bestof: own || near?.n || null })
     })
 }
 console.log(`   ${pages.length} trang · ${matchEntries.length} series (Match blocks)`)
@@ -470,7 +489,7 @@ const unknownHeroes = new Set()
 const seriesList = []
 let gamesOk = 0, gamesSkipped = 0
 
-for (const { page: p, tpl, names } of matchEntries) {
+for (const { page: p, tpl, names, bestof: foundBestof } of matchEntries) {
     const rawOpp = (k) => {
         const raw = tpl.params.get(k) || ""
         const tm = raw.match(/\{\{TeamOpponent\|([^}|]+)/)
@@ -480,9 +499,13 @@ for (const { page: p, tpl, names } of matchEntries) {
     const n2 = names?.[1] || rawOpp("opponent2")
     const id1 = teamId(n1), id2 = teamId(n2)
 
-    const bestof = Number((tpl.params.get("bestof") || "3").replace(/\D/g, "")) || 3
     const date = parseDate(tpl.params.get("date") || "")
     const tagBase = `${n1} vs ${n2} (${date ?? "?"}) @ ${p}`
+    const bestof = foundBestof || 3
+    if (!foundBestof) {
+        warn(`${tagBase}: không thấy |bestof= nào trên trang — tạm coi BO3`)
+        warnings.push(`${tagBase}: bestof mặc định 3 (không tìm thấy trên trang)`)
+    }
 
     // Lấy các Map theo thứ tự map1..mapN
     const mapKeys = [...tpl.params.keys()].filter((k) => /^map\d+$/.test(k)).sort((a, b) => +a.slice(3) - +b.slice(3))
@@ -498,14 +521,15 @@ for (const { page: p, tpl, names } of matchEntries) {
         if (w === "skip" || w === "" || (map.get("finished") || "") === "skip") continue
         const tag = `${tagBase} · ván ${van}`
 
+        const winnerTeam = w === "1" ? id1 : w === "2" ? id2 : null
+        if (!winnerTeam) { warnings.push(`${tag}: winner="${w}" không hợp lệ`); gamesSkipped++; continue }
+        // Đếm thắng TRƯỚC khi parse ban/pick: ván LP ghi lỗi draft vẫn có kết quả thật
+        if (w === "1") wins1++
+        else wins2++
+
         const isBlind = bestof === 7 && van === 7 // ĐTDV: ván 7 BO7 = chọn ẩn
         const actions = buildActions(map, warnings, tag, isBlind)
         if (!actions) { gamesSkipped++; continue }
-
-        const winnerTeam = w === "1" ? id1 : w === "2" ? id2 : null
-        if (!winnerTeam) { warnings.push(`${tag}: winner="${w}" không hợp lệ`); gamesSkipped++; continue }
-        if (w === "1") wins1++
-        else wins2++
 
         const blueId = (map.get("team1side") || "").trim().toLowerCase() === "blue" ? id1 : id2
         const match = {

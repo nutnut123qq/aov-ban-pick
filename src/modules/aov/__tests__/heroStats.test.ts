@@ -159,13 +159,31 @@ describe("getHeroDetail", () => {
     it("teammates đúng chiều, lọc cặp n<5", () => {
         const d = getHeroDetail(mockSeries(), "tulen")!
         const nakroth = d.teammates.find((p) => p.heroId === "nakroth")
-        const helen = d.teammates.find((p) => p.heroId === "helen")
         expect(nakroth).toMatchObject({ n: 6, wins: 4 })
-        expect(helen).toMatchObject({ n: 5, wins: 1 })
+        // helen đi cùng 5 ván nhưng chỉ thắng 1 → không phải "hay thắng cùng"
+        expect(d.teammates.some((p) => p.heroId === "helen")).toBe(false)
         // enzo chỉ đi cùng 1 ván → bị lọc
         expect(d.teammates.some((p) => p.heroId === "enzo")).toBe(false)
         // đối thủ không lẫn vào teammates
         expect(d.teammates.some((p) => p.heroId === "liliana")).toBe(false)
+    })
+
+    it("teammates chỉ giữ cặp thắng nhiều hơn thua (0/5 và 3/6 bị loại, 4/5 được giữ)", () => {
+        // 5 ván evita+marja đều thua, 5 ván evita+ilumia thắng 4, 6 ván evita+krixi thắng 3 (đúng 50%)
+        const matches: Array<Match> = []
+        for (let van = 1; van <= 16; van += 1) {
+            const mate = van <= 5 ? "marja" : van <= 10 ? "ilumia" : "krixi"
+            const blueWins = (van > 5 && van < 10) || (van > 10 && van <= 13)
+            matches.push(
+                mkMatch(van, blueWins ? "blue" : "red", [
+                    pick("blue", "evita", "giua"),
+                    pick("blue", mate, "rung"),
+                    pick("red", "liliana", "giua"),
+                ]),
+            )
+        }
+        const d = getHeroDetail([mkSeries("s_t", "APL 2026", "2026-06-20", matches)], "evita")!
+        expect(d.teammates).toEqual([{ heroId: "ilumia", n: 5, wins: 4 }])
     })
 
     it("beats chứa đối thủ bị hero thắng kèo, losesTo chứa đối thủ khắc chế", () => {

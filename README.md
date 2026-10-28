@@ -43,8 +43,9 @@ npm run build        # production build
 Import thêm giải từ Liquipedia:
 
 ```bash
-node scripts/lp-relay.mjs          # chạy relay trước (bắt buộc — LP chặn fetch trực tiếp)
-node scripts/import-liquipedia.mjs # xem --help trong file
+# --tournament/--patch phải khớp tournament_name/patch_id trong public/data/matches/<season>.json
+node scripts/import-liquipedia.mjs "<trang LP>" --patch <id> --tournament "<tên giải>" --out exports/<file>.json
+node scripts/merge.mjs exports/<file>.json --season <season-id>
 npm run validate:data              # kiểm tra toàn bộ dataset sau khi import
 ```
 

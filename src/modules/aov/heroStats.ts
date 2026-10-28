@@ -51,7 +51,7 @@ export interface HeroDetail {
     byLane: Array<HeroLaneStat>
     /** Chia theo giải — cột trend. */
     byTournament: Array<HeroSeasonStat>
-    /** Đồng đội thắng cùng nhiều nhất (n >= 5, sort WR desc). */
+    /** Đồng đội thắng cùng: chỉ cặp WR > 50% (n >= 5, sort WR desc). */
     teammates: Array<HeroPairStat>
     /** Tướng mà hero này thắng kèo (n >= 5, sort WR desc). */
     beats: Array<HeroPairStat>
@@ -195,7 +195,10 @@ export const getHeroDetail = (
 
     if (picks === 0) return null
 
-    const teammates = toPairList(teammateMap).sort(byWrDesc)
+    // Mục "hay thắng cùng" → chỉ giữ cặp thắng nhiều hơn thua, giống beats.
+    const teammates = toPairList(teammateMap)
+        .filter((p) => p.wins * 2 > p.n)
+        .sort(byWrDesc)
     const opponents = toPairList(opponentMap)
     // Kèo thắng: WR hero chủ > 50%; kèo thua: WR đối thủ > 50%
     // (tức WR hero chủ < 50%) — hai list tách rời, không trùng nhau.
