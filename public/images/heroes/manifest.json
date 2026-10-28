@@ -663,5 +663,15 @@
     "name": "Diaochan",
     "slug": "diaochan",
     "file": "diaochan.png"
+  },
+  {
+    "name": "Evita",
+    "slug": "evita",
+    "file": "evita.jpg"
+  },
+  {
+    "name": "Wiro Sableng",
+    "slug": "wiro-sableng",
+    "file": "wiro-sableng.png"
   }
 ]
