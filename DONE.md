@@ -2,13 +2,13 @@
 
 Khán giả/mục đích: **public cho cộng đồng Liên Quân Mobile** — bản đầu đủ tin cậy để đăng site/repo ra ngoài mà không xấu hổ.
 
-Version đang mở: **v1.2 — pipeline data đáng tin**
+Version đang mở: **— (v1.2 đã đóng, đang ở trạng thái bảo trì)**
 
-## Checklist v1.2 — đang mở (2026-10-28)
+## Checklist v1.2 — ✅ ĐÃ ĐÓNG 2026-11-15
 
 - [x] `merge.mjs` tính lại winner (hoà → winner của export) + cập nhật format (không hạ dưới ván lớn nhất) khi gộp vào series đã có — `scripts/__tests__/merge.test.mjs`.
 - [x] Importer: `bestof` kế thừa từ `|bestof=` gần nhất trên trang; đếm thắng cả ván LP lỗi draft; nhịp `action=parse` 30s; cờ `--offline` đọc cache. `validate:data` chặn ván > BO và winner lệch số ván thắng.
-- [ ] Cào lại toàn bộ 7 giải — **dở**: Liquipedia chặn IP (2026-10-28, do nhịp 4s cũ). 5/7 giải đã sửa từ cache (225 format + 1 winner). Còn AOG Leg 1 (18 series) + APL (12) sai format, playoffs AOG/GCS sau 25/10, APL 18/07 BT–FPT ván 7 `is_blind_pick` — chờ LP mở lại; `validate:data` đỏ tới lúc đó.
+- [x] Cào lại toàn bộ 7 giải — 2026-10-28 LP chặn IP (do nhịp 4s cũ), 5/7 giải sửa từ cache (225 format + 1 winner); 2026-11-15 LP mở lại, cào nốt ở nhịp 30s: AOG Leg 1 + APL (47 format), playoffs AOG (đủ 8/8) + chung kết GCS 31/10, APL 18/07 BT–FPT ván 7 `is_blind_pick` (merge `--force` riêng series đó). `validate:data` xanh: 415 series / 1641 ván, 0 ván > BO.
 - [x] "Đồng đội hay thắng cùng" chỉ hiện cặp thắng nhiều hơn thua (test 0/5, 3/6 loại, 4/5 giữ) — Evita giờ hiện "Chưa đủ dữ liệu cặp".
 - [x] Xem `/draft` (gợi ý nguồn 1623 ván), `/matches` (412 series, BO3-quá-ván 177 → 29), `/heroes/evita` trên dev server.
 - [x] Tài liệu: README bỏ `lp-relay.mjs`, TASKS.md tick đúng, Someday bỏ mục đã làm.
@@ -48,3 +48,4 @@ Version đang mở: **v1.2 — pipeline data đáng tin**
 |---|---|---|---|
 | v1.0 | Public cho cộng đồng LQM — site live đủ tin cậy để đăng | 2026-10-02 | commit `f16d8a0` · 10/10 checklist verify trên production: `/about` 200, 10 og tags, 87/87 test, 7 giải/334 series/1295 ván |
 | v1.1 | Độ tin cậy thuật toán/repo | 2026-10-02 | commit `4deabfd` · 4/4: duoLaneKey gắn hero↔lane (UI badge lane), formatSec không ra :60 (test), Redux console sạch, AGENTS.md cập nhật |
+| v1.2 | Pipeline data đáng tin | 2026-11-15 | commit `89fb38e` + data · 6/6: merge tính lại winner/format (test), importer đọc bestof + nhịp LP 30s, 7 giải cào lại đủ (0 ván > BO, validate xanh), teammates lọc cặp thua, UI verify, docs |
