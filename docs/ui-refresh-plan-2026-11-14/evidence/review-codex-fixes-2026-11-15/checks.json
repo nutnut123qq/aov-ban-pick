@@ -1,0 +1,61 @@
+[
+  {
+    "id": "filter-clear",
+    "url": "http://127.0.0.1:3129/vi/meta",
+    "pagination": "1–25 trên 206 dòng\n\nTrang 1/9",
+    "first": "Y'bneth\n\tHỗ trợ\t481\t\n58.6%\n\t29.6%\t27.5%\t60% / 57%\t\n16′31″\n\t0/0/100"
+  },
+  {
+    "id": "meta-back",
+    "url": "http://127.0.0.1:3129/vi/meta?page=2",
+    "pagination": "26–50 trên 206 dòng\n\nTrang 2/9",
+    "first": "Valhein\n\tRồng\t280\t\n50.4%\n\t17.3%\t12.9%\t52% / 49%\t\n15′05″\nnhanh hơn TB\n\t0/0/100"
+  },
+  {
+    "id": "filtered-back",
+    "before": {
+      "url": "http://127.0.0.1:3129/vi/meta?lane=rung&sort=winRate&page=2",
+      "first": "Tachi\n\tRừng\t342\t\n47.7%\n\t21.1%\t13.2%\t46% / 50%\t\n16′25″\n\t44/55/1",
+      "pagination": "26–43 trên 43 dòng\n\nTrang 2/2"
+    },
+    "after": {
+      "url": "http://127.0.0.1:3129/vi/meta?lane=rung&sort=winRate&page=2",
+      "first": "Tachi\n\tRừng\t342\t\n47.7%\n\t21.1%\t13.2%\t46% / 50%\t\n16′25″\n\t44/55/1",
+      "pagination": "26–43 trên 43 dòng\n\nTrang 2/2",
+      "lane": "Rừng",
+      "sort": "Tỉ lệ thắng"
+    },
+    "pass": true
+  },
+  {
+    "id": "combo-back",
+    "selected": "true",
+    "url": "http://127.0.0.1:3129/vi/meta?view=synergy&lane=rung&sort=winRate&page=2"
+  },
+  {
+    "id": "normal-desktop-focus",
+    "connected": true,
+    "tag": "BUTTON",
+    "text": "Chọn tướng"
+  },
+  {
+    "id": "last-pick-desktop",
+    "banner": true,
+    "connected": true,
+    "tag": "SECTION",
+    "text": "Đã đủ cấm/chọn cho ván nàyBước 18/18Hoàn tác"
+  },
+  {
+    "id": "normal-mobile-focus",
+    "connected": true,
+    "tag": "BUTTON",
+    "text": "Chọn tướng"
+  },
+  {
+    "id": "last-pick-mobile",
+    "banner": true,
+    "connected": true,
+    "tag": "SECTION",
+    "text": "Đã đủ cấm/chọn cho ván nàyBước 18/18Hoàn tác"
+  }
+]

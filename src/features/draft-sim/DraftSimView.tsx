@@ -19,6 +19,7 @@ import { DraftHistory } from "./components/DraftHistory"
 import { DraftScoreCard } from "./components/DraftScoreCard"
 import { GlobalBanSection } from "./components/GlobalBanSection"
 import { SideColumn } from "./components/SideColumn"
+import { TurnBanner } from "./components/TurnBanner"
 import { SuggestionPanel } from "./SuggestionPanel"
 import { useDraftEngine, type FilledStep } from "./hooks/useDraftEngine"
 import { useDraftHistory } from "./hooks/useDraftHistory"
@@ -212,10 +213,14 @@ export const DraftSimView = () => {
         window.setTimeout(() => setLinkCopied(false), 2000)
     }, [])
 
+    const filledCount = filled.filter((f) => f.heroId).length
+    // Đích focus dự phòng khi picker đóng mà nút đã mở nó không còn (chọn lượt cuối).
+    const bannerRef = useRef<HTMLElement>(null)
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
-            <div className="container mx-auto max-w-6xl px-4 py-8">
-                <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="container mx-auto max-w-6xl px-4 py-5 sm:py-8">
+                <header className="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6">
                     <div>
                         <h1 className="flex items-center gap-2 text-2xl font-bold">
                             <Swords className="h-6 w-6 text-primary" />
@@ -230,12 +235,25 @@ export const DraftSimView = () => {
                         copied={copied}
                         linkCopied={linkCopied}
                         onVanChange={handleVanChange}
-                        onUndo={undoLast}
                         onReset={reset}
                         onCopyDraft={handleCopyDraft}
                         onCopyLink={handleCopyLink}
                     />
                 </header>
+
+                <TurnBanner
+                    ref={bannerRef}
+                    turnLabel={turnLabel}
+                    side={activeStep?.side ?? null}
+                    stepNumber={activeIndex >= 0 ? activeIndex + 1 : DRAFT_SEQUENCE.length}
+                    filledCount={filledCount}
+                    total={DRAFT_SEQUENCE.length}
+                    onPick={() => {
+                        setGlobalBanPicker(null)
+                        setPickerIndex(activeIndex)
+                    }}
+                    onUndo={undoLast}
+                />
 
                 {vanNumber > 1 && (
                     <GlobalBanSection
@@ -251,19 +269,10 @@ export const DraftSimView = () => {
                     />
                 )}
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_20rem_1fr]">
-                    <SideColumn
-                        side="blue"
-                        steps={BLUE_STEPS}
-                        filled={filled}
-                        activeIndex={activeIndex}
-                        heroBySlug={heroBySlug}
-                        onSlotClick={setPickerIndex}
-                        onLane={(i, lane) => setStep(i, { lane })}
-                        onClear={clearStep}
-                    />
-
-                    <div className="space-y-4">
+                {/* DOM: gợi ý → Xanh → Đỏ → điểm/lịch sử, để mobile thấy gợi ý ngay sau lượt hiện tại.
+                    Desktop đặt lại vị trí bằng grid: Xanh | gợi ý + điểm + lịch sử | Đỏ. */}
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_20rem_1fr] lg:grid-rows-[auto_1fr]">
+                    <div className="lg:col-start-2 lg:row-start-1">
                         <SuggestionPanel
                             turnLabel={turnLabel}
                             suggestions={suggestions}
@@ -274,6 +283,35 @@ export const DraftSimView = () => {
                             onApply={applySuggestion}
                             onTournamentNamesChange={setTournamentNames}
                         />
+                    </div>
+
+                    <div className="lg:col-start-1 lg:row-span-2 lg:row-start-1">
+                        <SideColumn
+                            side="blue"
+                            steps={BLUE_STEPS}
+                            filled={filled}
+                            activeIndex={activeIndex}
+                            heroBySlug={heroBySlug}
+                            onSlotClick={setPickerIndex}
+                            onLane={(i, lane) => setStep(i, { lane })}
+                            onClear={clearStep}
+                        />
+                    </div>
+
+                    <div className="lg:col-start-3 lg:row-span-2 lg:row-start-1">
+                        <SideColumn
+                            side="red"
+                            steps={RED_STEPS}
+                            filled={filled}
+                            activeIndex={activeIndex}
+                            heroBySlug={heroBySlug}
+                            onSlotClick={setPickerIndex}
+                            onLane={(i, lane) => setStep(i, { lane })}
+                            onClear={clearStep}
+                        />
+                    </div>
+
+                    <div className="space-y-4 lg:col-start-2 lg:row-start-2">
                         {canScore && (
                             <DraftScoreCard score={compScore} heroBySlug={heroBySlug} />
                         )}
@@ -283,17 +321,6 @@ export const DraftSimView = () => {
                             onDelete={removeHistory}
                         />
                     </div>
-
-                    <SideColumn
-                        side="red"
-                        steps={RED_STEPS}
-                        filled={filled}
-                        activeIndex={activeIndex}
-                        heroBySlug={heroBySlug}
-                        onSlotClick={setPickerIndex}
-                        onLane={(i, lane) => setStep(i, { lane })}
-                        onClear={clearStep}
-                    />
                 </div>
             </div>
 
@@ -306,6 +333,7 @@ export const DraftSimView = () => {
                     }
                 }}
                 heroes={data?.heroes ?? []}
+                returnFocusFallbackRef={bannerRef}
                 usedHeroIds={globalBanPicker ? globalBanPickerUsedIds : currentUsedHeroIds}
                 disabledHeroIds={globalBanPicker ? undefined : pickerDisabledIds}
                 onSelect={(heroId) => {

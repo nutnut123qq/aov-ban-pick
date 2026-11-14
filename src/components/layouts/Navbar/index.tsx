@@ -84,6 +84,7 @@ export const Navbar = () => {
     const [isDark, setIsDark] = React.useState(false)
     const [mounted, setMounted] = React.useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+    const menuButtonRef = React.useRef<HTMLButtonElement>(null)
 
     React.useEffect(() => {
         setMounted(true)
@@ -104,13 +105,24 @@ export const Navbar = () => {
     }
 
     const handleLocaleChange = (newLocale: "en" | "vi") => {
-        router.replace({ pathname: newLocale })
+        // Giữ route + query hiện tại (vd draft `?d=`), chỉ đổi tiền tố locale.
+        const path = window.location.pathname.replace(/^\/(en|vi)(?=\/|$)/, "") || "/"
+        router.replace(`${path}${window.location.search}`, { locale: newLocale })
     }
 
     const currentLang = languages.find((l) => l.code === locale) ?? languages[0]
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <header
+            className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
+            onKeyDown={(e) => {
+                // Escape đóng menu mobile và trả focus về nút mở.
+                if (e.key === "Escape" && mobileMenuOpen) {
+                    setMobileMenuOpen(false)
+                    menuButtonRef.current?.focus()
+                }
+            }}
+        >
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 {/* Brand */}
                 <Link
@@ -120,11 +132,12 @@ export const Navbar = () => {
                     <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground">
                         <GraduationCap className="size-5" />
                     </div>
-                    <span className="hidden sm:block">{t("nav.brand")}</span>
+                    {/* Màn quá hẹp chỉ còn logo; tên vẫn đọc được bởi trình đọc màn hình. */}
+                    <span className="sr-only min-[360px]:not-sr-only">{t("nav.brand")}</span>
                 </Link>
 
                 {/* Center Nav Links - Desktop */}
-                <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
+                <nav className="hidden lg:flex items-center gap-0.5" aria-label={t("nav.mainNav")}>
                     <NavLink href="/">
                         {t("nav.home")}
                     </NavLink>
@@ -156,7 +169,8 @@ export const Navbar = () => {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="gap-2 h-11 px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
+                                aria-label={t("nav.language", { current: currentLang.label })}
+                                className="gap-2 h-11 min-w-11 px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
                             >
                                 <Globe className="size-4" />
                                 <span className="hidden lg:inline">{currentLang.code.toUpperCase()}</span>
@@ -186,7 +200,8 @@ export const Navbar = () => {
                             size="icon"
                             className="h-11 w-11 text-muted-foreground hover:text-foreground"
                             onClick={toggleTheme}
-                            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                            aria-label={isDark ? t("nav.themeToLight") : t("nav.themeToDark")}
+                            title={isDark ? t("nav.themeToLight") : t("nav.themeToDark")}
                         >
                             {isDark ? (
                                 <Sun className="size-4" />
@@ -198,9 +213,13 @@ export const Navbar = () => {
 
                     {/* Mobile Menu Toggle */}
                     <Button
+                        ref={menuButtonRef}
                         variant="ghost"
                         size="icon"
                         className="lg:hidden h-11 w-11"
+                        aria-label={mobileMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+                        aria-expanded={mobileMenuOpen}
+                        aria-controls="mobile-nav"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? (
@@ -215,7 +234,11 @@ export const Navbar = () => {
             {/* Mobile Menu */}
             {mobileMenuOpen && (
                 <div className="lg:hidden border-t border-border/50 bg-background">
-                    <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
+                    <nav
+                        id="mobile-nav"
+                        aria-label={t("nav.mainNav")}
+                        className="container mx-auto px-4 py-4 flex flex-col gap-1"
+                    >
                         <NavLink href="/" onClick={() => setMobileMenuOpen(false)}>
                             {t("nav.home")}
                         </NavLink>

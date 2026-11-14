@@ -1,0 +1,82 @@
+{
+  "captured_at": "2026-11-14T21:23:52.663335+07:00",
+  "repo": "D:\\code\\lienquan\\aov-draftmind-frontend",
+  "branch": "main",
+  "head": "f0cfff8c95d9aec71c31e3973cae16a234a2fd32",
+  "source_changes": "none; documentation/evidence only",
+  "runtime": "Next.js 16.2.1 dev server started from this checkout on 127.0.0.1:3127; session 31753; stopped after survey; port no longer listening",
+  "viewports_css": {
+    "desktop": [
+      1440,
+      900
+    ],
+    "mobile": [
+      390,
+      844
+    ]
+  },
+  "screenshots": [
+    {
+      "file": "draft-desktop.jpg",
+      "raster_size": [
+        1425,
+        891
+      ]
+    },
+    {
+      "file": "draft-mobile.jpg",
+      "raster_size": [
+        375,
+        811
+      ]
+    },
+    {
+      "file": "home-desktop.jpg",
+      "raster_size": [
+        1425,
+        891
+      ]
+    },
+    {
+      "file": "meta-desktop.jpg",
+      "raster_size": [
+        1425,
+        891
+      ]
+    },
+    {
+      "file": "meta-mobile.jpg",
+      "raster_size": [
+        375,
+        811
+      ]
+    }
+  ],
+  "observations": {
+    "draft_desktop_page_height_css": 965,
+    "draft_mobile_page_height_css": 2722,
+    "draft_mobile_first_suggestion_top_css": 1344.36,
+    "meta_desktop_rows": 206,
+    "meta_desktop_page_height_css": 11715,
+    "meta_desktop_combo_section_top_css": 10715.125,
+    "loaded_match_count": 1623,
+    "search_check": "Y'bneth reduced meta results from 206 to 1; query cleared after inspection",
+    "meta_mobile_lane_and_sort": "controls only in hidden lg table; not available in mobile cards",
+    "themes_checked": "dark only; light is unverified in this survey"
+  },
+  "gates_run": {
+    "npm run validate:data": {
+      "exit": 1,
+      "error": "Series 's_arena_of_glory_winter_2026_2026_08_29_box_gamingvsgam_esports' có ván 4 nhưng format BO3."
+    }
+  },
+  "gates_not_run": [
+    "lint",
+    "unit tests",
+    "typecheck",
+    "production build",
+    "full E2E",
+    "WebKit"
+  ],
+  "scope_assumption": "User confirmed draft/meta priority with existing identity. Shared navigation changes limited to affected controls/accessibility. Home/dashboard redesign and broad navigation reorganization deferred."
+}

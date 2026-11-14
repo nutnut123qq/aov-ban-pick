@@ -1,0 +1,52 @@
+{
+  "runtime": "local compiled build on 127.0.0.1:3128",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "checks": [
+    {
+      "id": "paging-filter-clear",
+      "steps": [
+        "Meta page 1 → Next → page 2",
+        "search Y'bneth → 1 result",
+        "clear search"
+      ],
+      "expected": "Page 1/9 after filter change",
+      "actual": "Page 2/9, rows 26–50",
+      "result": "FAIL"
+    },
+    {
+      "id": "meta-return-context",
+      "steps": [
+        "Meta page 2",
+        "open Valhein profile",
+        "browser Back"
+      ],
+      "expected": "Return to page 2",
+      "actual": "Page 1/9, rows 1–25",
+      "result": "FAIL"
+    },
+    {
+      "id": "last-pick-focus",
+      "steps": [
+        "restore 17 unique occupied slots via documented draft URL",
+        "open final slot through TurnBanner Choose hero",
+        "choose Teeri",
+        "wait until dialog is gone"
+      ],
+      "expected": "Focus returns to an existing meaningful control",
+      "actual": {
+        "activeTag": "BODY",
+        "activeText": "BODY",
+        "banner": "Đã đủ cấm/chọn cho ván nàyBước 18/18Hoàn tác",
+        "dialogPresent": false
+      },
+      "result": "FAIL"
+    }
+  ],
+  "limits": [
+    "These are targeted additional review cases, not a rerun of all 62 builder E2E assertions",
+    "No WebKit verification"
+  ]
+}

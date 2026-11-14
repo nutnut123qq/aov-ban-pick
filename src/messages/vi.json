@@ -1,6 +1,12 @@
 {
     "nav": {
         "brand": "AOV DraftMind",
+        "mainNav": "Điều hướng chính",
+        "language": "Ngôn ngữ: {current}",
+        "themeToLight": "Chuyển sang giao diện sáng",
+        "themeToDark": "Chuyển sang giao diện tối",
+        "openMenu": "Mở menu",
+        "closeMenu": "Đóng menu",
         "signedInFallback": "Đã đăng nhập",
         "home": "Trang chủ",
         "dashboard": "Bảng điều khiển",
@@ -43,6 +49,9 @@
         "globalBanTitle": "Tướng đã pick các ván trước",
         "globalBanSubtitle": "Ván {vanNumber}: mỗi bên {count} tướng đã pick ở {prevCount} ván trước sẽ bị khóa không cho chọn lại.",
         "turnLabel": "Bên {side} · {action}",
+        "stepProgress": "Bước {current}/{total}",
+        "draftComplete": "Đã đủ cấm/chọn cho ván này",
+        "chooseHero": "Chọn tướng",
         "suggestions": {
             "title": "Gợi ý cấm/chọn",
             "noData": "Chưa có gợi ý (chưa đủ dữ liệu trận đấu).",
@@ -199,7 +208,21 @@
         "compareA": "Giải A",
         "compareB": "Giải B",
         "compareEnable": "So sánh",
-        "delta": "Chênh"
+        "delta": "Chênh",
+        "filterScope": "Áp dụng cho mọi nhóm phân tích bên dưới.",
+        "viewsLabel": "Nhóm phân tích",
+        "heroesTab": "Tướng",
+        "sortBy": "Sắp xếp",
+        "sortDefault": "Mặc định (số trận)",
+        "sortAsc": "tăng dần",
+        "sortDesc": "giảm dần",
+        "sortToggle": "Đổi chiều sắp xếp (đang {direction})",
+        "paginationLabel": "Phân trang bảng tướng",
+        "pageRange": "{from}–{to} trên {total} dòng",
+        "pageStatus": "Trang {page}/{count}",
+        "prevPage": "Trang trước",
+        "nextPage": "Trang sau",
+        "duoLanePair": "Cặp lane"
     },
     "hero": {
         "backToMeta": "← Quay lại Meta",

@@ -36,8 +36,8 @@ export const HeroPickerGrid = ({
 
     return (
         <>
+            {/* Không autoFocus: để Radix tự focus ô này khi mở và nhớ đúng nút đã mở để trả focus. */}
             <Input
-                autoFocus
                 placeholder="Tìm tướng…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

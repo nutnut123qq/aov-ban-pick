@@ -1,5 +1,6 @@
 "use client"
 
+import type { RefObject } from "react"
 import {
     Dialog,
     DialogContent,
@@ -9,6 +10,7 @@ import {
 
 import { HeroPickerGrid } from "./HeroPickerGrid"
 import type { HeroManifestEntry } from "./types"
+import { useReturnFocus } from "./useReturnFocus"
 
 interface HeroPickerDialogProps {
     /** Mở/đóng dialog. */
@@ -21,6 +23,8 @@ interface HeroPickerDialogProps {
     usedHeroIds: Set<string>
     /** Ngườ dùng chọn một tướng. */
     onSelect: (heroId: string) => void
+    /** Nhận focus khi đóng nếu nút đã mở picker không còn nhận focus. */
+    returnFocusFallbackRef?: RefObject<HTMLElement | null>
 }
 
 /** Dialog chọn tướng cho desktop. */
@@ -30,10 +34,12 @@ export const HeroPickerDialog = ({
     heroes,
     usedHeroIds,
     onSelect,
+    returnFocusFallbackRef,
 }: HeroPickerDialogProps) => {
+    const returnFocus = useReturnFocus(returnFocusFallbackRef)
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl" {...returnFocus}>
                 <DialogHeader>
                     <DialogTitle>Chọn tướng</DialogTitle>
                 </DialogHeader>

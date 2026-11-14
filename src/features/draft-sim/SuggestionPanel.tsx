@@ -40,7 +40,7 @@ export const SuggestionPanel = ({
     const t = useTranslations("draft.suggestions")
 
     return (
-        <Card className="lg:sticky lg:top-4">
+        <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
                     <Lightbulb className="h-5 w-5 text-primary" />
@@ -76,7 +76,7 @@ export const SuggestionPanel = ({
                             key={`${s.heroId}|${s.lane ?? ""}`}
                             type="button"
                             onClick={() => onApply(s.heroId, s.lane)}
-                            className="flex w-full items-center gap-3 rounded-lg border p-2 text-left transition-colors hover:border-primary hover:bg-muted/50"
+                            className="flex w-full items-center gap-3 rounded-lg border p-2 text-left transition-colors outline-none hover:border-primary hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50"
                         >
                             {s.heroFile ? (
                                 // eslint-disable-next-line @next/next/no-img-element

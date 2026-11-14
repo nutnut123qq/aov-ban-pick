@@ -1,0 +1,44 @@
+{
+  "ran_at": "2026-11-14T23:12:28+07:00",
+  "head": "f0cfff8c95d9aec71c31e3973cae16a234a2fd32",
+  "start_snapshot": "source hashes khớp 100% review-codex/verification.json trước khi sửa",
+  "runtime": "next dev (Next.js 16.2.1) cổng 3000 do Claude khởi chạy từ checkout này; Chromium 151 (ms-playwright chromium-1234) qua Playwright 1.61 global",
+  "issues": [
+    {
+      "id": "paging-filter-clear",
+      "cause": "Trang lưu kèm key bộ lọc; đổi filter chỉ làm trang hiển thị = 0 khi key lệch, state vẫn giữ trang cũ nên quay lại giá trị cũ thì trang cũ sống lại",
+      "fix": "Trang là state thật; mọi thao tác đổi giải/vị trí/tìm/sort đi qua changeFilter đặt page = 0",
+      "files": ["src/features/meta-stats/useMetaParams.ts", "src/features/meta-stats/MetaView.tsx"],
+      "tests": ["src/features/meta-stats/__tests__/useMetaParams.test.ts (trang 2 → tìm → xoá → trang 1; đổi sort rồi đổi lại)", "e2e reg-1"],
+      "result": "PASS"
+    },
+    {
+      "id": "meta-return-context",
+      "cause": "Toàn bộ state Meta chỉ nằm trong component; rời sang trang tướng thì unmount, Back mount lại với mặc định",
+      "fix": "useMetaParams khởi tạo một lần từ useSearchParams và ghi ngược bằng window.history.replaceState (view, t, lane, q, sort, dir, page, duo, cmp, a, b); query được kiểm tra, giá trị lạ về mặc định. Khôi phục từ URL không đi qua changeFilter nên không bị reset trang",
+      "files": ["src/features/meta-stats/useMetaParams.ts", "src/features/meta-stats/MetaView.tsx"],
+      "tests": ["useMetaParams.test.ts (mount từ URL giữ trang + bộ lọc; so sánh A/B; không query → mặc định; query lạ → mặc định)", "e2e reg-2 x5: mặc định trang 2 + Valhein, lọc Rừng + sort WR, tab Combo, so sánh A/B, mở trực tiếp trang tướng rồi vào Meta"],
+      "result": "PASS"
+    },
+    {
+      "id": "last-pick-focus",
+      "cause": "Picker trả focus về nút đã mở; ở lượt cuối nút 'Chọn tướng' bị gỡ khi draft hoàn tất nên focus rơi về BODY",
+      "fix": "Hook useReturnFocus dùng chung cho Dialog và Sheet: thử focus opener, nếu không nhận được (bị gỡ/disabled) thì focus fallback; draft-sim truyền vùng TurnBanner (tabIndex -1, có tên theo dòng trạng thái) làm fallback",
+      "files": ["src/features/draft-input/useReturnFocus.ts", "src/features/draft-input/HeroPickerDialog.tsx", "src/features/draft-input/HeroPickerSheet.tsx", "src/features/draft-input/HeroPicker.tsx", "src/features/draft-sim/components/TurnBanner.tsx", "src/features/draft-sim/DraftSimView.tsx"],
+      "tests": ["src/features/draft-input/useReturnFocus.test.ts (opener còn → opener; bị gỡ → fallback còn kết nối DOM; disabled → fallback; không fallback không lỗi)", "e2e reg-3 desktop + mobile: lượt thường (input focus khi mở, focus về 'Chọn tướng'), lượt cuối (focus SECTION[data-turn-banner], isConnected)", "e2e smoke draft-input picker"],
+      "result": "PASS"
+    }
+  ],
+  "mutation_check": "Gỡ tạm reset trang trong changeFilter và dòng fallback trong useReturnFocus → 4 test hồi quy đỏ; đã khôi phục",
+  "gates_sequential": {
+    "npm run lint": 0,
+    "npm test": { "exit": 0, "files": 17, "tests": 112 },
+    "npx tsc --noEmit": 0,
+    "npm run build": 0,
+    "npm run lint (lại, sau khi thêm tools/e2e.cjs)": 0
+  },
+  "e2e": { "file": "e2e/e2e.json", "PASS": 72, "FAIL": 0, "UNVERIFIED": 1, "unverified": "Mobile WebKit (chưa cài)" },
+  "console_errors": "16 lần IntlError MALFORMED_ARGUMENT từ draftInput.importPlaceholder ở /draft-input — có sẵn, ngoài phạm vi",
+  "not_run": ["validate:data (baseline fail đã biết: series BO3 có ván 4; dataset không đổi)", "WebKit"],
+  "incident": "Lượt E2E đầu cho 404 mọi route con vì next build chạy khi dev server đang chạy làm hỏng route của dev server; đã khởi động lại server do Claude tạo, xoá lượt chạy hỏng và chạy lại"
+}

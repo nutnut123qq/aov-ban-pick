@@ -1,0 +1,476 @@
+[
+  {
+    "route": "draft",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "draft-desktop-vi-dark.png",
+    "pageHeight": 965,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 384,
+    "suggestionsInFirstViewport": 6,
+    "turnBannerBottom": null,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "meta-desktop-vi-dark.png",
+    "pageHeight": 11757,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "renderedRows": 206,
+    "comboTop": 10757,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "Tất cả",
+      "Rừng × Giữa"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "tablet",
+    "w": 768,
+    "h": 1024,
+    "file": "draft-tablet-vi-dark.png",
+    "pageHeight": 2240,
+    "hOverflow": false,
+    "scrollWidth": 768,
+    "clientWidth": 768,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 1052,
+    "suggestionsInFirstViewport": 0,
+    "turnBannerBottom": null,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "tablet",
+    "w": 768,
+    "h": 1024,
+    "file": "meta-tablet-vi-dark.png",
+    "pageHeight": 30029,
+    "hOverflow": false,
+    "scrollWidth": 768,
+    "clientWidth": 768,
+    "renderedRows": 0,
+    "comboTop": 28537,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "Rừng × Giữa"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "draft-mobile-vi-dark.png",
+    "pageHeight": 2740,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 1352,
+    "suggestionsInFirstViewport": 0,
+    "turnBannerBottom": null,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "vi",
+    "theme": "dark",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "meta-mobile-vi-dark.png",
+    "pageHeight": 36919,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "renderedRows": 0,
+    "comboTop": 35387,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "Rừng × Giữa"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "vi",
+    "theme": "light",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "draft-desktop-vi-light.png",
+    "pageHeight": 965,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 384,
+    "suggestionsInFirstViewport": 6,
+    "turnBannerBottom": null,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "vi",
+    "theme": "light",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "meta-desktop-vi-light.png",
+    "pageHeight": 11757,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "renderedRows": 206,
+    "comboTop": 10757,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "Tất cả",
+      "Rừng × Giữa"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "vi",
+    "theme": "light",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "draft-mobile-vi-light.png",
+    "pageHeight": 2740,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 1352,
+    "suggestionsInFirstViewport": 0,
+    "turnBannerBottom": null,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "vi",
+    "theme": "light",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "meta-mobile-vi-light.png",
+    "pageHeight": 36919,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "renderedRows": 0,
+    "comboTop": 35387,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "Rừng × Giữa"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "en",
+    "theme": "dark",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "draft-desktop-en-dark.png",
+    "pageHeight": 965,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 384,
+    "suggestionsInFirstViewport": 6,
+    "turnBannerBottom": null,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "en",
+    "theme": "dark",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "meta-desktop-en-dark.png",
+    "pageHeight": 11757,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "renderedRows": 206,
+    "comboTop": 10757,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "All roles",
+      "Jungle × Mid"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "en",
+    "theme": "dark",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "draft-mobile-en-dark.png",
+    "pageHeight": 2700,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 1312,
+    "suggestionsInFirstViewport": 0,
+    "turnBannerBottom": null,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "en",
+    "theme": "dark",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "meta-mobile-en-dark.png",
+    "pageHeight": 36039,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "renderedRows": 0,
+    "comboTop": 34507,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "Jungle × Mid"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "en",
+    "theme": "light",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "draft-desktop-en-light.png",
+    "pageHeight": 965,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 384,
+    "suggestionsInFirstViewport": 6,
+    "turnBannerBottom": null,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "en",
+    "theme": "light",
+    "viewport": "desktop",
+    "w": 1440,
+    "h": 900,
+    "file": "meta-desktop-en-light.png",
+    "pageHeight": 11757,
+    "hOverflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "renderedRows": 206,
+    "comboTop": 10757,
+    "unnamedButtons": [],
+    "comboboxesWithoutLabel": [
+      "All roles",
+      "Jungle × Mid"
+    ]
+  },
+  {
+    "route": "draft",
+    "locale": "en",
+    "theme": "light",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "draft-mobile-en-light.png",
+    "pageHeight": 2700,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "suggestionCount": 6,
+    "firstSuggestionTop": 1312,
+    "suggestionsInFirstViewport": 0,
+    "turnBannerBottom": null,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "1",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane",
+      "Lane"
+    ]
+  },
+  {
+    "route": "meta",
+    "locale": "en",
+    "theme": "light",
+    "viewport": "mobile",
+    "w": 390,
+    "h": 844,
+    "file": "meta-mobile-en-light.png",
+    "pageHeight": 36039,
+    "hOverflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "renderedRows": 0,
+    "comboTop": 34507,
+    "unnamedButtons": [
+      "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center j"
+    ],
+    "comboboxesWithoutLabel": [
+      "Jungle × Mid"
+    ]
+  }
+]

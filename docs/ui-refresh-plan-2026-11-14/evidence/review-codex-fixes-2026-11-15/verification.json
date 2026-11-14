@@ -1,0 +1,54 @@
+{
+  "reviewed_at": "2026-11-15T01:33:51.2324100+07:00",
+  "scope": "Independent verification of the three fixes reported in fix-review-3issues/result.json",
+  "head": "f0cfff8c95d9aec71c31e3973cae16a234a2fd32",
+  "verdict": "PASS for the three requested defects on Chromium",
+  "gates": {
+    "typecheck": {
+      "exit": 0
+    },
+    "build": {
+      "exit": 0
+    },
+    "lint": {
+      "exit": 0
+    },
+    "unit_tests": {
+      "passed": 112,
+      "exit": 0,
+      "files": 17
+    }
+  },
+  "browser": "CUA Chromium, own production server http://127.0.0.1:3129, 1440x900 and 390x844",
+  "targeted_checks": "checks.json (8 checks)",
+  "source_edits_by_reviewer": false,
+  "source_hashes": {
+    "src/components/layouts/Navbar/index.tsx": "a63bd3a7c62f9c0f8cc8fe1aa3c9eb87d317dd75cefbae4d92a1fdf55f24e754",
+    "src/features/draft-input/HeroPickerDialog.tsx": "4d58f15e035c77f23751f2570ac90520cf9d6c66f462b5827dcc56d6d33887c3",
+    "src/features/draft-input/HeroPickerGrid.tsx": "c13e076bbae6b0d01b6712e3eb1333f9c23b4d42954476236bb5d8e00b31e46f",
+    "src/features/draft-input/HeroPickerSheet.tsx": "00b92816dddb5e328c7001a360a9666539a4f69f3375bfd7fa33e7965025d032",
+    "src/features/draft-sim/DraftSimView.tsx": "47de3577fb330c22021f9508e4914b758879a7ef590988dfea0014f18c7380f7",
+    "src/features/draft-sim/SuggestionPanel.tsx": "f8f9568c82b92b620781b9196989719e8d407bcff078385364585b59c05e763e",
+    "src/features/draft-sim/components/DraftControls.tsx": "ff06961eb409d2095c88947e4a312bd9a1ec43d7725df51519fab73b72ef6e80",
+    "src/features/draft-sim/components/GlobalBanSection.tsx": "21c8c8e20a256fc1a97aa82fcd9060cae52b63f021f78df9ae91175f8ca925c2",
+    "src/features/draft-sim/components/SideColumn.tsx": "a3443910d56652340f7d76b10c171d452a06870eafb85e83bec52491561f5919",
+    "src/features/meta-stats/MetaView.tsx": "aa6c146055aa2a5787de9f70e42e76196fce62e53ce1ebd2fc081f8da1b608e2",
+    "src/messages/en.json": "ab203bde9e6943c379a12cf57773eed927d2408c3b012cdfd5b984b5979f664d",
+    "src/messages/vi.json": "7cbb2c440b1cdc5ec09ce3ac75e25ec2d7245531d5538299aa1efd988aa8acdf",
+    "src/features/draft-sim/components/TurnBanner.tsx": "e84a1220d31bb89d84415e9499182d6d7f3d3cecbf1cb7a6d1b37574cda15641",
+    "src/features/meta-stats/__tests__/metaRows.test.ts": "6b9dae7f39d41f122e588cb4a73765c6d9d0ea792fcdd35794eed3e94e1e924c",
+    "src/features/meta-stats/metaRows.ts": "debd7f3bce2b9e5312b778ab57e2fcb9caaafd1632c9fb7f48f20b045741c064",
+    "src/features/draft-input/HeroPicker.tsx": "3638cf2855814c4bc29c6d4bfd44fa39ebc8d5028eed7d49cc4b5d20e6caa35b",
+    "src/features/draft-input/useReturnFocus.ts": "edc397d0d36b1054ae74f33831c57a97f68ef018c53c838b9b3adc1286cc0719",
+    "src/features/draft-input/useReturnFocus.test.ts": "dfcb07b9189c39335aec2f54e846eb8027d56e71895f596606dd0e837e6ba54d",
+    "src/features/meta-stats/useMetaParams.ts": "e2a1bbd01a59488025f3e44f9b019e96151c806d9746020b9ae854559c5177d4",
+    "src/features/meta-stats/__tests__/useMetaParams.test.ts": "2ea7cca6083982865b94ca1b6d0eba33a9a0f13d5ade17ad5a490962387b9e72"
+  },
+  "not_rerun": [
+    "Full 72-step builder E2E suite",
+    "WebKit",
+    "validate:data (known baseline; no dataset changes)"
+  ],
+  "console": "No errors observed in targeted routes; Radix DialogContent missing-description warning remains outside the requested fixes.",
+  "cleanup": "Temporary browser tab closed and viewport reset; managed production server stopped."
+}

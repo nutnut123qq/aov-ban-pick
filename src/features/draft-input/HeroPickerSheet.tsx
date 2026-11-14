@@ -1,5 +1,6 @@
 "use client"
 
+import type { RefObject } from "react"
 import {
     Sheet,
     SheetContent,
@@ -9,6 +10,7 @@ import {
 
 import { HeroPickerGrid } from "./HeroPickerGrid"
 import type { HeroManifestEntry } from "./types"
+import { useReturnFocus } from "./useReturnFocus"
 
 interface HeroPickerSheetProps {
     /** Mở/đóng sheet. */
@@ -21,6 +23,8 @@ interface HeroPickerSheetProps {
     usedHeroIds: Set<string>
     /** Ngườ dùng chọn một tướng. */
     onSelect: (heroId: string) => void
+    /** Nhận focus khi đóng nếu nút đã mở picker không còn nhận focus. */
+    returnFocusFallbackRef?: RefObject<HTMLElement | null>
 }
 
 /** Bottom sheet chọn tướng cho mobile. */
@@ -30,10 +34,12 @@ export const HeroPickerSheet = ({
     heroes,
     usedHeroIds,
     onSelect,
+    returnFocusFallbackRef,
 }: HeroPickerSheetProps) => {
+    const returnFocus = useReturnFocus(returnFocusFallbackRef)
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl pb-6">
+            <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl pb-6" {...returnFocus}>
                 <SheetHeader className="pb-2">
                     <SheetTitle>Chọn tướng</SheetTitle>
                 </SheetHeader>

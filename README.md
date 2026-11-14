@@ -9,7 +9,7 @@ Trợ lý cấm/chọn (ban/pick) cho **Liên Quân Mobile** — thống kê met
 ## Tính năng
 
 - **Mô phỏng draft** theo đúng luật giải (8 cấm + 10 chọn), gợi ý ban/pick theo dữ liệu meta, chấm điểm đội hình theo lane/synergy/matchup, kèo đấu từng lane, chia sẻ draft qua URL (`?d=`) và lịch sử draft lưu local.
-- **Thống kê meta**: pick/ban rate, winrate theo lane, WR theo bên Xanh/Đỏ, thời lượng thắng trung bình, thống kê theo phase pick (sớm/giữa/muộn), duo theo cặp lane, chế độ so sánh 2 giải/khu vực.
+- **Thống kê meta**: pick/ban rate, winrate theo lane, WR theo bên Xanh/Đỏ, thời lượng thắng trung bình, thống kê theo phase pick (sớm/giữa/muộn), duo theo cặp lane, chế độ so sánh 2 giải/khu vực. Bảng tướng 25 dòng/trang, lọc/sắp xếp dùng được cả trên điện thoại; tab, bộ lọc và trang giữ trên URL nên Back từ trang tướng về đúng chỗ cũ.
 - **Trang tướng** `/heroes/[slug]`: stats theo lane và theo giải (trend), combo đồng đội, kèo thắng/thua, trận gần nhất + VOD.
 - **Trang đội** `/teams/[id]`: pool tướng, combo, thành tích theo mùa, head-to-head, series gần nhất.
 - **Danh sách trận** `/matches`: lọc theo giải/đội/tướng, link tới trang đội, VOD.

@@ -1,6 +1,12 @@
 {
     "nav": {
         "brand": "AOV DraftMind",
+        "mainNav": "Main navigation",
+        "language": "Language: {current}",
+        "themeToLight": "Switch to light mode",
+        "themeToDark": "Switch to dark mode",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
         "signedInFallback": "Signed in",
         "home": "Home",
         "dashboard": "Dashboard",
@@ -43,6 +49,9 @@
         "globalBanTitle": "Heroes Picked in Previous Games",
         "globalBanSubtitle": "Game {vanNumber}: {count} heroes picked by each side in previous {prevCount} games are locked from being picked.",
         "turnLabel": "{side} Side · {action}",
+        "stepProgress": "Step {current}/{total}",
+        "draftComplete": "All bans and picks are set for this game",
+        "chooseHero": "Choose hero",
         "suggestions": {
             "title": "Draft Suggestions",
             "noData": "No suggestions available (insufficient match data).",
@@ -199,7 +208,21 @@
         "compareA": "Tournament A",
         "compareB": "Tournament B",
         "compareEnable": "Compare",
-        "delta": "Delta"
+        "delta": "Delta",
+        "filterScope": "Applies to every analysis view below.",
+        "viewsLabel": "Analysis views",
+        "heroesTab": "Heroes",
+        "sortBy": "Sort by",
+        "sortDefault": "Default (picks)",
+        "sortAsc": "ascending",
+        "sortDesc": "descending",
+        "sortToggle": "Reverse sort order (currently {direction})",
+        "paginationLabel": "Hero table pages",
+        "pageRange": "{from}–{to} of {total} rows",
+        "pageStatus": "Page {page} of {count}",
+        "prevPage": "Previous page",
+        "nextPage": "Next page",
+        "duoLanePair": "Lane pair"
     },
     "hero": {
         "backToMeta": "← Back to Meta",

@@ -121,6 +121,8 @@ const GlobalBanColumn = ({
                                 <button
                                     type="button"
                                     onClick={() => onClear(index)}
+                                    aria-label={t("clearSelection")}
+                                    title={t("clearSelection")}
                                     className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[8px] text-destructive-foreground hover:bg-destructive/90"
                                 >
                                     <X className="h-3 w-3" />

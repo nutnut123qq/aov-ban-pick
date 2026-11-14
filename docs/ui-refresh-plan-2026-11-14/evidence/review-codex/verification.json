@@ -1,0 +1,45 @@
+{
+  "reviewed_at": "2026-11-14T22:38:19.221319+07:00",
+  "head": "f0cfff8c95d9aec71c31e3973cae16a234a2fd32",
+  "independently_rerun_gates": {
+    "lint": {
+      "exit": 0
+    },
+    "unit_tests": {
+      "exit": 0,
+      "files": 15,
+      "passed": 102
+    },
+    "typecheck": {
+      "exit": 0
+    },
+    "build": {
+      "exit": 0
+    }
+  },
+  "targeted_ui_checks": "checks.json",
+  "verdict": "needs repair",
+  "source_edits_by_reviewer": false,
+  "source_hashes": {
+    "src/components/layouts/Navbar/index.tsx": "a63bd3a7c62f9c0f8cc8fe1aa3c9eb87d317dd75cefbae4d92a1fdf55f24e754",
+    "src/features/draft-input/HeroPickerDialog.tsx": "16b76e3f85bfe3d33274e014ce71a7935008bc59b86ece4a59d2fec8b7200e16",
+    "src/features/draft-input/HeroPickerGrid.tsx": "c13e076bbae6b0d01b6712e3eb1333f9c23b4d42954476236bb5d8e00b31e46f",
+    "src/features/draft-input/HeroPickerSheet.tsx": "83db87abd0e262489f537d087ef9f36d0a1838fad139f83625211816711ddabb",
+    "src/features/draft-sim/DraftSimView.tsx": "04d8d2b3d8396bbf288984bcbcb46db2c106ac813871377242f12faf510e9da0",
+    "src/features/draft-sim/SuggestionPanel.tsx": "f8f9568c82b92b620781b9196989719e8d407bcff078385364585b59c05e763e",
+    "src/features/draft-sim/components/DraftControls.tsx": "ff06961eb409d2095c88947e4a312bd9a1ec43d7725df51519fab73b72ef6e80",
+    "src/features/draft-sim/components/GlobalBanSection.tsx": "21c8c8e20a256fc1a97aa82fcd9060cae52b63f021f78df9ae91175f8ca925c2",
+    "src/features/draft-sim/components/SideColumn.tsx": "a3443910d56652340f7d76b10c171d452a06870eafb85e83bec52491561f5919",
+    "src/features/meta-stats/MetaView.tsx": "75aa04a0bf93561f670c931e7cf309660589a7817524ad10e00838940df5899b",
+    "src/messages/en.json": "ab203bde9e6943c379a12cf57773eed927d2408c3b012cdfd5b984b5979f664d",
+    "src/messages/vi.json": "7cbb2c440b1cdc5ec09ce3ac75e25ec2d7245531d5538299aa1efd988aa8acdf",
+    "src/features/draft-sim/components/TurnBanner.tsx": "2ef468ad1c3ff32c0fd480aab4dcabf008f4de8a035dace8454c11f01457aa1f",
+    "src/features/meta-stats/__tests__/metaRows.test.ts": "6b9dae7f39d41f122e588cb4a73765c6d9d0ea792fcdd35794eed3e94e1e924c",
+    "src/features/meta-stats/metaRows.ts": "debd7f3bce2b9e5312b778ab57e2fcb9caaafd1632c9fb7f48f20b045741c064"
+  },
+  "not_rerun": [
+    "full 62-case builder E2E suite",
+    "WebKit",
+    "validate:data (known baseline failure; dataset unchanged in diff)"
+  ]
+}

@@ -1,5 +1,5 @@
 "use client"
-import { useMemo } from "react"
+import { useMemo, type RefObject } from "react"
 
 import { useMediaQuery } from "@/hooks"
 
@@ -20,6 +20,8 @@ interface HeroPickerProps {
     disabledHeroIds?: Set<string>
     /** Ngườ dùng chọn một tướng. */
     onSelect: (heroId: string) => void
+    /** Nhận focus khi đóng nếu nút đã mở picker không còn nhận focus (vd bị gỡ sau lượt cuối). */
+    returnFocusFallbackRef?: RefObject<HTMLElement | null>
 }
 
 /** Picker tướng tự động chọn Dialog (desktop) hoặc Sheet (mobile). */

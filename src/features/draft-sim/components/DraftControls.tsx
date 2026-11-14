@@ -1,5 +1,5 @@
-﻿import { useTranslations } from "next-intl"
-import { Check, Copy, Link2, RotateCcw, Undo } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Check, Copy, Link2, RotateCcw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -21,8 +21,6 @@ interface DraftControlsProps {
     linkCopied: boolean
     /** Đổi ván đang mô phỏng. */
     onVanChange: (nextVan: number) => void
-    /** Hoàn tác lượt gần nhất. */
-    onUndo: () => void
     /** Reset ván hiện tại. */
     onReset: () => void
     /** Copy draft dạng text vào clipboard. */
@@ -31,27 +29,31 @@ interface DraftControlsProps {
     onCopyLink: () => void
 }
 
+/** Thao tác phụ của trang draft: chọn ván, chia sẻ, làm lại. Hoàn tác nằm ở TurnBanner. */
 export const DraftControls = ({
     vanNumber,
     copied,
     linkCopied,
     onVanChange,
-    onUndo,
     onReset,
     onCopyDraft,
     onCopyLink,
 }: DraftControlsProps) => {
     const t = useTranslations("draft")
+    const copyLabel = copied ? t("copied") : t("copyDraft")
+    const linkLabel = linkCopied ? t("linkCopied") : t("copyLink")
 
     return (
         <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2">
-                <Label className="text-xs text-muted-foreground">{t("van")}</Label>
+                <Label htmlFor="draft-van" className="text-xs text-muted-foreground">
+                    {t("van")}
+                </Label>
                 <Select
                     value={String(vanNumber)}
                     onValueChange={(v) => onVanChange(Number(v))}
                 >
-                    <SelectTrigger className="w-20">
+                    <SelectTrigger id="draft-van" className="h-10 w-20">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -63,27 +65,28 @@ export const DraftControls = ({
                     </SelectContent>
                 </Select>
             </div>
-            <Button variant="outline" onClick={onCopyDraft} className="gap-2">
-                {copied ? (
-                    <Check className="h-4 w-4" />
-                ) : (
-                    <Copy className="h-4 w-4" />
-                )}
-                {copied ? t("copied") : t("copyDraft")}
+            {/* Mobile chỉ hiện icon để toolbar không quấn nhiều dòng; aria-label giữ tên đầy đủ. */}
+            <Button
+                variant="outline"
+                onClick={onCopyDraft}
+                aria-label={copyLabel}
+                title={copyLabel}
+                className="h-10 min-w-10 gap-2"
+            >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span className="hidden sm:inline">{copyLabel}</span>
             </Button>
-            <Button variant="outline" onClick={onCopyLink} className="gap-2">
-                {linkCopied ? (
-                    <Check className="h-4 w-4" />
-                ) : (
-                    <Link2 className="h-4 w-4" />
-                )}
-                {linkCopied ? t("linkCopied") : t("copyLink")}
+            <Button
+                variant="outline"
+                onClick={onCopyLink}
+                aria-label={linkLabel}
+                title={linkLabel}
+                className="h-10 min-w-10 gap-2"
+            >
+                {linkCopied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
+                <span className="hidden sm:inline">{linkLabel}</span>
             </Button>
-            <Button variant="outline" onClick={onUndo} className="gap-2">
-                <Undo className="h-4 w-4" />
-                {t("undo")}
-            </Button>
-            <Button variant="outline" onClick={onReset} className="gap-2">
+            <Button variant="outline" onClick={onReset} className="h-10 gap-2">
                 <RotateCcw className="h-4 w-4" />
                 {t("reset")}
             </Button>

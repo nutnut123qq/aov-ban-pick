@@ -1,0 +1,21 @@
+{
+  "uiChecks": {
+    "route": "/vi/meta",
+    "unlabeledButtons": [
+      {
+        "html": "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon\" class=\"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-p"
+      }
+    ],
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "visibleComboboxes": [
+      {
+        "label": null,
+        "text": "Rừng × Giữa"
+      }
+    ]
+  },
+  "consoleEntries": []
+}
