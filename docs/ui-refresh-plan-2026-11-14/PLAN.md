@@ -249,3 +249,26 @@ Lúc chốt có một session khác đang chạy importer Liquipedia và sửa `
 
 - `89fb38e` fix(pipeline): `merge.mjs` tính lại winner/format, importer đọc `bestof` đúng, `validate:data` chặn ván > BO và winner lệch; "Đồng đội hay thắng cùng" chỉ giữ cặp thắng nhiều hơn thua (`heroStats.ts`); `DONE.md` mở v1.2.
 - `f0cfff8` fix(data): sửa format BO cho 225 series GCS + RPL, winner RPL 11/09 Bacon Time vs FULL SENSE.
+
+**Commit:** `df8b6f7` feat(ui), gồm UI + test + tài liệu/bằng chứng đợt này, stage tường minh 108 file (draft/meta/picker/navbar/messages, README, thư mục này). Không có `exports/`, `public/data/` hay file của session khác.
+
+**Push:** 15/11/2026 01:45 (+07), push thường `50b7a39..df8b6f7 main -> main`, đưa lên cùng `89fb38e` và `f0cfff8`. Fetch ngay trước push: origin/main vẫn `50b7a39`, fast-forward, không force.
+
+**Deploy (Vercel auto-deploy từ `main`, không dùng CLI, không đổi project/domain/env):** commit status pending 01:45:57 → success 01:46:39 (+07). GitHub deployment `7792185794`, environment Production, Vercel `VrygpoAFkXnRVm9Fd7busJYyPLYa`, URL `https://aov-ban-pick-a41ojwa9w-nutnut123qqs-projects.vercel.app`.
+
+**Smoke production** trên https://aov-ban-pick.vercel.app, 01:47–01:51 (+07), Chromium 151. Bằng chứng ở `evidence/release-2026-11-15/` (`result.json`, `prod-capture/`, `prod-e2e/`). Chạy lại nguyên script 72 bước của lượt sửa lỗi, chỉ đổi `baseUrl`: **72 PASS, 0 FAIL, 1 UNVERIFIED**, 0 lỗi console.
+
+| Yêu cầu kiểm production | Bằng chứng | Kết quả |
+|---|---|---|
+| Draft desktop/mobile: lượt hiện tại, nút chọn, gợi ý, picker | E2E draft-desktop 21/21, draft-mobile 6/6; `prod-capture/draft-*` | PASS |
+| Lượt chọn cuối: banner hoàn tất nhận focus sau khi picker đóng | E2E reg-3 desktop + mobile 4/4 | PASS |
+| Meta lọc/sort/phân trang; trang 2 → tìm → xoá về trang 1 | E2E meta-desktop 14/14, meta-mobile 6/6, reg-1 | PASS |
+| Mở tướng rồi Back giữ trang/bộ lọc/tab | E2E reg-2 5/5 | PASS |
+| vi/en, dark/light, điều hướng liên quan | E2E navbar 8/8, smoke 7 route; `prod-capture/` 21 ảnh | PASS |
+| Mobile WebKit | chưa cài runtime | UNVERIFIED |
+
+Số đo `prod-capture/metrics.json` trùng `after/metrics.json` local (gợi ý trong viewport đầu, vị trí banner/tab, 25 dòng, không tràn ngang, 0 control thiếu tên). Chỉ khác: trang Meta ngắn hơn 13px trên production ở mọi viewport. Nguyên nhân chưa xác định; ảnh không cho thấy mất nội dung.
+
+**Kết luận:** đợt UI draft/Meta **đã chốt và phát hành** lên production. Giới hạn còn nguyên: mobile WebKit UNVERIFIED; `validate:data` fail baseline tại `df8b6f7`. Đợt này không đóng v1.2 dữ liệu: session dữ liệu tự đóng trong `3aa8073` (push riêng 15/11 08:26 +07). Commit đó ghi `validate:data` xanh, đợt này chưa kiểm lại. Smoke ở trên chạy trên deploy `df8b6f7`; production sau `3aa8073` chưa smoke lại. Không tuyên bố toàn dự án production-ready. Backlog ngoài phạm vi ở trên chưa làm.
+
+Commit receipt này kích hoạt thêm một deploy production chỉ có tài liệu. Trạng thái của deploy đó báo trong bàn giao, không ghi lại vào repo để tránh vòng receipt → commit → deploy.

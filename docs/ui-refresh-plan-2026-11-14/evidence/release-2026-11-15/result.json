@@ -1,0 +1,64 @@
+{
+  "scope": "Chốt và phát hành đợt UI draft/Meta (user cho phép commit/push/deploy ngày 15/11/2026)",
+  "commit": {
+    "ui_docs": "df8b6f78cd19149a291a2b31615b87f43325dcaa",
+    "released_with": [
+      "89fb38e fix(pipeline): merge tinh lai winner/format, importer doc bestof dung, teammates loc cap thua",
+      "f0cfff8 fix(data): sua format BO cho GCS + RPL, winner RPL 11/09 BT vs FS"
+    ]
+  },
+  "push": {
+    "at": "2026-11-15T01:45:49+07:00",
+    "result": "50b7a39..df8b6f7 main -> main",
+    "remote_before": "origin/main 50b7a39 (fetch ngay trước push), fast-forward, không force"
+  },
+  "deploy": {
+    "trigger": "Vercel GitHub integration, auto-deploy từ main (không dùng CLI)",
+    "commit_status": "pending 2026-11-15T01:45:57+07:00 → success 'Deployment has completed' 2026-11-15T01:46:39+07:00",
+    "github_deployment_id": 7792185794,
+    "environment": "Production",
+    "vercel_deployment": "VrygpoAFkXnRVm9Fd7busJYyPLYa",
+    "deployment_url": "https://aov-ban-pick-a41ojwa9w-nutnut123qqs-projects.vercel.app",
+    "production_url": "https://aov-ban-pick.vercel.app"
+  },
+  "gates_before_commit": {
+    "npm run lint": 0,
+    "npm test": { "exit": 0, "files": 17, "tests": 112 },
+    "npx tsc --noEmit": 0,
+    "npm run build": 0,
+    "npm run validate:data": {
+      "exit": 1,
+      "message": "Series 's_arena_of_glory_winter_2026_2026_08_29_box_gamingvsgam_esports' có ván 4 nhưng format BO3.",
+      "classification": "baseline đã biết; public/data và scripts không đổi so với HEAD f0cfff8 nơi đo baseline; validator dừng ở lỗi đầu"
+    }
+  },
+  "production_smoke": {
+    "base": "https://aov-ban-pick.vercel.app",
+    "browser": "Chromium 151 (ms-playwright chromium-1234) qua Playwright 1.61 global",
+    "capture": {
+      "dir": "prod-capture/",
+      "started_at": "2026-11-15T01:47:02+07:00",
+      "shots": 21,
+      "vs_local_after_metrics": "trùng số gợi ý trong viewport đầu, vị trí banner/gợi ý, 25 dòng, vị trí tab, không tràn ngang, 0 control thiếu tên; chỉ khác: trang Meta ngắn hơn 13px trên production ở mọi viewport (nguyên nhân chưa xác định, ảnh không thấy mất nội dung)"
+    },
+    "e2e": {
+      "file": "prod-e2e/e2e.json",
+      "script": "../fix-review-3issues/tools/e2e.cjs (không sửa), baseUrl production",
+      "finished_at": "2026-11-15T01:51:15+07:00",
+      "PASS": 72,
+      "FAIL": 0,
+      "UNVERIFIED": 1,
+      "by_area": {
+        "draft-desktop": "21/21", "draft-mobile": "6/6", "meta-desktop": "14/14", "meta-mobile": "6/6",
+        "navbar": "8/8", "smoke": "7/7", "reg-1": "1/1", "reg-2": "5/5", "reg-3": "4/4", "runtime (WebKit)": "UNVERIFIED"
+      },
+      "console_errors": 0
+    }
+  },
+  "limits": [
+    "Mobile WebKit chưa cài, không kiểm (UNVERIFIED)",
+    "validate:data fail baseline tại df8b6f7; đợt này không đóng v1.2 (session dữ liệu đóng trong 3aa8073, push riêng 08:26 +07, ghi validate:data xanh, chưa kiểm lại); smoke chạy trên deploy df8b6f7, production sau 3aa8073 chưa smoke lại; không tuyên bố toàn dự án production-ready",
+    "Commit receipt này kích hoạt thêm một deploy production chỉ có tài liệu; trạng thái của nó báo trong bàn giao, không ghi lại vào repo để tránh vòng receipt → commit → deploy"
+  ],
+  "cleanup": "Script tự đóng Chromium; không còn chrome.exe nào của ms-playwright. Lượt này không khởi chạy dev/prod server local."
+}

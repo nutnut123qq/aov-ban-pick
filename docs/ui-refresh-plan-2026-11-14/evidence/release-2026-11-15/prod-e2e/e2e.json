@@ -1,0 +1,522 @@
+{
+  "base": "https://aov-ban-pick.vercel.app",
+  "ranAt": "2026-11-14T18:51:15.335Z",
+  "summary": {
+    "PASS": 72,
+    "UNVERIFIED": 1
+  },
+  "consoleErrors": [],
+  "steps": [
+    {
+      "area": "draft-desktop",
+      "name": "Bắt đầu draft",
+      "expect": "Bên Xanh · CẤM, Bước 1/18",
+      "actual": "Bên Xanh · CẤM, Bước 1/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Hoàn tác bị khoá khi chưa có lượt",
+      "expect": "disabled",
+      "actual": "disabled",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Picker: Enter mở → Escape đóng → focus trả về",
+      "expect": "focus ở nút 'Chọn tướng'",
+      "actual": "Chọn tướng",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Focus nhìn thấy khi Tab tới gợi ý",
+      "expect": ":focus-visible + ring (box-shadow)",
+      "actual": "RouieBan-rate 65% · flex; fv=true; shadow=rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Cấm bằng picker",
+      "expect": "ô CẤM đầu = Flowborn; chuyển Bên Đỏ · CẤM 2/18",
+      "actual": "CẤM: Flowborn; Bên Đỏ · CẤM Bước 2/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Áp dụng gợi ý cho 3 lượt cấm",
+      "expect": "Bên Xanh · CHỌN 1, Bước 5/18",
+      "actual": "Bên Xanh · CHỌN 1, Bước 5/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Gợi ý pick kèm lane",
+      "expect": "lane CHỌN 1 được điền",
+      "actual": "Tà thần",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Chọn lane thủ công",
+      "expect": "CHỌN 1 = Rừng",
+      "actual": "Rừng",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Hoàn tác",
+      "expect": "về Bước 5/18, CHỌN 1 trống/lượt này",
+      "actual": "Bước 5/18; CHỌN 1: → Lượt này",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Xoá lựa chọn ô cấm đầu",
+      "expect": "lượt về Bước 1/18 Bên Xanh · CẤM",
+      "actual": "Bên Xanh · CẤM, Bước 1/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Hoàn thành draft 18 bước",
+      "expect": "banner hoàn tất, Bước 18/18, ẩn 'Chọn tướng'",
+      "actual": "Đã đủ cấm/chọn cho ván này, Bước 18/18, pickBtn=false",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Score card hiện khi đủ pick",
+      "expect": "thấy 'Đánh giá đội hình'",
+      "actual": "true",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Lịch sử tự lưu khi đủ 18 bước",
+      "expect": "Draft đã lưu (≥1)",
+      "actual": "Draft đã lưu (1)",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Sao chép link draft",
+      "expect": "nhãn 'Đã chép link!' + clipboard có ?d=",
+      "actual": "true; https://aov-ban-pick.vercel.app/vi/draft?d=0%3Atamyn%2C1%3Arouie%2C2%3Asinestrea",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Khôi phục draft từ URL share",
+      "expect": "18 ô giống hệt + banner hoàn tất",
+      "actual": "Bước 18/18; same=true",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Làm lại",
+      "expect": "Bước 1/18, Hoàn tác khoá",
+      "actual": "Bước 1/18, undoDisabled=true",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Tải lại draft từ lịch sử",
+      "expect": "18 ô khớp draft đã lưu",
+      "actual": "true",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Ván 2: global ban",
+      "expect": "khối global ban hiện 10 tướng; banner Bước 1/18",
+      "actual": "visible=true, imgs=10, Bước 1/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Ván 2: xoá một global ban (nút có tên)",
+      "expect": "còn 9 tướng",
+      "actual": "9",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Ván 2: tướng Xanh đã pick ở ván 1 bị khoá trong picker",
+      "expect": "Edras disabled",
+      "actual": "true",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-desktop",
+      "name": "Không tràn ngang",
+      "expect": "false",
+      "actual": "false",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Viewport đầu 390×844",
+      "expect": "thấy lượt hiện tại, nút chọn tướng (≥44px), ≥1 gợi ý",
+      "actual": "banner.bottom=353, pickBtn.h=48, sug1.bottom=590",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Cấm bằng bottom sheet",
+      "expect": "→ Bên Đỏ · CẤM 2/18 (đã cấm Flowborn)",
+      "actual": "Bên Đỏ · CẤM, Bước 2/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Áp dụng gợi ý",
+      "expect": "Bước 3/18",
+      "actual": "Bước 3/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Hoàn tác",
+      "expect": "Bước 2/18",
+      "actual": "Bước 2/18",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Nút chỉ-icon vẫn có tên",
+      "expect": "aria-label 'Sao chép draft'",
+      "actual": "1",
+      "result": "PASS"
+    },
+    {
+      "area": "draft-mobile",
+      "name": "Không tràn ngang 390",
+      "expect": "false",
+      "actual": "false",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Trang 1",
+      "expect": "206 dòng tổng, 25 dòng render, Trang 1/9",
+      "actual": "206 dòng · 1623 ván, rendered=25, Trang 1/9",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Combo/kèo/duo ở đầu màn",
+      "expect": "tab Combo trong viewport đầu",
+      "actual": "y=362",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Phân trang truy cập đủ kết quả",
+      "expect": "206 dòng duy nhất qua các trang; trang cuối Trang 9/9",
+      "actual": "206, Trang 9/9",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Đổi vị trí từ trang cuối",
+      "expect": "về trang 1, mọi dòng lane Rừng",
+      "actual": "Trang 1/2, 43 dòng · 1623 ván, lanes=Rừng",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Sắp xếp WR giảm dần trước phân trang",
+      "expect": "dòng 1 = WR cao nhất; dòng đầu trang 2 ≤ cuối trang 1; header aria-sort",
+      "actual": "top=100, max=100, p1last=48.2, p2first=47.7, aria-sort on 'Tỉ lệ thắng\n▼'",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Đảo chiều sắp xếp",
+      "expect": "dòng 1 = WR thấp nhất",
+      "actual": "top=0, min=0",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Tìm tướng",
+      "expect": "1 dòng Y'bneth",
+      "actual": "1 dòng · 1623 ván",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Tìm không có kết quả",
+      "expect": "thông báo rỗng, không có phân trang",
+      "actual": "empty=true, nav=0",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Tabs: click + phím mũi tên",
+      "expect": "Combo hiển thị; → Kèo; → Duo",
+      "actual": "combo=true, matchup=true, duo=true",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Duo: đổi cặp lane (có nhãn)",
+      "expect": "Giữa × Rồng",
+      "actual": "Giữa × Rồng",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Quay lại tab Tướng giữ truy vấn",
+      "expect": "ô tìm = \"an\", 19 dòng · 1623 ván",
+      "actual": "an, 19 dòng · 1623 ván",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "So sánh A/B độc lập",
+      "expect": "aria-pressed=true, ẩn tabs, có cột Chênh với số",
+      "actual": "pressed=true, tabsGone=true, A=Arena of Glory Winter 2026, B=Arena of Valor Premier League 2026, deltaRows=62",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Tắt so sánh trả lại tab trước",
+      "expect": "tab Tướng đang chọn",
+      "actual": "true",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-desktop",
+      "name": "Mở trang tướng",
+      "expect": "URL /vi/heroes/…, h1 chứa Dolia",
+      "actual": "/vi/heroes/dolia, h1=Dolia",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Controls lọc/sort hiện trên mobile (en)",
+      "expect": "#meta-lane, #meta-sort visible; 25 card",
+      "actual": "true, true, cards=25",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Tab phân tích trong viewport đầu",
+      "expect": "tab Combos bottom ≤ 844",
+      "actual": "476",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Lọc vị trí trên mobile",
+      "expect": "mọi card lane Jungle",
+      "actual": "Jungle",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Sort WR trên mobile",
+      "expect": "card đầu = WR cao nhất trang",
+      "actual": "100 vs max 100",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Trang kế trên mobile",
+      "expect": "Page 2 of N",
+      "actual": "Page 2 of 2",
+      "result": "PASS"
+    },
+    {
+      "area": "meta-mobile",
+      "name": "Không tràn ngang 390",
+      "expect": "false",
+      "actual": "false",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Nút menu có tên + aria-expanded",
+      "expect": "Mở menu, false",
+      "actual": "1, false",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Menu: mở → Escape đóng → focus về nút",
+      "expect": "nav ẩn, focus 'Mở menu'",
+      "actual": "opened=true, expanded=0, navAfter=false, focus=Mở menu",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Nút theme có tên i18n",
+      "expect": "Chuyển sang giao diện sáng",
+      "actual": "1",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Đổi theme",
+      "expect": "html bỏ class dark, nút đổi tên",
+      "actual": "true, 1",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Nút ngôn ngữ có tên",
+      "expect": "Ngôn ngữ: Tiếng Việt",
+      "actual": "1",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Đổi sang tiếng Anh giữ route + draft",
+      "expect": "/en/draft?d=…, ô cấm vẫn là Rouie",
+      "actual": "/en/draft?d=0%3Arouie, 1, BAN: Rouie",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Đổi lại tiếng Việt",
+      "expect": "/vi/draft?d=…",
+      "actual": "/vi/draft?d=0%3Arouie",
+      "result": "PASS"
+    },
+    {
+      "area": "navbar",
+      "name": "Tên sản phẩm hiện trên 390px",
+      "expect": "AOV DraftMind",
+      "actual": "AOV DraftMind",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /vi/matches",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /vi/draft-input",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /en/draft",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /en/meta",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /vi/heroes/florentino",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "Route /vi/teams/team_saigon_phantom",
+      "expect": "200, không tràn ngang 390",
+      "actual": "200, overflow=false",
+      "result": "PASS"
+    },
+    {
+      "area": "smoke",
+      "name": "draft-input: HeroPicker dùng chung",
+      "expect": "mở → input focus; chọn Flowborn vào ô; Escape → focus về ô",
+      "actual": "inputFocused=true, slot=Flowborn, focus=Flowborn",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-1",
+      "name": "Trang 2 → tìm Y'bneth → xoá tìm",
+      "expect": "Trang 1/9, dòng đầu như trang 1 ban đầu",
+      "actual": "Trang 2/9 → 1 dòng → Trang 1/9, đầu=Y'bneth|Hỗ trợ, url=/vi/meta",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-2",
+      "name": "Trang 2 → mở tướng → Back (mặc định)",
+      "expect": "Trang 2/9, dòng đầu Valhein",
+      "actual": "qua /vi/heroes/valhein → Trang 2/9, đầu=Valhein|Rồng",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-2",
+      "name": "Lọc Rừng + sort WR, trang 2 → mở tướng → Back",
+      "expect": "Trang 2/2, Rừng, Tỉ lệ thắng, đầu Tachi",
+      "actual": "Trang 2/2, Rừng, Tỉ lệ thắng, đầu=Tachi, sameUrl=true",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-2",
+      "name": "Mở tướng từ tab Combo → Back",
+      "expect": "tab Combo đồng đội vẫn chọn",
+      "actual": "aria-selected=true",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-2",
+      "name": "So sánh A/B → mở tướng → Back",
+      "expect": "vẫn so sánh, dòng đầu giống trước",
+      "actual": "pressed=true, same=true",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-2",
+      "name": "Mở trực tiếp trang tướng → Meta qua navbar",
+      "expect": "Trang 1/9, Tất cả, Mặc định, URL không query",
+      "actual": "Trang 1/9, Tất cả, Mặc định (số trận), url=/vi/meta",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-3",
+      "name": "desktop: lượt thường qua banner",
+      "expect": "mở: INPUT focus; đóng: focus 'Chọn tướng'",
+      "actual": "open=INPUT, close=BUTTON:Chọn tướng",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-3",
+      "name": "desktop: chọn lượt cuối qua banner",
+      "expect": "dialog đóng hẳn; focus vùng banner hoàn tất, còn trong DOM",
+      "actual": "focus=SECTION[banner=true] connected=true; Đã đủ cấm/chọn cho ván này; nútChọnĐãGỡ=true",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-3",
+      "name": "mobile: lượt thường qua banner",
+      "expect": "mở: INPUT focus; đóng: focus 'Chọn tướng'",
+      "actual": "open=INPUT, close=BUTTON:Chọn tướng",
+      "result": "PASS"
+    },
+    {
+      "area": "reg-3",
+      "name": "mobile: chọn lượt cuối qua banner",
+      "expect": "dialog đóng hẳn; focus vùng banner hoàn tất, còn trong DOM",
+      "actual": "focus=SECTION[banner=true] connected=true; Đã đủ cấm/chọn cho ván này; nútChọnĐãGỡ=true",
+      "result": "PASS"
+    },
+    {
+      "area": "runtime",
+      "name": "Mobile WebKit",
+      "expect": "chạy flow trên WebKit",
+      "actual": "WebKit chưa cài trong ms-playwright (chỉ có chromium-1234)",
+      "result": "UNVERIFIED"
+    }
+  ]
+}
